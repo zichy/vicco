@@ -1,4 +1,4 @@
-## vicco
+## ![vicco](https://cloud.githubusercontent.com/assets/3044987/10921003/8366befc-8273-11e5-9ca3-68b0c12b7b4f.png)
 _vicco_ is microblogging software in PHP. It’s named after [Vicco von Bülow](https://en.wikipedia.org/wiki/Vicco_von_B%C3%BClow).
 
 ### Features
@@ -38,7 +38,7 @@ No block elements, though.
 ### FAQ
 
 **Are there any dependencies? Should I use Composer?**  
-What the fuck, dude? This is literally _one_ PHP file.
+What the fuck? This is literally _one_ PHP file.
 
 **Given that you released PHP software, you know how to write PHP, right?**  
 Haha, no.
