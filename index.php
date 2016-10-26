@@ -63,16 +63,19 @@ body,
 textarea,
 input,
 code {
-	font-family: 'Space Mono', monospace;
+	font-family: 'Menlo', 'Monaco', 'Courier New', 'Courier', monospace;
 	font-size: 1rem;
 	line-height: 1.5;
 }
 body {
-	background-color: #e1e0db;
+	background-color: white;
 	color: black;
 	max-width: 50rem;
 	padding: 0 1rem;
 	margin: 0 auto;
+}
+main {
+	display: block;
 }
 *:focus {
 	outline: thin solid;
@@ -90,8 +93,7 @@ a[itemprop='url'] {
 	text-decoration: none;
 }
 code {
-	background-color: #678;
-	color: white;
+	background-color: #fe9;
 }
 form div {
 	margin-bottom: 1rem;
@@ -115,11 +117,10 @@ h1 {
 	margin: 0;
 }
 article,
-.box {
-	background-color: white;
+.panel {
 	padding: 2rem;
 	margin-bottom: 2rem;
-	border-radius: .5rem;
+	border: 1px solid lightgray;
 }
 fieldset {
 	border: none;
@@ -128,13 +129,6 @@ legend {
 	font-weight: bold;
 	margin-bottom: 1rem;
 }
-button {
-	font-size: .8rem;
-	font-weight: bold;
-}
-.meta {
-	color: #678;
-}
 .right {
 	text-align: right;
 	float: right;
@@ -142,7 +136,7 @@ button {
 .admin {
 	display: none;
 }
-.box ~ article .admin {
+.panel ~ * .admin {
 	display: block;
 }
 nav {
@@ -179,7 +173,6 @@ EOD
 	<title>{{SITENAME}}</title>
 
 	<link href="{{PAGEHOME}}?feed" type="application/atom+xml" title="{{SITENAME}} feed" rel="alternate" />
-	<link href="https://fonts.googleapis.com/css?family=Space+Mono:400,400i,700,700i" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{{DATAPATH}}{{B}}/{{CSS}}" />
 
 </head>
@@ -189,8 +182,9 @@ EOD
 <header>
 	<h1 itemprop="name"><a href="{{PAGEHOME}}">{{SITENAME}}</a></h1>
 	<p itemprop="description">{{SITEDESC}}</p>
-	<a href="?feed">Feed</a> ⚡️ <a href="?login">Login</a>
 </header>
+
+<main>
 
 EOD
 	); set_kvp(B,T_POST, <<< 'EOD'
@@ -198,23 +192,23 @@ EOD
 <article itemscope itemtype="https://schema.org/BlogPosting">
 	<p itemprop="articleBody">{{POSTCONTENT}}</p>
 
-	<div class="meta">
+	<aside>
 		<a href="?ts={{POSTID}}" itemprop="url" title="Permalink">&#9733;
 			<time datetime="{{POSTDATETIME}}" itemprop="datePublished" pubdate>{{POSTDATE}}</time>
 		</a>
 
 		<form action="index.php" method="post" class="admin right">
 			<input type="hidden" name="postid" value="{{POSTID}}" />
-			<button type="submit" name="edit">✏️ Edit</button>
-			<button type="submit" name="delete">❌ Delete</button>
+			<a href="?edit={{POSTID}}">Edit</a>
+			<button type="submit" name="delete">Delete</button>
 		</form>
-	</div>
+	</aside>
 </article>
 
 EOD
 	); set_kvp(B, T_ADMIN, <<< 'EOD'
 
-<form class="box" action="index.php" method="post">
+<form class="panel" action="index.php" method="post">
 	<div>
 		<label class="hidden" for="postcontent">Post content</label>
 		<textarea id="postcontent" name="postcontent" placeholder="Start typing &hellip;" autofocus>{{POSTCONTENT}}</textarea>
@@ -222,21 +216,21 @@ EOD
 
 	<input type="hidden" name="postid" value="{{POSTID}}" />
 
-	<button type="submit" name="submitpost">✅ Publish</button>
-	<button type="reset">💣 Reset</button>
+	<button type="submit" name="submitpost"><strong>Publish</strong></button>
+	<button type="reset">Reset</button>
 
 	<div class="right">
-		<button type="submit" name="rbindex">🌀️ Refresh</button>
-		<button type="submit" name="logout">🚫 Logout</button>
+		<button type="submit" name="rbindex">Refresh</button>
+		<button type="submit" name="logout">Logout</button>
 	</div>
 </form>
 
 EOD
 	); set_kvp(B, T_ADMINLOGIN, <<< 'EOD'
 
-<form class="box" action="index.php" method="post">
+<form class="panel" action="index.php" method="post">
 	<fieldset>
-		<legend>🔒 Administration</legend>
+		<legend>Administration</legend>
 		<div>
 			<label for="username">Username</label><br />
 			<input type="text" id="username" name="username" />
@@ -245,14 +239,14 @@ EOD
 			<label for="password">Password</label><br />
 			<input type="password" id="password" name="password" />
 		</div>
-		<button type="submit" name="login">🔑 Login</button>
+		<button type="submit" name="login">Login</button>
 	</fieldset>
 </form>
 
 EOD
 	); set_kvp(B, T_FAIL, <<< 'EOD'
 
-<section class="box error">
+<section class="panel error">
 	<h2>⚠️ Error</h2>
 	<p class="error">Something went wrong. Please try again.</p>
 </section>
@@ -261,8 +255,8 @@ EOD
 	); set_kvp(B, T_NAV, <<< 'EOD'
 
 <nav>
-	<a href="?skip={{NEXT}}" class="next">◀︎ Newer posts</a>
-	<a href="?skip={{PREV}}" class="prev">Older posts ►</a>
+	<a href="?skip={{NEXT}}" class="next">◀︎ Newer</a>
+	<a href="?skip={{PREV}}" class="prev">Older ►</a>
 </nav>
 
 EOD
@@ -271,17 +265,20 @@ EOD
 <form class="right" action="index.php" method="get" role="search">
 	<label class="hidden" for="search">Search</label>
 	<input type="text" id="search" name="s" />
-	<button type="submit">🔍 Search</button>
+	<button type="submit">Search</button>
 </form><br />
 
 EOD
 	); set_kvp(B, T_FOOTER, <<< 'EOD'
 
+</main>
+
 <footer>
-	<p>Powered by <strong>vicco</strong>.</p>
+	<a href="?feed">Feed</a>
+	<a href="?login">Login</a>
 </footer>
 
-<!-- {{SERVER}}, {{USED}} kB used -->
+<!-- vicco: {{SERVER}}, {{USED}} kB used -->
 
 </body>
 </html>
@@ -453,6 +450,9 @@ if(@$_SESSION['loggedin'] === true) {
 	// Submit posts
 	if(isset($_POST['submitpost'])) {
 		$r = 0;
+		if(empty($_POST[D_POSTCONTENT])) {
+			fail();
+		}
 		if(empty($_POST[D_POSTID])) {
 			$r = create_record(uniqid());
 			set_kvp($r, D_POSTDATE, time());
@@ -481,8 +481,8 @@ if(@$_SESSION['loggedin'] === true) {
 	}
 
 	// Edit posts
-	if(isset($_POST['edit'])) {
-		$e = $_POST['postid'];
+	if(isset($_GET['edit'])) {
+		$e = $_GET['edit'];
 		if(!record_exists($e)) {
 			fail();
 		}

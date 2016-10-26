@@ -2,11 +2,11 @@
 __vicco__ is microblogging software in PHP. It’s named after [Vicco von Bülow](https://en.wikipedia.org/wiki/Vicco_von_B%C3%BClow).
 
 ## Features
-* Blisteringly fast ⚡️
+* Blisteringly fast ⚡
 * Accessible HTML5 with microdata
 * Web interface
 * Text formatting
-* Atom feed (broken)
+* Atom feed (still broken)
 * No JavaScript
 * No comments
 
@@ -51,5 +51,4 @@ Probably not.
 * Valid Atom feed
 * Truncate posts for feed title/summary
 * Fix navigation
-* Decline empty posts
 * Custom error messages
