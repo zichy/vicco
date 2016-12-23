@@ -134,6 +134,8 @@ article,
 	border: 1px solid gray;
 }
 fieldset {
+	padding: 0;
+	margin: 0;
 	border: none;
 }
 legend {
