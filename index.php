@@ -85,7 +85,6 @@ a {
 }
 a:hover,
 a:focus {
-	background-color: white;
 	text-decoration: none;
 	outline: thin solid;
 }
@@ -95,8 +94,8 @@ a[itemprop='url'] {
 code {
 	background-color: #fe9;
 }
-form div {
-	margin-bottom: 1rem;
+input {
+	border: 1px solid gray;
 }
 textarea {
 	background-color: white;
@@ -110,23 +109,38 @@ textarea:focus {
 }
 header,
 footer {
-	text-align: center;
 	margin: 2rem 0;
+}
+header {
+	text-align: center;
+}
+header div {
+	position: absolute;
+	top: .5rem;
+	right: .5rem;
+}
+footer {
+	color: gray;
+	clear: both;
 }
 h1 {
 	margin: 0;
 }
 article,
+.box,
 .panel {
 	padding: 2rem;
 	margin-bottom: 2rem;
-	border: 1px solid lightgray;
+	border: 1px solid gray;
 }
 fieldset {
 	border: none;
 }
 legend {
 	font-weight: bold;
+	margin-bottom: 1rem;
+}
+form div {
 	margin-bottom: 1rem;
 }
 .right {
@@ -182,6 +196,11 @@ EOD
 <header>
 	<h1 itemprop="name"><a href="{{PAGEHOME}}">{{SITENAME}}</a></h1>
 	<p itemprop="description">{{SITEDESC}}</p>
+
+	<div>
+		<a href="?feed">Feed</a>
+		<a href="?login">Login</a>
+	</div>
 </header>
 
 <main>
@@ -193,7 +212,7 @@ EOD
 	<p itemprop="articleBody">{{POSTCONTENT}}</p>
 
 	<aside>
-		<a href="?ts={{POSTID}}" itemprop="url" title="Permalink">&#9733;
+		<a href="?ts={{POSTID}}" itemprop="url" title="Permalink">
 			<time datetime="{{POSTDATETIME}}" itemprop="datePublished" pubdate>{{POSTDATE}}</time>
 		</a>
 
@@ -228,9 +247,9 @@ EOD
 EOD
 	); set_kvp(B, T_ADMINLOGIN, <<< 'EOD'
 
-<form class="panel" action="index.php" method="post">
+<form class="box" action="index.php" method="post">
 	<fieldset>
-		<legend>Administration</legend>
+		<legend>Please enter your credentials</legend>
 		<div>
 			<label for="username">Username</label><br />
 			<input type="text" id="username" name="username" />
@@ -246,7 +265,7 @@ EOD
 EOD
 	); set_kvp(B, T_FAIL, <<< 'EOD'
 
-<section class="panel error">
+<section class="box error">
 	<h2>⚠️ Error</h2>
 	<p class="error">Something went wrong. Please try again.</p>
 </section>
@@ -274,11 +293,8 @@ EOD
 </main>
 
 <footer>
-	<a href="?feed">Feed</a>
-	<a href="?login">Login</a>
+	<p>vicco: {{USED}} kB used, {{SERVER}}</p>
 </footer>
-
-<!-- vicco: {{SERVER}}, {{USED}} kB used -->
 
 </body>
 </html>
@@ -404,7 +420,6 @@ function tpl_set($t, $w, $r) {
 function tpl_header() {
 	echo tpl(T_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'PAGEHOME', PAGEHOME, 'DATAPATH', DATAPATH, 'B', B, 'CSS', CSS);
 }
-tpl_header();
 
 // Footer template
 function tpl_footer() {
@@ -424,6 +439,33 @@ function rmain() {
 	die();
 }
 
+// Text formatting
+function parse($t) {
+	$t = preg_replace('/(\*\*|__)(.*?)\1/', '<strong>\2</strong>', $t);
+	$t = preg_replace('/(\*|_)(.*?)\1/','<em>\2</em>',$t);
+	$t = preg_replace('/\~(.*?)\~/','<del>\1</del>',$t);
+	$t = preg_replace('/\:\"(.*?)\"\:/','<q>\1</q>',$t);
+	$t = preg_replace('/\@(.*?)\@/','<code>\1</code>',$t);
+	$t = preg_replace('/\[([^\[]+)\]\(([^\)]+)\)/','<a href=\'\2\'>\1</a>',$t);
+	$t = preg_replace('/\[(.*?)\]/','<a href=\'\1\'>\1</a>',$t);
+	return $t;
+}
+
+// Feed
+if(isset($_GET['feed'])) {
+	$p = @array_slice($p, 0, POSTSPERPAGE);
+	header('Content-type: application/atom+xml');
+	echo tpl(ATOM_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'SITEURL', PAGEHOME);
+	foreach($p as $m) {
+		echo tpl(ATOM_ITEM, 'POSTTITLE', get_kvp($m[KEY], D_POSTTITLE), 'POSTCONTENT', parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))), 'LINK', PAGEHOME.'?ts='.$m[KEY], 'DATE', date('Y-m-d H:i:s', $m[VALUE]));
+	}
+	echo tpl(ATOM_FOOTER);
+	die();
+}
+
+// Show header
+tpl_header();
+
 // Login template
 if(isset($_GET['login'])) {
 	if(@$_SESSION['loggedin'] === true) {
@@ -431,7 +473,7 @@ if(isset($_GET['login'])) {
 		die();
 	} else {
 		echo tpl(T_ADMINLOGIN);
-		echo tpl(T_FOOTER);
+		tpl_footer();
 		die();
 	}
 }
@@ -465,10 +507,13 @@ if(@$_SESSION['loggedin'] === true) {
 		set_kvp($r, D_POSTCONTENT, $_POST[D_POSTCONTENT]);
 		create_index(D_POSTDATE, D_POSTDATE);
 	}
+
+	// Delete posts
 	if(isset($_POST['delete'])) {
 		record_delete($_POST['postid']);
 		create_index(D_POSTDATE, D_POSTDATE);
 	}
+
 	if(isset($_GET['dc'])) {
 		if(!record_exists($cfl)) {
 			fail();
@@ -476,6 +521,8 @@ if(@$_SESSION['loggedin'] === true) {
 		delete_kvp($cfl,$_GET['cid'].'_'.D_NAME);
 		delete_kvp($cfl,$_GET['cid'].'_'.D_POSTDATE);
 	}
+
+	// Refresh
 	if(isset($_POST['rbindex'])) {
 		create_index(D_POSTDATE, D_POSTDATE);
 	}
@@ -496,18 +543,6 @@ if(@$_SESSION['loggedin'] === true) {
 if(isset($_POST['logout'])) {
 	session_destroy();
 	rmain();
-}
-
-// Text formatting
-function parse($t) {
-	$t = preg_replace('/(\*\*|__)(.*?)\1/', '<strong>\2</strong>', $t);
-	$t = preg_replace('/(\*|_)(.*?)\1/','<em>\2</em>',$t);
-	$t = preg_replace('/\~(.*?)\~/','<del>\1</del>',$t);
-	$t = preg_replace('/\:\"(.*?)\"\:/','<q>\1</q>',$t);
-	$t = preg_replace('/\@(.*?)\@/','<code>\1</code>',$t);
-	$t = preg_replace('/\[([^\[]+)\]\(([^\)]+)\)/','<a href=\'\2\'>\1</a>',$t);
-	$t = preg_replace('/\[(.*?)\]/','<a href=\'\1\'>\1</a>',$t);
-	return $t;
 }
 
 $p = get_index(D_POSTDATE);
@@ -542,17 +577,6 @@ uasort($p, function($a, $b) {
 	}
 });
 
-// Feed
-if(isset($_GET['feed'])) {
-	$p = @array_slice($p, 0, POSTSPERPAGE);
-	echo tpl(ATOM_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'SITEURL', PAGEHOME);
-	foreach($p as $m) {
-		echo tpl(ATOM_ITEM, 'POSTTITLE', get_kvp($m[KEY], D_POSTTITLE), 'POSTCONTENT', parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))), 'LINK', PAGEHOME.'?ts='.$m[KEY], 'DATE', date('Y-m-d H:i:s', $m[VALUE]));
-	}
-	echo tpl(ATOM_FOOTER);
-	die();
-}
-
 if(isset($_GET['ts']) && record_exists($_GET['ts'])) {
 	$o = 1;
 	$p = array(array(VALUE => get_kvp($_GET['ts'], D_POSTDATE), KEY => $_GET['ts']));
@@ -564,11 +588,13 @@ foreach($p as $m) {
 	echo tpl(T_POST, 'POSTID', $m[KEY], 'POSTTITLE', get_kvp($m[KEY],D_POSTTITLE), 'POSTCONTENT', parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))), 'POSTDATE', date('d M Y H:i:s', $m[VALUE]), 'POSTDATETIME', date('Y-m-d H:i:s', $m[VALUE]));
 }
 
-// Navigation
+// Show navigation
 echo tpl(T_NAV, 'NEXT', (@$_GET['skip']>0 ? @$_GET['skip'] - POSTSPERPAGE:0).'&amp;s='.@urlencode($_GET['s']), 'PREV', (@$_GET['skip'] + POSTSPERPAGE < $sp ? @$_GET['skip'] + POSTSPERPAGE : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']));
 
+// Show search results
 echo tpl(T_SEARCH);
 
+// Show footer
 tpl_footer();
 
 ?>
