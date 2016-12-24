@@ -59,6 +59,9 @@ if(get_kvp(B,'firstuse') === false) {
 
 	set_file(B, CSS, <<< 'EOD'
 
+*:focus {
+	outline: thin solid;
+}
 body,
 textarea,
 input,
@@ -77,9 +80,6 @@ body {
 main {
 	display: block;
 }
-*:focus {
-	outline: thin solid;
-}
 a {
 	color: blue;
 }
@@ -88,8 +88,9 @@ a:focus {
 	text-decoration: none;
 	outline: thin solid;
 }
-a[itemprop='url'] {
-	text-decoration: none;
+h1,
+h2 {
+	margin: 0;
 }
 code {
 	background-color: #fe9;
@@ -123,9 +124,6 @@ footer {
 	color: gray;
 	clear: both;
 }
-h1 {
-	margin: 0;
-}
 article,
 .box,
 .panel {
@@ -133,17 +131,27 @@ article,
 	margin-bottom: 2rem;
 	border: 1px solid gray;
 }
+article p {
+	margin-top: 0;
+}
 fieldset {
 	padding: 0;
 	margin: 0;
 	border: none;
 }
-legend {
-	font-weight: bold;
-	margin-bottom: 1rem;
-}
+legend,
 form div {
 	margin-bottom: 1rem;
+}
+legend {
+	font-weight: bold;
+}
+nav {
+	float: left;
+}
+nav a {
+	display: inline-block;
+	margin-right: 1rem;
 }
 .right {
 	text-align: right;
@@ -155,16 +163,11 @@ form div {
 .panel ~ * .admin {
 	display: block;
 }
-nav {
-	float: left;
-	padding-top: .5rem;
-}
-nav a {
-	display: inline-block;
-	margin-right: .5rem;
-}
 .error {
 	color: red;
+}
+.error p {
+	margin-bottom: 0;
 }
 .hidden {
 	clip: rect(0 0 0 0);
@@ -268,16 +271,16 @@ EOD
 	); set_kvp(B, T_FAIL, <<< 'EOD'
 
 <section class="box error">
-	<h2>⚠️ Error</h2>
-	<p class="error">Something went wrong. Please try again.</p>
+	<h2>Error</h2>
+	<p>Something went wrong. Please try again.</p>
 </section>
 
 EOD
 	); set_kvp(B, T_NAV, <<< 'EOD'
 
 <nav>
-	<a href="?skip={{NEXT}}" class="next">◀︎ Newer</a>
-	<a href="?skip={{PREV}}" class="prev">Older ►</a>
+	<a href="?skip={{NEXT}}" class="next">&larr; Newer</a>
+	<a href="?skip={{PREV}}" class="prev">Older &rarr;</a>
 </nav>
 
 EOD
@@ -347,7 +350,7 @@ function set_kvp($r, $k, $v) {
 
 function get_kvp($r, $k) {
 	$p = DATAPATH.sanitize_key($r).'/'.sanitize_key($k);
-	return file_exists($p) ? file_get_contents($p) : false; // check
+	return file_exists($p) ? file_get_contents($p) : false;
 }
 
 function delete_kvp($r, $kvp) {
@@ -435,7 +438,7 @@ function fail() {
 	die();
 }
 
-// Administration
+// Return to index
 function rmain() {
 	header('Location: '.$_SERVER['PHP_SELF']);
 	die();
@@ -455,7 +458,7 @@ function parse($t) {
 
 // Feed
 if(isset($_GET['feed'])) {
-	$p = @array_slice($p, 0, POSTSPERPAGE);
+	$p = @array_slice(get_index(D_POSTDATE), 0, POSTSPERPAGE);
 	header('Content-type: application/atom+xml');
 	echo tpl(ATOM_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'SITEURL', PAGEHOME);
 	foreach($p as $m) {
@@ -468,7 +471,7 @@ if(isset($_GET['feed'])) {
 // Show header
 tpl_header();
 
-// Login template
+// Show login
 if(isset($_GET['login'])) {
 	if(@$_SESSION['loggedin'] === true) {
 		header('Location: '.$_SERVER['PHP_SELF']);

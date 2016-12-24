@@ -2,7 +2,7 @@
 __vicco__ is microblogging software in PHP. It’s named after [Vicco von Bülow](https://en.wikipedia.org/wiki/Vicco_von_B%C3%BClow).
 
 ## Features
-* Blisteringly fast ⚡
+* Blisteringly fast
 * Web interface
 * Text formatting
 * Semantic HTML5 with microdata
