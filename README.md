@@ -42,7 +42,7 @@ What the fuck? This is literally _one_ PHP file.
 Haha, no. Basically, I stole [this script](https://github.com/lawl/b.php) with (kind of) permission and made it worse.
 
 **Uh … well, follow-up question: Is vicco secure?**  
-Probably not.
+Probably not. Please use [SSL/TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)!
 
 ## Testimonials
 > I’m a huge fan of your blog, but I get the creeps from the PHP code.
