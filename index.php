@@ -6,11 +6,8 @@ const SITENAME = 'vicco';
 // Description
 const SITEDESC = 'Yet another microblog';
 
-// Language (ISO 639-1)
-const SITELANG = 'en';
-
 // URL
-const PAGEHOME = 'https://localhost';
+const PAGEHOME = 'https://localhost/blog';
 
 // Username
 const USERNAME = 'user';
@@ -18,14 +15,20 @@ const USERNAME = 'user';
 // Password (CHANGE THIS)
 const PASSWORD = 'pass';
 
+// Language (ISO 639-1)
+const SITELANG = 'en';
+
+// Link color (CSS)
+const LINKCOLOR = 'blue';
+
 // Posts per page
 const POSTSPERPAGE = 10;
 
-// Only change these if you know what you’re doing
+// System constants
 const DATAPATH = 'vicco/';
 const KEY = 'key';
 const VALUE = 'value';
-const B = '_cache';
+const B = 'tpl';
 const CSS = 'style.css';
 const T_HEADER = 'template_header';
 const T_FOOTER = 'template_footer';
@@ -57,8 +60,7 @@ if(get_kvp(B,'firstuse') === false) {
 	create_record(B);
 	create_index(D_POSTDATE, D_POSTDATE);
 
-	set_file(B, CSS, <<< 'EOD'
-
+	set_file(null, CSS, <<< 'EOD'
 *:focus {
 	outline: thin solid;
 }
@@ -80,17 +82,10 @@ body {
 main {
 	display: block;
 }
-a {
-	color: blue;
-}
 a:hover,
 a:focus {
 	text-decoration: none;
 	outline: thin solid;
-}
-h1,
-h2 {
-	margin: 0;
 }
 code {
 	background-color: #fe9;
@@ -109,7 +104,7 @@ textarea:focus {
 	outline: none;
 }
 header,
-footer {
+.about {
 	margin: 2rem 0;
 }
 header {
@@ -120,25 +115,22 @@ header div {
 	top: .5rem;
 	right: .5rem;
 }
-footer {
+.about {
 	color: gray;
 	clear: both;
 }
-article,
-.box,
-.panel {
+.box {
 	padding: 2rem;
 	margin-bottom: 2rem;
 	border: 1px solid gray;
 }
-article p {
+.box > *:first-child {
 	margin-top: 0;
 }
-fieldset {
-	padding: 0;
-	margin: 0;
-	border: none;
+.box > *:last-child {
+	margin-bottom: 0;
 }
+h1,
 legend,
 form div {
 	margin-bottom: 1rem;
@@ -192,7 +184,11 @@ EOD
 	<title>{{SITENAME}}</title>
 
 	<link href="{{PAGEHOME}}?feed" type="application/atom+xml" title="{{SITENAME}} feed" rel="alternate" />
-	<link rel="stylesheet" type="text/css" href="{{DATAPATH}}{{B}}/{{CSS}}" />
+	<link rel="stylesheet" type="text/css" href="{{DATAPATH}}{{CSS}}" />
+
+	<style>
+		a { color: {{LINKCOLOR}} }
+	</style>
 
 </head>
 
@@ -211,35 +207,34 @@ EOD
 <main>
 
 EOD
-	); set_kvp(B,T_POST, <<< 'EOD'
+	); set_kvp(B, T_POST, <<< 'EOD'
 
-<article itemscope itemtype="https://schema.org/BlogPosting">
+<article class="box" itemscope itemtype="https://schema.org/BlogPosting">
 	<p itemprop="articleBody">{{POSTCONTENT}}</p>
 
-	<aside>
+	<footer>
 		<a href="?ts={{POSTID}}" itemprop="url" title="Permalink">
 			<time datetime="{{POSTDATETIME}}" itemprop="datePublished" pubdate>{{POSTDATE}}</time>
 		</a>
 
-		<form action="index.php" method="post" class="admin right">
+		<form class="admin right" action="{{SCRIPTNAME}}" method="post">
 			<input type="hidden" name="postid" value="{{POSTID}}" />
 			<a href="?edit={{POSTID}}">Edit</a>
 			<button type="submit" name="delete">Delete</button>
 		</form>
-	</aside>
+	</footer>
 </article>
 
 EOD
 	); set_kvp(B, T_ADMIN, <<< 'EOD'
 
-<form class="panel" action="index.php" method="post">
+<form class="box panel" action="{{SCRIPTNAME}}" method="post">
 	<div>
 		<label class="hidden" for="postcontent">Post content</label>
 		<textarea id="postcontent" name="postcontent" placeholder="Start typing &hellip;" autofocus>{{POSTCONTENT}}</textarea>
 	</div>
 
 	<input type="hidden" name="postid" value="{{POSTID}}" />
-
 	<button type="submit" name="submitpost"><strong>Publish</strong></button>
 	<button type="reset">Reset</button>
 
@@ -252,27 +247,25 @@ EOD
 EOD
 	); set_kvp(B, T_ADMINLOGIN, <<< 'EOD'
 
-<form class="box" action="index.php" method="post">
-	<fieldset>
-		<legend>Please enter your credentials</legend>
-		<div>
-			<label for="username">Username</label><br />
-			<input type="text" id="username" name="username" />
-		</div>
-		<div>
-			<label for="password">Password</label><br />
-			<input type="password" id="password" name="password" />
-		</div>
-		<button type="submit" name="login">Login</button>
-	</fieldset>
+<form class="box" action="{{SCRIPTNAME}}" method="post">
+	<h2>Login</h2>
+	<div>
+		<label for="username">Username</label><br />
+		<input type="text" id="username" name="username" />
+	</div>
+	<div>
+		<label for="password">Password</label><br />
+		<input type="password" id="password" name="password" />
+	</div>
+	<button type="submit" name="login">Login</button>
 </form>
 
 EOD
 	); set_kvp(B, T_FAIL, <<< 'EOD'
 
-<section class="box error">
+<section class="box">
 	<h2>Error</h2>
-	<p>Something went wrong. Please try again.</p>
+	<p>Something went wrong. Please <a href="" onclick="window.history.back();">go back</a> and try again.</p>
 </section>
 
 EOD
@@ -286,7 +279,7 @@ EOD
 EOD
 	); set_kvp(B, T_SEARCH, <<< 'EOD'
 
-<form class="right" action="index.php" method="get" role="search">
+<form class="right" action="{{SCRIPTNAME}}" method="get" role="search">
 	<label class="hidden" for="search">Search</label>
 	<input type="text" id="search" name="s" />
 	<button type="submit">Search</button>
@@ -297,7 +290,7 @@ EOD
 
 </main>
 
-<footer>
+<footer class="about">
 	<p>vicco: {{USED}} kB used, {{SERVER}}</p>
 </footer>
 
@@ -423,15 +416,15 @@ function tpl_set($t, $w, $r) {
 
 // Header template
 function tpl_header() {
-	echo tpl(T_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'PAGEHOME', PAGEHOME, 'DATAPATH', DATAPATH, 'B', B, 'CSS', CSS);
+	echo tpl(T_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'PAGEHOME', PAGEHOME, 'DATAPATH', DATAPATH, 'B', B, 'CSS', CSS, 'LINKCOLOR', LINKCOLOR);
 }
 
 // Footer template
 function tpl_footer() {
-	echo tpl(T_FOOTER, 'USED', intval(memory_get_usage() / 1024), 'SERVER', $_SERVER['SERVER_SOFTWARE']);
+	echo tpl(T_FOOTER, 'USED', intval(memory_get_usage() / 1024), 'SERVER', $_SERVER['SERVER_SOFTWARE'], 'DATAPATH', DATAPATH, 'B', B);
 }
 
-// Error handling
+// Error template
 function fail() {
 	echo tpl(T_FAIL);
 	tpl_footer();
@@ -468,22 +461,20 @@ if(isset($_GET['feed'])) {
 	die();
 }
 
-// Show header
+// Header
 tpl_header();
 
-// Show login
+// Login
 if(isset($_GET['login'])) {
 	if(@$_SESSION['loggedin'] === true) {
 		header('Location: '.$_SERVER['PHP_SELF']);
 		die();
 	} else {
-		echo tpl(T_ADMINLOGIN);
+		echo tpl(T_ADMINLOGIN, 'SCRIPTNAME', $_SERVER["SCRIPT_NAME"]);
 		tpl_footer();
 		die();
 	}
 }
-
-// Login
 if(isset($_POST['login'])) {
 	if($_POST['username'] === USERNAME && $_POST['password'] === PASSWORD) {
 		$_SESSION['loggedin'] = true;
@@ -538,9 +529,9 @@ if(@$_SESSION['loggedin'] === true) {
 		if(!record_exists($e)) {
 			fail();
 		}
-		echo tpl(T_ADMIN, 'POSTTITLE', get_kvp($e, D_POSTTITLE), 'POSTCONTENT', get_kvp($e, D_POSTCONTENT), 'POSTID', $e, 'SELF', $_SERVER['PHP_SELF']);
+		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER["SCRIPT_NAME"], 'POSTTITLE', get_kvp($e, D_POSTTITLE), 'POSTCONTENT', get_kvp($e, D_POSTCONTENT), 'POSTID', $e);
 	} else {
-		echo tpl(T_ADMIN, 'POSTTITLE' , '', 'POSTCONTENT', '', 'POSTID', '', 'SELF', $_SERVER['PHP_SELF']);
+		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER["SCRIPT_NAME"], 'POSTTITLE' , '', 'POSTCONTENT', '', 'POSTID', '');
 	}
 }
 
@@ -590,16 +581,16 @@ if(isset($_GET['ts']) && record_exists($_GET['ts'])) {
 $p = @array_slice($p, $_GET['skip'], POSTSPERPAGE);
 
 foreach($p as $m) {
-	echo tpl(T_POST, 'POSTID', $m[KEY], 'POSTTITLE', get_kvp($m[KEY],D_POSTTITLE), 'POSTCONTENT', parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))), 'POSTDATE', date('d M Y H:i:s', $m[VALUE]), 'POSTDATETIME', date('Y-m-d H:i:s', $m[VALUE]));
+	echo tpl(T_POST, 'SCRIPTNAME', $_SERVER["SCRIPT_NAME"], 'POSTID', $m[KEY], 'POSTTITLE', get_kvp($m[KEY],D_POSTTITLE), 'POSTCONTENT', parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))), 'POSTDATE', date('d M Y H:i:s', $m[VALUE]), 'POSTDATETIME', date('Y-m-d H:i:s', $m[VALUE]));
 }
 
-// Show navigation
-echo tpl(T_NAV, 'NEXT', (@$_GET['skip']>0 ? @$_GET['skip'] - POSTSPERPAGE:0).'&amp;s='.@urlencode($_GET['s']), 'PREV', (@$_GET['skip'] + POSTSPERPAGE < $sp ? @$_GET['skip'] + POSTSPERPAGE : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']));
+// Navigation
+echo tpl(T_NAV, 'NEXT', (@$_GET['skip'] > 0 ? @$_GET['skip'] - POSTSPERPAGE:0).'&amp;s='.@urlencode($_GET['s']), 'PREV', (@$_GET['skip'] + POSTSPERPAGE < $sp ? @$_GET['skip'] + POSTSPERPAGE : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']));
 
-// Show search results
-echo tpl(T_SEARCH);
+// Search results
+echo tpl(T_SEARCH, 'SCRIPTNAME', $_SERVER["SCRIPT_NAME"]);
 
-// Show footer
+// Footer
 tpl_footer();
 
 ?>

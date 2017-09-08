@@ -44,9 +44,12 @@ Haha, no. Basically, I stole [this script](https://github.com/lawl/b.php) with (
 **Uh … well, follow-up question: Is vicco secure?**  
 Probably not.
 
+## Testimonials
+> I’m a huge fan of your blog, but I get the creeps from the PHP code.
+— [sternenseemann](https://github.com/sternenseemann)
+
 ## To-do
 * Security stuff
-* Better Atom feed
+* Fix Atom feed
 * Truncate posts for feed title/summary
 * Fix navigation
-* Custom error messages
