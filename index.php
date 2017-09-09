@@ -186,9 +186,7 @@ EOD
 	<link href="{{PAGEHOME}}?feed" type="application/atom+xml" title="{{SITENAME}} feed" rel="alternate" />
 	<link rel="stylesheet" type="text/css" href="{{DATAPATH}}{{CSS}}" />
 
-	<style>
-		a { color: {{LINKCOLOR}} }
-	</style>
+	<style>a { color: {{LINKCOLOR}} }</style>
 
 </head>
 
@@ -470,7 +468,7 @@ if(isset($_GET['login'])) {
 		header('Location: '.$_SERVER['PHP_SELF']);
 		die();
 	} else {
-		echo tpl(T_ADMINLOGIN, 'SCRIPTNAME', $_SERVER["SCRIPT_NAME"]);
+		echo tpl(T_ADMINLOGIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
 		tpl_footer();
 		die();
 	}
@@ -529,9 +527,9 @@ if(@$_SESSION['loggedin'] === true) {
 		if(!record_exists($e)) {
 			fail();
 		}
-		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER["SCRIPT_NAME"], 'POSTTITLE', get_kvp($e, D_POSTTITLE), 'POSTCONTENT', get_kvp($e, D_POSTCONTENT), 'POSTID', $e);
+		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTTITLE', get_kvp($e, D_POSTTITLE), 'POSTCONTENT', get_kvp($e, D_POSTCONTENT), 'POSTID', $e);
 	} else {
-		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER["SCRIPT_NAME"], 'POSTTITLE' , '', 'POSTCONTENT', '', 'POSTID', '');
+		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTTITLE' , '', 'POSTCONTENT', '', 'POSTID', '');
 	}
 }
 
@@ -581,14 +579,14 @@ if(isset($_GET['ts']) && record_exists($_GET['ts'])) {
 $p = @array_slice($p, $_GET['skip'], POSTSPERPAGE);
 
 foreach($p as $m) {
-	echo tpl(T_POST, 'SCRIPTNAME', $_SERVER["SCRIPT_NAME"], 'POSTID', $m[KEY], 'POSTTITLE', get_kvp($m[KEY],D_POSTTITLE), 'POSTCONTENT', parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))), 'POSTDATE', date('d M Y H:i:s', $m[VALUE]), 'POSTDATETIME', date('Y-m-d H:i:s', $m[VALUE]));
+	echo tpl(T_POST, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTID', $m[KEY], 'POSTTITLE', get_kvp($m[KEY],D_POSTTITLE), 'POSTCONTENT', parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))), 'POSTDATE', date('d M Y H:i:s', $m[VALUE]), 'POSTDATETIME', date('Y-m-d H:i:s', $m[VALUE]));
 }
 
 // Navigation
 echo tpl(T_NAV, 'NEXT', (@$_GET['skip'] > 0 ? @$_GET['skip'] - POSTSPERPAGE:0).'&amp;s='.@urlencode($_GET['s']), 'PREV', (@$_GET['skip'] + POSTSPERPAGE < $sp ? @$_GET['skip'] + POSTSPERPAGE : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']));
 
 // Search results
-echo tpl(T_SEARCH, 'SCRIPTNAME', $_SERVER["SCRIPT_NAME"]);
+echo tpl(T_SEARCH, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
 
 // Footer
 tpl_footer();
