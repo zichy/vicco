@@ -5,8 +5,8 @@ __vicco__ is microblogging software in PHP. It’s named after [Vicco von Bülow
 * Blisteringly fast
 * Web interface
 * Text formatting
-* Semantic HTML5 with microdata
-* Atom feed
+* Semantic HTML5 (microdata)
+* Atom feed (broken)
 
 ## Target audiences
 * Hackers — It’s easy to customize, so you can do what you want.
@@ -24,13 +24,13 @@ __vicco__ is microblogging software in PHP. It’s named after [Vicco von Bülow
 ## Text formatting
 There is some [Markdown](https://daringfireball.net/projects/markdown/)-inspired formatting. No block elements, though.
 
-| Input | Output |
-| --- | --- |
-| `**strong**` or `__strong__` | __strong__ |
-| `*italic*` or `_italic_` | _italic_ |
-| `~delete~` | ~~delete~~ |
-| `:"quote":` | <q>quote</q> |
-| `@code@` | `code` |
+| Input                                                    | Output                                             |
+| ---                                                      | ---                                                |
+| `**strong**` or `__strong__`                             | __strong__                                         |
+| `*italic*` or `_italic_`                                 | _italic_                                           |
+| `~delete~`                                               | ~~delete~~                                         |
+| `:"quote":`                                              | <q>quote</q>                                       |
+| `@code@`                                                 | `code`                                             |
 | `[https://example.org]` / `[title](https://example.org)` | https://example.org / [title](https://example.org) |
 
 ## FAQ
@@ -45,7 +45,7 @@ Haha, no. Basically, I stole [this script](https://github.com/lawl/b.php) with (
 Probably not. Please use [SSL/TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)!
 
 ## Testimonials
-> I’m a huge fan of your blog, but I get the creeps from the PHP code.
+> I’m a huge fan of your blog, but I get the creeps from the PHP code.  
 — [sternenseemann](https://github.com/sternenseemann)
 
 ## To-do
