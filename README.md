@@ -1,4 +1,4 @@
-# <img src="https://user-images.githubusercontent.com/173749/87044804-5972cc80-c1f7-11ea-90b5-2022ed072ca6.png" width="200px" alt="vicco">
+# vicco
 
 __vicco__ is microblogging software in PHP. It’s named after [Vicco von Bülow](https://en.wikipedia.org/wiki/Vicco_von_B%C3%BClow).
 
