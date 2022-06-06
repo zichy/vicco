@@ -1,128 +1,195 @@
 <?php
 
-// Blog name
-const SITENAME = 'vicco';
+//************************************//
 
-// Description
-const SITEDESC = 'Yet another microblog';
+	// Site name
+	const SITENAME = 'vicco';
 
-// URL
-const PAGEHOME = 'https://localhost/blog';
+	// Description
+	const SITEDESC = 'Yet another microblog';
 
-// Username
-const USERNAME = 'user';
+	// URL (with trailing slash)
+	const PAGEHOME = 'https://localhost/blog/';
 
-// Password (CHANGE THIS)
-const PASSWORD = 'pass';
+	// Username
+	const USERNAME = 'user';
 
-// Language (ISO 639-1)
-const SITELANG = 'en';
+	// Passphrase (CHANGE THIS)
+	const PASSPHRASE = 'pass';
 
-// Link color (CSS)
-const LINKCOLOR = 'blue';
+	// Language (ISO 639-1)
+	const SITELANG = 'en';
 
-// Posts per page
-const POSTSPERPAGE = 10;
+	// Colors (CSS)
+	const BODYCOLOR = '#ffffff';
+	const BOXCOLOR = '#ece9e2';
+	const TEXTCOLOR = '#000000';
+	const LINKCOLOR = '#21837f';
+
+	// Posts per page
+	const POSTSPERPAGE = 5;
+
+//************************************//
 
 // System constants
 const DATAPATH = 'vicco/';
 const KEY = 'key';
 const VALUE = 'value';
-const B = 'tpl';
+const TPL = 'tpl';
 const CSS = 'style.css';
-const T_HEADER = 'template_header';
-const T_FOOTER = 'template_footer';
-CONST T_SEARCH = 'template_search';
-const T_POST = 'template_post';
-const T_ADMIN = 'template_addpost';
-const T_FAIL = 'template_fail';
-const T_NAV = 'template_nav';
+const JS = 'script.js';
+const T_HEADER = 'header';
+const T_FOOTER = 'footer';
+const T_POST = 'post';
+const T_ADMIN = 'addpost';
+const T_ERROR = 'error';
+const T_NEWER = 'nav_newer';
+const T_OLDER = 'nav_older';
+const T_SEARCH = 'search';
 const ATOM_FOOTER = 'atom_footer';
 const ATOM_HEADER = 'atom_header';
 const ATOM_ITEM = 'atom_item';
-const T_ADMINLOGIN = 'template_login';
-const D_POSTTITLE = 'posttitle';
+const T_ADMINLOGIN = 'login';
 const D_POSTCONTENT = 'postcontent';
 const D_POSTDATE = 'postdate';
 const D_POSTDATETIME = 'postdatetime';
-const D_NAME = 'name';
 const D_POSTID = 'postid';
+const COOKIE = 'cookie';
 
 session_start();
 
 // Installation
-if(get_kvp(B,'firstuse') === false) {
+if(get_kvp(TPL,'firstuse') === false) {
 	if(!record_exists('')) {
 		if(!mkdir(DATAPATH)) {
 			die('Can’t create database. Create directory "'.DATAPATH.'" and make it writeable.');
 		}
 	}
-	create_record(B);
+	create_record(TPL);
 	create_index(D_POSTDATE, D_POSTDATE);
 
 	set_file(null, CSS, <<< 'EOD'
+:root {
+	--f-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+	--f-size: 1.6rem;
+	--f-line: 1.5;
+}
+
+* {
+	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+}
+
+html {
+	font-size: 62.5%;
+	scroll-behavior: smooth;
+}
+
 *:focus {
-	outline: thin solid;
+	outline: 2px solid var(--c-interactive);
+	outline-offset: 2px;
 }
-body,
-textarea,
-input,
-code {
-	font-family: 'Menlo', 'Monaco', 'Courier New', 'Courier', monospace;
-	font-size: 1rem;
-	line-height: 1.5;
-}
+
 body {
-	background-color: white;
-	color: black;
-	max-width: 50rem;
+	background-color: var(--c-body);
+	color: var(--c-text-primary);
+	font-family: var(--f-family);
+	font-size: var(--f-size);
+	line-height: var(--f-line);
+	max-width: 80rem;
 	padding: 0 1rem;
-	margin: 0 auto;
+	margin: 4rem auto;
 }
-main {
-	display: block;
+a {
+	color: var(--c-interactive);
 }
 a:hover,
 a:focus {
+	background-color: var(--c-interactive);
+	color: var(--c-body);
 	text-decoration: none;
-	outline: thin solid;
 }
 code {
-	background-color: #fe9;
+	background-color: var(--c-body);
+	font-family: var(--f-family);
+	font-size: var(--f-size);
+}
+label {
+	color: var(--c-interactive);
+	font-weight: bold;
+	display: block;
+	padding-bottom: 0.5rem;
 }
 input {
-	border: 1px solid gray;
+	font-family: var(--f-family);
+	font-size: var(--f-size);
+	width: 100%;
+	height: 3.5rem;
+	padding: 0 1rem;
+	border: 2px solid var(--c-interactive);
+	border-radius: 0.5rem;
 }
 textarea {
-	background-color: white;
+	background-color: var(--c-box);
+	font-family: var(--f-family);
+	font-size: var(--f-size);
+	line-height: var(--f-line);
 	width: 100%;
-	height: 8rem;
+	height: 10rem;
 	border: 0;
 	padding: 0;
+	resize: none;
 }
 textarea:focus {
 	outline: none;
 }
-header,
-.about {
-	margin: 2rem 0;
+button,
+.button {
+	background-color: var(--c-interactive);
+	color: var(--c-body);
+	font-family: var(--f-family);
+	font-size: var(--f-size);
+	font-weight: bold;
+	line-height: var(--f-line);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+	height: 3.5rem;
+	padding: 0 1rem;
+	border: 0;
+	border-radius: 0.5rem;
+	cursor: pointer;
+	touch-action: manipulation;
+	user-select: none;
+	-webkit-user-select: none;
+	appearance: none;
 }
 header {
 	text-align: center;
+	margin-bottom: 2rem;
 }
-header div {
-	position: absolute;
-	top: .5rem;
-	right: .5rem;
+header h1 {
+	margin-bottom: 0;
 }
-.about {
-	color: gray;
-	clear: both;
+header p {
+	margin: 0;
+}
+header a {
+	color: var(--c-text-primary);
+	text-decoration: none;
+}
+.title {
+	flex-shrink: 0;
 }
 .box {
-	padding: 2rem;
+	background-color: var(--c-box);
+	line-height: var(--f-line);
+	padding: 3rem;
 	margin-bottom: 2rem;
-	border: 1px solid gray;
+	border-radius: 1rem;
 }
 .box > *:first-child {
 	margin-top: 0;
@@ -130,63 +197,121 @@ header div {
 .box > *:last-child {
 	margin-bottom: 0;
 }
-h1,
-legend,
-form div {
-	margin-bottom: 1rem;
-}
-legend {
-	font-weight: bold;
-}
 nav {
-	float: left;
+	display: flex;
+	justify-content: center;
+	margin-bottom: 2rem;
 }
 nav a {
-	display: inline-block;
 	margin-right: 1rem;
 }
-.right {
-	text-align: right;
-	float: right;
+.post footer a {
+	text-decoration: none;
 }
-.admin {
-	display: none;
+.post-meta {
+	display: flex;
+	flex-direction: column;
+}
+@media (max-width: 767px) {
+	.post-meta > *:not(:first-child) {
+		margin-top: 2rem
+	}
+}
+@media (min-width: 768px) {
+	.post-meta {
+		flex-direction: row;
+		align-items: end;
+		justify-content: space-between;
+	}
+
+	.post-meta > *:not(:first-child) {
+		padding-left: 4rem;
+	}
+}
+@media (min-width: 768px) {
+	.site-meta {
+		display: flex;
+		justify-content: space-between;
+	}
+}
+.search {
+	display: flex;
+}
+.search input {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+.search button {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+.login div {
+	margin-bottom: 2rem;
 }
 .panel ~ * .admin {
 	display: block;
 }
-.error {
-	color: red;
+.panel-meta {
+	display: flex;
 }
-.error p {
-	margin-bottom: 0;
+@media (min-width: 768px) {
+	.panel-meta {
+		justify-content: space-between;
+	}
 }
-.hidden {
-	clip: rect(0 0 0 0);
-	overflow: hidden;
-	width: 1px;
-	height: 1px;
-	padding: 0;
-	margin: -1px;
-	position: absolute;
-	border: 0;
+.panel-meta div {
+	margin-left: 1rem;
 }
 
 EOD
-	); set_kvp(B, T_HEADER, <<< 'EOD'
+	);
+	set_file(null, JS, <<< 'EOD'
+function resizeArea($el) {
+	const heightLimit = 500;
+	$el.style.height = '';
+	$el.style.height = Math.min($el.scrollHeight, heightLimit) + 'px';
+}
+
+const $textarea = document.getElementById('postcontent');
+
+if($textarea) {
+	resizeArea($textarea);
+
+	$textarea.addEventListener('input', function(e){
+		const $target = e.target || e.srcElement;
+		resizeArea($target);
+	});
+}
+
+const $adminForms = document.querySelectorAll('.admin');
+if($adminForms) {
+	$adminForms.forEach(($form) => {
+		$form.addEventListener('submit', (e) => {
+			if(confirm('Do you really want to delete this post?')) {
+				$form.submit();
+			} else {
+				e.preventDefault(e);
+			}
+		})
+	});
+}
+
+EOD
+	);
+	set_kvp(TPL, T_HEADER, <<< 'EOD'
 <!DOCTYPE html>
 <html lang="{{SITELANG}}">
 <head>
 
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<title>{{SITENAME}}</title>
 
-	<link href="{{PAGEHOME}}?feed" type="application/atom+xml" title="{{SITENAME}} feed" rel="alternate" />
-	<link rel="stylesheet" type="text/css" href="{{DATAPATH}}{{CSS}}" />
+	<link href="{{PAGEHOME}}?feed" type="application/atom+xml" title="{{SITENAME}} feed" rel="alternate">
+	<link rel="stylesheet" type="text/css" href="{{DATAPATH}}{{CSS}}" media="screen">
 
-	<style>a { color: {{LINKCOLOR}} }</style>
+	<style>:root { --c-body: {{BODYCOLOR}}; --c-box: {{BOXCOLOR}}; --c-text-primary: {{TEXTCOLOR}}; --c-interactive: {{LINKCOLOR}}; }</style>
 
 </head>
 
@@ -195,131 +320,129 @@ EOD
 <header>
 	<h1 itemprop="name"><a href="{{PAGEHOME}}">{{SITENAME}}</a></h1>
 	<p itemprop="description">{{SITEDESC}}</p>
-
-	<div>
-		<a href="?feed">Feed</a>
-		<a href="?login">Login</a>
-	</div>
 </header>
 
 <main>
 
 EOD
-	); set_kvp(B, T_POST, <<< 'EOD'
+	); set_kvp(TPL, T_POST, <<< 'EOD'
 
-<article class="box" itemscope itemtype="https://schema.org/BlogPosting">
+<article class="box post" itemscope itemtype="https://schema.org/BlogPosting">
 	<p itemprop="articleBody">{{POSTCONTENT}}</p>
 
-	<footer>
-		<a href="?ts={{POSTID}}" itemprop="url" title="Permalink">
-			<time datetime="{{POSTDATETIME}}" itemprop="datePublished" pubdate>{{POSTDATE}}</time>
-		</a>
+	<footer class="post-meta">
+		<div>
+			<a href="?p={{POSTID}}" itemprop="url" title="Permalink">
+				<time datetime="{{POSTDATETIME}}" itemprop="datePublished" pubdate>{{POSTDATE}}</time>
+			</a>
+		</div>
 
-		<form class="admin right" action="{{SCRIPTNAME}}" method="post">
-			<input type="hidden" name="postid" value="{{POSTID}}" />
-			<a href="?edit={{POSTID}}">Edit</a>
-			<button type="submit" name="delete">Delete</button>
+		<form class="admin" action="{{SCRIPTNAME}}" method="post" hidden>
+			<input type="hidden" name="postid" value="{{POSTID}}">
+			<a class="button" href="?edit={{POSTID}}">Edit</a>
+			<button type="submit" class="delete" name="delete">Delete</button>
 		</form>
 	</footer>
 </article>
 
 EOD
-	); set_kvp(B, T_ADMIN, <<< 'EOD'
+	); set_kvp(TPL, T_ADMIN, <<< 'EOD'
 
 <form class="box panel" action="{{SCRIPTNAME}}" method="post">
+	<input type="hidden" name="postid" value="{{POSTID}}">
+
 	<div>
-		<label class="hidden" for="postcontent">Post content</label>
-		<textarea id="postcontent" name="postcontent" placeholder="Start typing &hellip;" autofocus>{{POSTCONTENT}}</textarea>
+		<textarea id="postcontent" name="postcontent" placeholder="Start typing &hellip;" aria-label="Post content" spellcheck="false" autofocus>{{POSTCONTENT}}</textarea>
 	</div>
 
-	<input type="hidden" name="postid" value="{{POSTID}}" />
-	<button type="submit" name="submitpost"><strong>Publish</strong></button>
-	<button type="reset">Reset</button>
+	<div class="panel-meta">
+		<button type="submit" name="submitpost">Publish</button>
 
-	<div class="right">
-		<button type="submit" name="rbindex">Refresh</button>
-		<button type="submit" name="logout">Logout</button>
+		<div>
+			<button type="reset" id="reset">Reset</button>
+			<button type="submit" name="logout">Logout</button>
+		</div>
 	</div>
 </form>
 
 EOD
-	); set_kvp(B, T_ADMINLOGIN, <<< 'EOD'
+	); set_kvp(TPL, T_ADMINLOGIN, <<< 'EOD'
 
-<form class="box" action="{{SCRIPTNAME}}" method="post">
+<form class="box login" action="{{SCRIPTNAME}}" method="post">
 	<h2>Login</h2>
 	<div>
-		<label for="username">Username</label><br />
-		<input type="text" id="username" name="username" />
+		<label for="username">Username</label>
+		<input type="text" name="username" autocomplete="username">
 	</div>
 	<div>
-		<label for="password">Password</label><br />
-		<input type="password" id="password" name="password" />
+		<label for="passphrase">Passphrase</label>
+		<input type="password" name="passphrase" autocomplete="current-password">
 	</div>
 	<button type="submit" name="login">Login</button>
 </form>
 
 EOD
-	); set_kvp(B, T_FAIL, <<< 'EOD'
+	); set_kvp(TPL, T_ERROR, <<< 'EOD'
 
-<section class="box">
+<section class="box error">
 	<h2>Error</h2>
-	<p>Something went wrong. Please <a href="" onclick="window.history.back();">go back</a> and try again.</p>
+	<p>{{ERRORTEXT}}
+	<p><a class="button" href="{{SCRIPTNAME}}">Go back</a>
 </section>
 
 EOD
-	); set_kvp(B, T_NAV, <<< 'EOD'
+	); set_kvp(TPL, T_NEWER, <<< 'EOD'
 
-<nav>
-	<a href="?skip={{NEXT}}" class="next">&larr; Newer</a>
-	<a href="?skip={{PREV}}" class="prev">Older &rarr;</a>
-</nav>
+<a href="?skip={{NEWER}}" class="button">Newer</a>
 
 EOD
-	); set_kvp(B, T_SEARCH, <<< 'EOD'
+	); set_kvp(TPL, T_OLDER, <<< 'EOD'
 
-<form class="right" action="{{SCRIPTNAME}}" method="get" role="search">
-	<label class="hidden" for="search">Search</label>
-	<input type="text" id="search" name="s" />
+<a href="?skip={{OLDER}}" class="button">Older</a>
+
+EOD
+	); set_kvp(TPL, T_SEARCH, <<< 'EOD'
+
+<form class="search" action="{{SCRIPTNAME}}" method="get" role="search">
+	<input type="text" name="s" placeholder="🔍" aria-label="Search">
 	<button type="submit">Search</button>
-</form><br />
+</form>
 
 EOD
-	); set_kvp(B, T_FOOTER, <<< 'EOD'
+	); set_kvp(TPL, T_FOOTER, <<< 'EOD'
 
 </main>
 
-<footer class="about">
-	<p>vicco: {{USED}} kB used, {{SERVER}}</p>
-</footer>
+<script src="{{DATAPATH}}{{JS}}"></script>
 
 </body>
 </html>
 
 EOD
-	); set_kvp(B, ATOM_HEADER, <<< 'EOD'
+	); set_kvp(TPL, ATOM_HEADER, <<< 'EOD'
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
 	<title>{{SITENAME}}</title>
 	<subtitle>{{SITEDESC}}</subtitle>
-	<link href="{{SITEURL}}" />
+	<link href="{{SITEURL}}">
 
 EOD
-	); set_kvp(B, ATOM_FOOTER, <<< 'EOD'
+	); set_kvp(TPL, ATOM_FOOTER, <<< 'EOD'
 
 </feed>
 
 EOD
-	); set_kvp(B, ATOM_ITEM, <<< 'EOD'
+	); set_kvp(TPL, ATOM_ITEM, <<< 'EOD'
 
 <entry>
 	<title type="html"><![CDATA[{{POSTCONTENT}}]]></title>
-	<link href="{{LINK}}" />
+	<link href="{{LINK}}">
 	<updated>{{DATE}}</updated>
 </entry>
 
 EOD
-	); set_kvp(B, 'firstuse', 1);
+	); set_kvp(TPL, 'firstuse', 1);
 }
 
 // Database
@@ -382,7 +505,7 @@ function create_index($n, $k) {
 	$d = array();
 	$h = opendir(DATAPATH);
 	for($i = 0; ($e = readdir($h)) !== false; $i++) {
-		if ($e != '.' && $e != '..' && $e != B) {
+		if ($e != '.' && $e != '..' && $e != TPL) {
 			$d[$i][KEY] = $e;
 			$d[$i][VALUE] = get_kvp($e, $k);
 			if($d[$i][VALUE] === false) {
@@ -391,18 +514,18 @@ function create_index($n, $k) {
 		}
 	}
 	closedir($h);
-	set_kvp(B, 'index_'.$n, serialize($d));
+	set_kvp(TPL, 'index_'.$n, serialize($d));
 }
 
 function get_index($n) {
-	return unserialize(get_kvp(B, 'index_'.$n));
+	return unserialize(get_kvp(TPL, 'index_'.$n));
 }
 
-// Templates
+// Template function
 function tpl() {
 	$f = func_get_args();
 	$n = sizeof($f) - 1;
-	$t = get_kvp(B, $f[0]);
+	$t = get_kvp(TPL, $f[0]);
 	for($i = 1; $i < $n; $i += 2) {
 		$t = str_replace('{{'.$f[$i].'}}', $f[$i + 1], $t);
 	}
@@ -412,24 +535,23 @@ function tpl_set($t, $w, $r) {
 	return str_replace('{{'.$w.'}}', $r, $t);	
 }
 
-// Header template
+// Templates
 function tpl_header() {
-	echo tpl(T_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'PAGEHOME', PAGEHOME, 'DATAPATH', DATAPATH, 'B', B, 'CSS', CSS, 'LINKCOLOR', LINKCOLOR);
+	echo tpl(T_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'PAGEHOME', PAGEHOME, 'DATAPATH', DATAPATH, 'TPL', TPL, 'CSS', CSS, 'BODYCOLOR', BODYCOLOR, 'BOXCOLOR', BOXCOLOR, 'TEXTCOLOR', TEXTCOLOR, 'LINKCOLOR', LINKCOLOR, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
 }
-
-// Footer template
 function tpl_footer() {
-	echo tpl(T_FOOTER, 'USED', intval(memory_get_usage() / 1024), 'SERVER', $_SERVER['SERVER_SOFTWARE'], 'DATAPATH', DATAPATH, 'B', B);
+	echo tpl(T_FOOTER, 'DATAPATH', DATAPATH, 'JS', JS);
 }
-
-// Error template
-function fail() {
-	echo tpl(T_FAIL);
+function tpl_search() {
+	echo tpl(T_SEARCH, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
+}
+function tpl_error($text) {
+	echo tpl(T_ERROR, 'ERRORTEXT', $text, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
 	tpl_footer();
 	die();
 }
 
-// Return to index
+// Go to index
 function rmain() {
 	header('Location: '.$_SERVER['PHP_SELF']);
 	die();
@@ -453,7 +575,7 @@ if(isset($_GET['feed'])) {
 	header('Content-type: application/atom+xml');
 	echo tpl(ATOM_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'SITEURL', PAGEHOME);
 	foreach($p as $m) {
-		echo tpl(ATOM_ITEM, 'POSTTITLE', get_kvp($m[KEY], D_POSTTITLE), 'POSTCONTENT', parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))), 'LINK', PAGEHOME.'?ts='.$m[KEY], 'DATE', date('Y-m-d H:i:s', $m[VALUE]));
+		echo tpl(ATOM_ITEM, 'POSTCONTENT', parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))), 'LINK', PAGEHOME.'?p='.$m[KEY], 'DATE', date('Y-m-d H:i:s', $m[VALUE]));
 	}
 	echo tpl(ATOM_FOOTER);
 	die();
@@ -474,27 +596,32 @@ if(isset($_GET['login'])) {
 	}
 }
 if(isset($_POST['login'])) {
-	if($_POST['username'] === USERNAME && $_POST['password'] === PASSWORD) {
+	if($_POST['username'] === USERNAME && $_POST['passphrase'] === PASSPHRASE) {
 		$_SESSION['loggedin'] = true;
+
+		$identifier = bin2hex(random_bytes('64'));
+		set_kvp(TPL, COOKIE, $identifier);
+		setcookie('vicco', $identifier, time()+(3600*24*30));
+
 		rmain();
 	} else {
-		fail();
+		tpl_error('The credentials are incorrect.');
 	}
 }
-if(@$_SESSION['loggedin'] === true) {
 
+if(@$_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === tpl(COOKIE)) {
 	// Submit posts
 	if(isset($_POST['submitpost'])) {
 		$r = 0;
 		if(empty($_POST[D_POSTCONTENT])) {
-			fail();
+			tpl_error('Your post must contain text.');
 		}
 		if(empty($_POST[D_POSTID])) {
 			$r = create_record(uniqid());
 			set_kvp($r, D_POSTDATE, time());
 		} else {
 			if(!record_exists($_POST[D_POSTID])) {
-				fail();
+				tpl_error('An error occured.');
 			}
 			$r = $_POST[D_POSTID];
 		}
@@ -508,14 +635,6 @@ if(@$_SESSION['loggedin'] === true) {
 		create_index(D_POSTDATE, D_POSTDATE);
 	}
 
-	if(isset($_GET['dc'])) {
-		if(!record_exists($cfl)) {
-			fail();
-		}
-		delete_kvp($cfl,$_GET['cid'].'_'.D_NAME);
-		delete_kvp($cfl,$_GET['cid'].'_'.D_POSTDATE);
-	}
-
 	// Refresh
 	if(isset($_POST['rbindex'])) {
 		create_index(D_POSTDATE, D_POSTDATE);
@@ -525,17 +644,23 @@ if(@$_SESSION['loggedin'] === true) {
 	if(isset($_GET['edit'])) {
 		$e = $_GET['edit'];
 		if(!record_exists($e)) {
-			fail();
+			tpl_error('The post you wish to edit does not exist.');
 		}
-		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTTITLE', get_kvp($e, D_POSTTITLE), 'POSTCONTENT', get_kvp($e, D_POSTCONTENT), 'POSTID', $e);
+		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTCONTENT', get_kvp($e, D_POSTCONTENT), 'POSTID', $e);
 	} else {
-		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTTITLE' , '', 'POSTCONTENT', '', 'POSTID', '');
+		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTCONTENT', '', 'POSTID', '', 'JS', JS);
 	}
+} elseif(isset($_POST['submitpost']) || isset($_POST['delete']) || (isset($_GET['edit']))) {
+	tpl_error('Nice try.');
 }
 
 // Logout
 if(isset($_POST['logout'])) {
 	session_destroy();
+	if (isset($_COOKIE['vicco'])) {
+		delete_kvp(TPL, COOKIE);
+		setcookie('vicco', '', time()-(3600*24*30));
+	}
 	rmain();
 }
 
@@ -545,11 +670,10 @@ $p = get_index(D_POSTDATE);
 if(!empty($_GET['s'])) {
 	$s = explode(' ',$_GET['s']);
 	foreach($p as $k => $m) {
-		$t = strtolower(get_kvp($m[KEY], D_POSTTITLE));
 		$c = strtolower(parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))));
 		$f = true;
 		for($i = 0; $i < sizeof($s); $i++) {
-			if(strpos($c, strtolower($s[$i])) === false && strpos($t, strtolower($s[$i])) === false) {
+			if(strpos($c, strtolower($s[$i])) === false) {
 				$f = false;
 				break;
 			}
@@ -559,34 +683,54 @@ if(!empty($_GET['s'])) {
 		}
 	}
 }
-$sp = sizeof($p);
-$o = 0;
+$results = sizeof($p);
+
+if($results == 0) {
+	tpl_error('No posts could be found.');
+}
 
 // Sorting
 uasort($p, function($a, $b) {
 	if($a[VALUE] == $b[VALUE]) {
 		return 0;
 	} else {
-		return $a[VALUE] < $b[VALUE];
+		return $b[VALUE] <=> $a[VALUE];
 	}
 });
 
-if(isset($_GET['ts']) && record_exists($_GET['ts'])) {
-	$o = 1;
-	$p = array(array(VALUE => get_kvp($_GET['ts'], D_POSTDATE), KEY => $_GET['ts']));
+if(isset($_GET['p']) && record_exists($_GET['p'])) {
+	$p = array(array(VALUE => get_kvp($_GET['p'], D_POSTDATE), KEY => $_GET['p']));
 }
 
 $p = @array_slice($p, $_GET['skip'], POSTSPERPAGE);
 
-foreach($p as $m) {
-	echo tpl(T_POST, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTID', $m[KEY], 'POSTTITLE', get_kvp($m[KEY],D_POSTTITLE), 'POSTCONTENT', parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))), 'POSTDATE', date('d M Y H:i:s', $m[VALUE]), 'POSTDATETIME', date('Y-m-d H:i:s', $m[VALUE]));
+if(!isset($_GET['edit'])) {
+	foreach($p as $m) {
+		echo tpl(T_POST, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTID', $m[KEY], 'POSTCONTENT', parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))), 'POSTDATE', date('d M Y H:i:s', $m[VALUE]), 'POSTDATETIME', date('Y-m-d H:i:s', $m[VALUE]));
+	}
 }
 
-// Navigation
-echo tpl(T_NAV, 'NEXT', (@$_GET['skip'] > 0 ? @$_GET['skip'] - POSTSPERPAGE:0).'&amp;s='.@urlencode($_GET['s']), 'PREV', (@$_GET['skip'] + POSTSPERPAGE < $sp ? @$_GET['skip'] + POSTSPERPAGE : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']));
+echo '<div class="site-meta">';
 
-// Search results
-echo tpl(T_SEARCH, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
+// Navigation
+if(!isset($_GET['p']) && !isset($_GET['edit'])) {
+	echo '<nav>';
+
+	if(@$_GET['skip'] > 0) {
+		echo tpl(T_NEWER, 'NEWER', (@$_GET['skip'] > 0 ? @$_GET['skip'] - POSTSPERPAGE:0).'&amp;s='.@urlencode($_GET['s']));
+	}
+
+	if(@$_GET['skip'] + POSTSPERPAGE < $results) {
+		echo tpl(T_OLDER, 'OLDER', (@$_GET['skip'] + POSTSPERPAGE < $results ? @$_GET['skip'] + POSTSPERPAGE : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']));
+	}
+
+	echo '</nav>';
+}
+
+// Search
+tpl_search();
+
+echo '</div>';
 
 // Footer
 tpl_footer();
