@@ -1,34 +1,36 @@
 # vicco
 
-__vicco__ is microblogging software in PHP. It’s named after [Vicco von Bülow](https://en.wikipedia.org/wiki/Vicco_von_B%C3%BClow).
+__vicco__ is a microblogging script in PHP and named after [Vicco von Bülow](https://en.wikipedia.org/wiki/Vicco_von_B%C3%BClow). The whole software is initially contained in a single file.
 
 ## Features
-* Pretty fast
+* Probably good performance
+* Horrible code
 * Web interface
-* Text formatting
-* Semantic HTML5 (microdata)
-* Atom feed (broken)
+* Basic text formatting
+* Atom feed
 
 ## Target audiences
-* Hackers — It’s easy to customize, so you can do what you want.
-* Hipsters — It’s crappy, so you can use it as a joke and feel ironic.
+* Hackers — It’s easy to customize.
+* Hipsters — It’s minimalist but crappy, you could use it as a joke.
 
 ## Requirements
 * A web server with PHP
 
 ## Installation
-1. Change the config variables in `index.php`.
+1. Adjust the config variables in `index.php`. Remember to change your credentials.
 2. Upload it to your server and make the directory writable.
 3. Open it in your browser.
 4. It should work.
+
+The admin area can be accessed at `/?login`.
 
 ## Text formatting
 There is some [Markdown](https://daringfireball.net/projects/markdown/)-inspired formatting. No block elements, though.
 
 | Input                                                    | Output                                             |
 | ---                                                      | ---                                                |
-| `**strong**` or `__strong__`                             | __strong__                                         |
-| `*italic*` or `_italic_`                                 | _italic_                                           |
+| `**strong**` / `__strong__`                              | __strong__                                         |
+| `*italic*` / `_italic_`                                  | _italic_                                           |
 | `~delete~`                                               | ~~delete~~                                         |
 | `:"quote":`                                              | <q>quote</q>                                       |
 | `@code@`                                                 | `code`                                             |
@@ -40,17 +42,19 @@ There is some [Markdown](https://daringfireball.net/projects/markdown/)-inspired
 What the fuck? This is literally _one_ PHP file.
 
 **Given that you released PHP software, you know how to write PHP, right?**  
-Haha, no. Basically, I stole [this script](https://github.com/lawl/b.php) with (kind of) permission and made it worse.
+Haha, no. Basically, I stole [this script](https://github.com/lawl/b.php) and made it worse.
 
-**Uh … well, follow-up question: Is vicco secure?**  
-Probably not. Please use [SSL/TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)!
+**Uh … follow-up question: Is vicco secure?**  
+Probably not.
 
 ## Testimonials
 > I’m a huge fan of your blog, but I get the creeps from the PHP code.  
 — [sternenseemann](https://github.com/sternenseemann)
 
 ## To-do
-* Security stuff
 * Fix Atom feed
-* Truncate posts for feed title/summary
-* Fix navigation
+* Add support for scribbles
+
+## License
+
+This software is licensed under the [BSD-2-Clause license](https://opensource.org/licenses/BSD-2-Clause).
