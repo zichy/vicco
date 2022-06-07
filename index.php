@@ -372,11 +372,11 @@ EOD
 	<h2>Login</h2>
 	<div>
 		<label for="username">Username</label>
-		<input type="text" name="username" autocomplete="username">
+		<input type="text" id="username" name="username" autocomplete="username">
 	</div>
 	<div>
 		<label for="passphrase">Passphrase</label>
-		<input type="password" name="passphrase" autocomplete="current-password">
+		<input type="password" id="passphrase" name="passphrase" autocomplete="current-password">
 	</div>
 	<button type="submit" name="login">Login</button>
 </form>
