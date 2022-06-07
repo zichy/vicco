@@ -136,10 +136,12 @@ textarea {
 	font-family: var(--f-family);
 	font-size: var(--f-size);
 	line-height: var(--f-line);
+	display: block;
 	width: 100%;
 	height: 10rem;
-	border: 0;
 	padding: 0;
+	margin-bottom: 2rem;
+	border: 0;
 	resize: none;
 }
 textarea:focus {
