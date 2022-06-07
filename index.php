@@ -711,6 +711,7 @@ if(!isset($_GET['edit'])) {
 }
 
 echo '<div class="site-meta">';
+echo '<div>';
 
 // Navigation
 if(!isset($_GET['p']) && !isset($_GET['edit'])) {
@@ -726,6 +727,8 @@ if(!isset($_GET['p']) && !isset($_GET['edit'])) {
 
 	echo '</nav>';
 }
+
+echo '</div>';
 
 // Search
 tpl_search();
