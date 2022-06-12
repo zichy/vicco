@@ -1,11 +1,11 @@
 # vicco
 
-__vicco__ is a microblogging script in PHP and named after [Vicco von Bülow](https://en.wikipedia.org/wiki/Vicco_von_B%C3%BClow). The whole software is initially contained in a single file.
+__vicco__ is microblogging software contained in a single PHP file.
 
 ## Features
 * Probably good performance
 * Horrible code
-* Web interface
+* Responsive web interface
 * Basic text formatting
 * Atom feed
 
@@ -19,7 +19,7 @@ __vicco__ is a microblogging script in PHP and named after [Vicco von Bülow](ht
 ## Installation
 1. Adjust the config variables in `index.php`. Remember to change your credentials.
 2. Upload it to your server and make the directory writable.
-3. Open it in your browser.
+3. Open the site in your browser.
 4. It should work.
 
 The admin area can be accessed at `/?login`.
