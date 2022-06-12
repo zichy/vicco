@@ -45,7 +45,6 @@ const T_ADMIN = 'addpost';
 const T_ERROR = 'error';
 const T_NEWER = 'nav_newer';
 const T_OLDER = 'nav_older';
-const T_SEARCH = 'search';
 const ATOM_FOOTER = 'atom_footer';
 const ATOM_HEADER = 'atom_header';
 const ATOM_ITEM = 'atom_item';
@@ -161,6 +160,7 @@ button,
 	text-decoration: none;
 	height: 3.5rem;
 	padding: 0 1rem;
+	margin: 0;
 	border: 0;
 	border-radius: 0.5rem;
 	cursor: pointer;
@@ -170,12 +170,17 @@ button,
 	appearance: none;
 }
 header {
-	text-align: center;
 	margin-bottom: 2rem;
 }
-header h1 {
-	margin-bottom: 0;
+@media (min-width: 768px) {
+	header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+		gap: 4rem;
+	}
 }
+header h1,
 header p {
 	margin: 0;
 }
@@ -183,12 +188,25 @@ header a {
 	color: var(--c-text-primary);
 	text-decoration: none;
 }
-.title {
+.search {
+	display: flex;
 	flex-shrink: 0;
+}
+@media (max-width: 767px) {
+	.search {
+		margin-top: 2rem;
+	}
+}
+.search input {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+.search button {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
 }
 .box {
 	background-color: var(--c-box);
-	line-height: var(--f-line);
 	padding: 3rem;
 	margin-bottom: 2rem;
 	border-radius: 1rem;
@@ -202,10 +220,7 @@ header a {
 nav {
 	display: flex;
 	justify-content: center;
-	margin-bottom: 2rem;
-}
-nav a {
-	margin-right: 1rem;
+	gap: 1rem;
 }
 .post footer a {
 	text-decoration: none;
@@ -213,11 +228,7 @@ nav a {
 .post-meta {
 	display: flex;
 	flex-direction: column;
-}
-@media (max-width: 767px) {
-	.post-meta > *:not(:first-child) {
-		margin-top: 2rem
-	}
+	gap: 2rem;
 }
 @media (min-width: 768px) {
 	.post-meta {
@@ -225,27 +236,12 @@ nav a {
 		align-items: end;
 		justify-content: space-between;
 	}
-
-	.post-meta > *:not(:first-child) {
-		padding-left: 4rem;
-	}
 }
 @media (min-width: 768px) {
 	.site-meta {
 		display: flex;
 		justify-content: space-between;
 	}
-}
-.search {
-	display: flex;
-}
-.search input {
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
-}
-.search button {
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
 }
 .login div {
 	margin-bottom: 2rem;
@@ -255,14 +251,12 @@ nav a {
 }
 .panel-meta {
 	display: flex;
+	gap: 1rem;
 }
 @media (min-width: 768px) {
 	.panel-meta {
 		justify-content: space-between;
 	}
-}
-.panel-meta div {
-	margin-left: 1rem;
 }
 
 EOD
@@ -320,8 +314,15 @@ EOD
 <body itemscope itemtype="http://schema.org/Blog">
 
 <header>
-	<h1 itemprop="name"><a href="{{PAGEHOME}}">{{SITENAME}}</a></h1>
-	<p itemprop="description">{{SITEDESC}}</p>
+	<div>
+		<h1 itemprop="name"><a href="{{PAGEHOME}}">{{SITENAME}}</a></h1>
+		<p itemprop="description">{{SITEDESC}}</p>
+	</div>
+
+	<form class="search" action="{{SCRIPTNAME}}" method="get" role="search">
+		<input type="text" name="s" placeholder="🔍" aria-label="Search">
+		<button type="submit">Search</button>
+	</form>
 </header>
 
 <main>
@@ -401,14 +402,6 @@ EOD
 	); set_kvp(TPL, T_OLDER, <<< 'EOD'
 
 <a href="?skip={{OLDER}}" class="button">Older</a>
-
-EOD
-	); set_kvp(TPL, T_SEARCH, <<< 'EOD'
-
-<form class="search" action="{{SCRIPTNAME}}" method="get" role="search">
-	<input type="text" name="s" placeholder="🔍" aria-label="Search">
-	<button type="submit">Search</button>
-</form>
 
 EOD
 	); set_kvp(TPL, T_FOOTER, <<< 'EOD'
@@ -544,9 +537,6 @@ function tpl_header() {
 function tpl_footer() {
 	echo tpl(T_FOOTER, 'DATAPATH', DATAPATH, 'JS', JS);
 }
-function tpl_search() {
-	echo tpl(T_SEARCH, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
-}
 function tpl_error($text) {
 	echo tpl(T_ERROR, 'ERRORTEXT', $text, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
 	tpl_footer();
@@ -586,9 +576,25 @@ if(isset($_GET['feed'])) {
 // Header
 tpl_header();
 
+// Cookie
+function set_cookie() {
+	$identifier = bin2hex(random_bytes('64'));
+	set_kvp(TPL, COOKIE, $identifier);
+	setcookie('vicco', $identifier, time()+(3600*24*30));
+}
+function delete_cookie() {
+	delete_kvp(TPL, COOKIE);
+	setcookie('vicco', '', time()-(3600*24*30));
+}
+
 // Login
+function loggedin() {
+	if(@$_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === tpl(COOKIE)) {
+		return true;
+	}
+}
 if(isset($_GET['login'])) {
-	if(@$_SESSION['loggedin'] === true) {
+	if(loggedin()) {
 		header('Location: '.$_SERVER['PHP_SELF']);
 		die();
 	} else {
@@ -600,18 +606,13 @@ if(isset($_GET['login'])) {
 if(isset($_POST['login'])) {
 	if($_POST['username'] === USERNAME && $_POST['passphrase'] === PASSPHRASE) {
 		$_SESSION['loggedin'] = true;
-
-		$identifier = bin2hex(random_bytes('64'));
-		set_kvp(TPL, COOKIE, $identifier);
-		setcookie('vicco', $identifier, time()+(3600*24*30));
-
+		set_cookie();
 		rmain();
 	} else {
 		tpl_error('The credentials are incorrect.');
 	}
 }
-
-if(@$_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === tpl(COOKIE)) {
+if(loggedin()) {
 	// Submit posts
 	if(isset($_POST['submitpost'])) {
 		$r = 0;
@@ -659,13 +660,11 @@ if(@$_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicc
 // Logout
 if(isset($_POST['logout'])) {
 	session_destroy();
-	if (isset($_COOKIE['vicco'])) {
-		delete_kvp(TPL, COOKIE);
-		setcookie('vicco', '', time()-(3600*24*30));
-	}
+	delete_cookie();
 	rmain();
 }
 
+// Posts
 $p = get_index(D_POSTDATE);
 
 // Search
@@ -686,7 +685,6 @@ if(!empty($_GET['s'])) {
 	}
 }
 $results = sizeof($p);
-
 if($results == 0) {
 	tpl_error('No posts could be found.');
 }
@@ -712,9 +710,6 @@ if(!isset($_GET['edit'])) {
 	}
 }
 
-echo '<div class="site-meta">';
-echo '<div>';
-
 // Navigation
 if(!isset($_GET['p']) && !isset($_GET['edit'])) {
 	echo '<nav>';
@@ -729,13 +724,6 @@ if(!isset($_GET['p']) && !isset($_GET['edit'])) {
 
 	echo '</nav>';
 }
-
-echo '</div>';
-
-// Search
-tpl_search();
-
-echo '</div>';
 
 // Footer
 tpl_footer();
