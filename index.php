@@ -45,10 +45,10 @@ const T_ADMIN = 'addpost';
 const T_ERROR = 'error';
 const T_NEWER = 'nav_newer';
 const T_OLDER = 'nav_older';
+const T_ADMINLOGIN = 'login';
 const ATOM_FOOTER = 'atom_footer';
 const ATOM_HEADER = 'atom_header';
 const ATOM_ITEM = 'atom_item';
-const T_ADMINLOGIN = 'login';
 const D_POSTCONTENT = 'postcontent';
 const D_POSTDATE = 'postdate';
 const D_POSTDATETIME = 'postdatetime';
@@ -58,10 +58,10 @@ const COOKIE = 'cookie';
 session_start();
 
 // Installation
-if(get_kvp(TPL,'firstuse') === false) {
+if(get_kvp(TPL, 'firstuse') === false) {
 	if(!record_exists('')) {
 		if(!mkdir(DATAPATH)) {
-			die('Can’t create database. Create directory "'.DATAPATH.'" and make it writeable.');
+			die('No write permissions to create the folder "'.DATAPATH.'".');
 		}
 	}
 	create_record(TPL);
@@ -73,24 +73,20 @@ if(get_kvp(TPL,'firstuse') === false) {
 	--f-size: 1.6rem;
 	--f-line: 1.5;
 }
-
 * {
 	box-sizing: border-box;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	text-rendering: optimizeLegibility;
 }
-
 html {
 	font-size: 62.5%;
 	scroll-behavior: smooth;
 }
-
 *:focus {
 	outline: 2px solid var(--c-interactive);
 	outline-offset: 2px;
 }
-
 body {
 	background-color: var(--c-body);
 	color: var(--c-text-primary);
@@ -217,11 +213,6 @@ header a {
 .box > *:last-child {
 	margin-bottom: 0;
 }
-nav {
-	display: flex;
-	justify-content: center;
-	gap: 1rem;
-}
 .post footer a {
 	text-decoration: none;
 }
@@ -257,6 +248,11 @@ nav {
 	.panel-meta {
 		justify-content: space-between;
 	}
+}
+nav {
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
 }
 
 EOD
@@ -372,7 +368,7 @@ EOD
 	); set_kvp(TPL, T_ADMINLOGIN, <<< 'EOD'
 
 <form class="box login" action="{{SCRIPTNAME}}" method="post">
-	<h2>Login</h2>
+	<h2>Management</h2>
 	<div>
 		<label for="username">Username</label>
 		<input type="text" id="username" name="username" autocomplete="username">
