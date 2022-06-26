@@ -282,7 +282,7 @@ if($adminForms) {
 			if(confirm('Do you really want to delete this post?')) {
 				$form.submit();
 			} else {
-				e.preventDefault(e);
+				e.preventDefault();
 			}
 		})
 	});
