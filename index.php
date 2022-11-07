@@ -585,7 +585,7 @@ function delete_cookie() {
 
 // Login
 function loggedin() {
-	if(@$_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === tpl(COOKIE)) {
+	if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === tpl(COOKIE)) {
 		return true;
 	}
 }
@@ -690,7 +690,7 @@ uasort($p, function($a, $b) {
 	if($a[VALUE] == $b[VALUE]) {
 		return 0;
 	} else {
-		return $b[VALUE] <=> $a[VALUE];
+		return $b[VALUE] >= $a[VALUE];
 	}
 });
 
