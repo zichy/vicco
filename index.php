@@ -147,7 +147,7 @@ textarea:focus {
 	font-family: var(--f-family);
 	font-size: var(--f-size);
 	font-weight: bold;
-	line-height: var(--f-line);
+	line-height: 1;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -161,7 +161,6 @@ textarea:focus {
 	touch-action: manipulation;
 	user-select: none;
 	-webkit-user-select: none;
-	appearance: none;
 }
 header {
 	margin-bottom: 2rem;
