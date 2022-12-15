@@ -364,7 +364,7 @@ EOD
 	); set_kvp(TPL, T_ADMINLOGIN, <<< 'EOD'
 
 <form class="box login" action="{{SCRIPTNAME}}" method="post">
-	<h2>Management</h2>
+	<h2>Administration</h2>
 	<div>
 		<label for="username">Username</label>
 		<input type="text" id="username" name="username" autocomplete="username">
