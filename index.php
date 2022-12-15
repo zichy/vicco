@@ -21,10 +21,10 @@
 	const SITELANG = 'en';
 
 	// Colors (CSS)
-	const BODYCOLOR = '#ffffff';
-	const BOXCOLOR = '#ece9e2';
-	const TEXTCOLOR = '#000000';
-	const LINKCOLOR = '#21837f';
+	const BODYCOLOR = '#fff';
+	const BOXCOLOR = '#eee';
+	const TEXTCOLOR = '#000';
+	const LINKCOLOR = '#00f';
 
 	// Posts per page
 	const POSTSPERPAGE = 10;
