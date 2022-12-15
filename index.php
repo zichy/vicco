@@ -93,8 +93,8 @@ body {
 	font-family: var(--f-family);
 	font-size: var(--f-size);
 	line-height: var(--f-line);
-	max-width: 80rem;
-	padding: 0 1rem;
+	max-width: 76.8rem;
+	padding: 0 2rem;
 	margin: 4rem auto;
 }
 a {
