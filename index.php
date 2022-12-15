@@ -27,7 +27,7 @@
 	const LINKCOLOR = '#21837f';
 
 	// Posts per page
-	const POSTSPERPAGE = 5;
+	const POSTSPERPAGE = 10;
 
 //************************************//
 
