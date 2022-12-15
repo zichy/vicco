@@ -1,6 +1,6 @@
 # vicco
 
-__vicco__ is microblogging software contained in a single PHP file.
+__vicco__ is minimalist microblogging software contained in a single PHP file.
 
 ## Features
 * Probably good performance
@@ -11,7 +11,7 @@ __vicco__ is microblogging software contained in a single PHP file.
 
 ## Target audiences
 * Hackers — It’s easy to customize.
-* Hipsters — It’s minimalist but crappy, you could use it as a joke.
+* Hipsters — It’s crappy, you could use it as a joke.
 
 ## Requirements
 * A web server with PHP
