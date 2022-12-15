@@ -100,8 +100,7 @@ body {
 a {
 	color: var(--c-interactive);
 }
-a:hover,
-a:focus {
+a:is(:hover, :focus) {
 	background-color: var(--c-interactive);
 	color: var(--c-body);
 	text-decoration: none;
@@ -142,8 +141,7 @@ textarea {
 textarea:focus {
 	outline: none;
 }
-button,
-.button {
+:is(button, .button) {
 	background-color: var(--c-interactive);
 	color: var(--c-body);
 	font-family: var(--f-family);
@@ -176,8 +174,7 @@ header {
 		gap: 4rem;
 	}
 }
-header h1,
-header p {
+header :where(h1, p) {
 	margin: 0;
 }
 header a {
