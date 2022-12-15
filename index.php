@@ -312,7 +312,7 @@ EOD
 	</div>
 
 	<form class="search" action="{{SCRIPTNAME}}" method="get" role="search">
-		<input type="text" name="s" placeholder="🔍" aria-label="Search">
+		<input type="text" name="s" aria-label="Search terms">
 		<button type="submit">Search</button>
 	</form>
 </header>
