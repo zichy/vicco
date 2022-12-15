@@ -203,7 +203,7 @@ header a {
 }
 .box {
 	background-color: var(--c-box);
-	padding: 3rem;
+	padding: 3rem 3rem 2rem;
 	margin-bottom: 2rem;
 	border-radius: 1rem;
 }
