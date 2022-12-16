@@ -12,15 +12,15 @@
 	const PAGEHOME = 'https://localhost/blog/';
 
 	// Username
-	const USERNAME = 'user';
+	const USERNAME = 'admin';
 
-	// Passphrase (CHANGE THIS)
-	const PASSPHRASE = 'pass';
+	// Passphrase
+	const PASSPHRASE = 'CHANGEME';
 
 	// Language (ISO 639-1)
 	const SITELANG = 'en';
 
-	// Colors (CSS)
+	// Colors (hexadecimal)
 	const BODYCOLOR = '#fff';
 	const BOXCOLOR = '#eee';
 	const TEXTCOLOR = '#000';
