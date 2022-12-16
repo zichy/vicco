@@ -162,6 +162,9 @@ textarea:focus {
 	user-select: none;
 	-webkit-user-select: none;
 }
+:is(button, .button):hover {
+	text-decoration: underline;
+}
 header {
 	margin-bottom: 2rem;
 }
