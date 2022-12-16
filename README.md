@@ -51,6 +51,9 @@ Probably not.
 > I’m a huge fan of your blog, but I get the creeps from the PHP code.  
 — [sternenseemann](https://github.com/sternenseemann)
 
+> cute readme
+— [riotbib](https://github.com/riotbib)
+
 ## To-do
 * Fix Atom feed
 * Add support for scribbles
