@@ -584,7 +584,7 @@ function delete_cookie() {
 
 // Login
 function loggedin() {
-	if(@$_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === tpl(COOKIE)) {
+	if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === tpl(COOKIE)) {
 		return true;
 	}
 }
