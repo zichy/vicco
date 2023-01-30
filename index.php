@@ -599,7 +599,7 @@ if(isset($_GET['login'])) {
 	}
 }
 if(isset($_POST['login'])) {
-	if($_POST['username'] === USERNAME && $_POST['passphrase'] === PASSPHRASE) {
+	if(hash_equals(USERNAME, $_POST['username']) && hash_equals(PASSPHRASE, $_POST['passphrase'])) { 
 		$_SESSION['loggedin'] = true;
 		set_cookie();
 		rmain();
