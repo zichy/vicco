@@ -21,8 +21,8 @@
 	const SITELANG = 'en';
 
 	// Colors (hexadecimal)
-	const BODYCOLOR = '#fff';
-	const BOXCOLOR = '#eee';
+	const BODYCOLOR = '#eee';
+	const BOXCOLOR = '#fff';
 	const TEXTCOLOR = '#000';
 	const LINKCOLOR = '#00f';
 
@@ -89,7 +89,7 @@ html {
 }
 body {
 	background-color: var(--c-body);
-	color: var(--c-text-primary);
+	color: var(--c-text);
 	font-family: var(--f-family);
 	font-size: var(--f-size);
 	line-height: var(--f-line);
