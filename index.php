@@ -84,7 +84,7 @@ html {
 	scroll-behavior: smooth;
 }
 *:focus {
-	outline: 2px solid var(--c-interactive);
+	outline: 2px solid var(--c-accent);
 	outline-offset: 2px;
 }
 body {
@@ -98,20 +98,20 @@ body {
 	margin: 4rem auto;
 }
 a {
-	color: var(--c-interactive);
+	color: var(--c-accent);
 }
 a:is(:hover, :focus) {
-	background-color: var(--c-interactive);
-	color: var(--c-body);
+	background-color: var(--c-accent);
+	color: var(--c-box);
 	text-decoration: none;
 }
 code {
-	background-color: var(--c-body);
+	background-color: var(--c-box);
 	font-family: var(--f-family);
 	font-size: var(--f-size);
 }
 label {
-	color: var(--c-interactive);
+	color: var(--c-accent);
 	font-weight: bold;
 	display: block;
 	padding-bottom: 0.5rem;
@@ -122,7 +122,7 @@ input {
 	width: 100%;
 	height: 3.5rem;
 	padding: 0 1rem;
-	border: 2px solid var(--c-interactive);
+	border: 2px solid var(--c-accent);
 	border-radius: 0.5rem;
 }
 textarea {
@@ -142,8 +142,8 @@ textarea:focus {
 	outline: none;
 }
 :is(button, .button) {
-	background-color: var(--c-interactive);
-	color: var(--c-body);
+	background-color: var(--c-accent);
+	color: var(--c-box);
 	font-family: var(--f-family);
 	font-size: var(--f-size);
 	font-weight: bold;
@@ -180,7 +180,7 @@ header :where(h1, p) {
 	margin: 0;
 }
 header a {
-	color: var(--c-text-primary);
+	color: var(--c-text);
 	text-decoration: none;
 }
 .search {
@@ -302,7 +302,7 @@ EOD
 	<link href="{{PAGEHOME}}?feed" type="application/atom+xml" title="{{SITENAME}} feed" rel="alternate">
 	<link rel="stylesheet" type="text/css" href="{{DATAPATH}}{{CSS}}" media="screen">
 
-	<style>:root { --c-body: {{BODYCOLOR}}; --c-box: {{BOXCOLOR}}; --c-text-primary: {{TEXTCOLOR}}; --c-interactive: {{LINKCOLOR}}; }</style>
+	<style>:root { --c-body: {{BODYCOLOR}}; --c-box: {{BOXCOLOR}}; --c-text: {{TEXTCOLOR}}; --c-accent: {{LINKCOLOR}}; }</style>
 
 </head>
 
