@@ -20,6 +20,9 @@
 	// Language (ISO 639-1)
 	const SITELANG = 'en';
 
+	// Font family
+	const FONTFAMILY = 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
+
 	// Colors (hexadecimal)
 	const BODYCOLOR = '#eee';
 	const BOXCOLOR = '#fff';
@@ -302,7 +305,7 @@ EOD
 	<link href="{{PAGEHOME}}?feed" type="application/atom+xml" title="{{SITENAME}} feed" rel="alternate">
 	<link rel="stylesheet" type="text/css" href="{{DATAPATH}}{{CSS}}" media="screen">
 
-	<style>:root { --c-body: {{BODYCOLOR}}; --c-box: {{BOXCOLOR}}; --c-text: {{TEXTCOLOR}}; --c-accent: {{LINKCOLOR}}; }</style>
+	<style>:root { --f-family: {{FONTFAMILY}}; --c-body: {{BODYCOLOR}}; --c-box: {{BOXCOLOR}}; --c-text: {{TEXTCOLOR}}; --c-accent: {{LINKCOLOR}}; }</style>
 
 </head>
 
