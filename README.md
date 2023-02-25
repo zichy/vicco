@@ -22,7 +22,7 @@ __vicco__ is minimalist microblogging software contained in a single PHP file.
 3. Open the site in your browser.
 4. It should work.
 
-The admin area can be accessed at `/?login`.
+You can login with your credentials at `/?login`.
 
 ## Text formatting
 There is some [Markdown](https://daringfireball.net/projects/markdown/)-inspired formatting. No block elements, though.
