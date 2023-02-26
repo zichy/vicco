@@ -2,11 +2,13 @@
 
 __vicco__ is minimalist microblogging software contained in a single PHP file.
 
+It’s supposed to be some kind of personal notebook, not a full-featured CMS.
+
 ## Features
-* Probably good performance
-* Horrible code
-* Responsive web interface
-* Basic text formatting
+* Horrendous code
+* Responsive interface
+* Text formatting
+* Drawing functionality
 * Atom feed
 
 ## Target audiences
@@ -42,9 +44,9 @@ There is some [Markdown](https://daringfireball.net/projects/markdown/)-inspired
 What the fuck? This is literally _one_ PHP file.
 
 **Given that you released PHP software, you know how to write PHP, right?**  
-Haha, no. Basically, I stole [this script](https://github.com/lawl/b.php) and made it worse.
+Haha, no. Basically, I stole [this script](https://github.com/lawl/b.php) and improved it for the worse.
 
-**Uh … follow-up question: Is vicco secure?**  
+**Uh… follow-up question: Is vicco secure?**  
 Probably not.
 
 ## Testimonials
@@ -56,8 +58,7 @@ Probably not.
 
 ## To-do
 * Fix Atom feed
-* Add support for scribbles
 
 ## License
 
-This software is licensed under the [BSD-2-Clause license](https://opensource.org/licenses/BSD-2-Clause).
+vicco is licensed under the [BSD-2-Clause license](https://opensource.org/licenses/BSD-2-Clause).
