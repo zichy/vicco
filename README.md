@@ -6,7 +6,8 @@ It’s supposed to be some kind of personal notebook, not a full-featured CMS.
 
 ## Features
 * Horrendous code
-* Responsive interface
+* Responsive & brutalist interface
+* PageSpeed score of 100
 * Text formatting
 * Drawing functionality
 * Atom feed
