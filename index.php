@@ -289,15 +289,15 @@ nav {
 EOD
 	);
 	set_file(null, JS, <<< 'EOD'
-function resizeArea($el) {
-	const heightLimit = 500;
-	$el.style.height = '';
-	$el.style.height = Math.min($el.scrollHeight, heightLimit) + 'px';
-}
-
+// Size text input
 const $textarea = document.getElementById('postcontent');
-
 if($textarea) {
+	function resizeArea($el) {
+		let heightLimit = 500;
+		$el.style.height = '';
+		$el.style.height = Math.min($el.scrollHeight, heightLimit) + 'px';
+	}
+
 	resizeArea($textarea);
 
 	$textarea.addEventListener('input', function(e){
@@ -306,6 +306,7 @@ if($textarea) {
 	});
 }
 
+// Confirm post deletion
 const $adminForms = document.querySelectorAll('.admin');
 if($adminForms) {
 	$adminForms.forEach(($form) => {
