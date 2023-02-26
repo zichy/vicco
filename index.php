@@ -27,7 +27,7 @@
 	const BODYCOLOR = '#eee';
 	const BOXCOLOR = '#fff';
 	const TEXTCOLOR = '#000';
-	const LINKCOLOR = '#00f';
+	const ACCENTCOLOR = '#00f';
 
 	// Posts per page
 	const POSTSPERPAGE = 10;
@@ -305,7 +305,7 @@ EOD
 	<link href="{{PAGEHOME}}?feed" type="application/atom+xml" title="{{SITENAME}} feed" rel="alternate">
 	<link rel="stylesheet" type="text/css" href="{{DATAPATH}}{{CSS}}" media="screen">
 
-	<style>:root { --f-family: {{FONTFAMILY}}; --c-body: {{BODYCOLOR}}; --c-box: {{BOXCOLOR}}; --c-text: {{TEXTCOLOR}}; --c-accent: {{LINKCOLOR}}; }</style>
+	<style>:root { --f-family: {{FONTFAMILY}}; --c-body: {{BODYCOLOR}}; --c-box: {{BOXCOLOR}}; --c-text: {{TEXTCOLOR}}; --c-accent: {{ACCENTCOLOR}}; }</style>
 
 </head>
 
@@ -530,7 +530,7 @@ function tpl_set($t, $w, $r) {
 
 // Templates
 function tpl_header() {
-	echo tpl(T_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'PAGEHOME', PAGEHOME, 'DATAPATH', DATAPATH, 'TPL', TPL, 'CSS', CSS, 'BODYCOLOR', BODYCOLOR, 'BOXCOLOR', BOXCOLOR, 'TEXTCOLOR', TEXTCOLOR, 'LINKCOLOR', LINKCOLOR, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
+	echo tpl(T_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'PAGEHOME', PAGEHOME, 'DATAPATH', DATAPATH, 'TPL', TPL, 'CSS', CSS, 'FONTFAMILY', FONTFAMILY, 'BODYCOLOR', BODYCOLOR, 'BOXCOLOR', BOXCOLOR, 'TEXTCOLOR', TEXTCOLOR, 'ACCENTCOLOR', ACCENTCOLOR, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
 }
 function tpl_footer() {
 	echo tpl(T_FOOTER, 'DATAPATH', DATAPATH, 'JS', JS);
