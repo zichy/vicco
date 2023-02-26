@@ -109,7 +109,7 @@ a:is(:hover, :focus) {
 	text-decoration: none;
 }
 code {
-	background-color: var(--c-box);
+	background-color: var(--c-body);
 	font-family: var(--f-family);
 	font-size: var(--f-size);
 }
