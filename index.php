@@ -861,7 +861,7 @@ if(!isset($_GET['edit'])) {
 
 		$sketch = get_kvp($m[KEY], D_POSTSKETCH);
 		if($sketch) {
-			echo '<img src="'. $sketch .'" alt="Sketch" class="post-sketch">';
+			echo '<img src="'. $sketch .'" alt="Sketch" class="post-sketch" width="668" height="501" loading="lazy">';
 		}
 
 		echo '<footer class="post-meta">';
