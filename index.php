@@ -74,13 +74,8 @@ if(get_kvp(TPL, 'firstuse') === false) {
 
 	set_file(null, CSS, <<< 'EOD'
 :root {
-	--f-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
 	--f-size: 1.6rem;
 	--f-line: 1.5;
-	--c-body: #eee;
-	--c-box: #fff;
-	--c-text: #000;
-	--c-accent: #00f;
 }
 * {
 	box-sizing: border-box;
