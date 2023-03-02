@@ -311,21 +311,22 @@ if($adminForms) {
 			} else {
 				e.preventDefault();
 			}
-		})
+		});
 	});
 }
 
 // Sketch
 const $sketch = document.getElementById('sketch');
 if($sketch) {
-	let ctx, flag = false,
+	var ctx,
+		flag = false,
 		prevX = 0,
 		currX = 0,
 		prevY = 0,
 		currY = 0,
 		dot_flag = false;
 
-	let color = getComputedStyle(document.documentElement).getPropertyValue('--c-text'),
+	var color = getComputedStyle(document.documentElement).getPropertyValue('--c-text'),
 		size = 4;
 
 	ctx = $sketch.getContext('2d', {
@@ -336,16 +337,16 @@ if($sketch) {
 	h = $sketch.height;
 
 	$sketch.addEventListener('mousemove', function (e) {
-		findxy('move', e)
+		findxy('move', e);
 	}, false);
 	$sketch.addEventListener('mousedown', function (e) {
-		findxy('down', e)
+		findxy('down', e);
 	}, false);
 	$sketch.addEventListener('mouseup', function (e) {
-		findxy('up', e)
+		findxy('up', e);
 	}, false);
 	$sketch.addEventListener('mouseout', function (e) {
-		findxy('out', e)
+		findxy('out', e);
 	}, false);
 
 	function draw() {
@@ -362,8 +363,8 @@ if($sketch) {
 		if (res == 'down') {
 			prevX = currX;
 			prevY = currY;
-			currX = e.clientX - $sketch.getBoundingClientRect().left;;
-			currY = e.clientY - $sketch.getBoundingClientRect().top;;
+			currX = e.clientX - $sketch.getBoundingClientRect().left;
+			currY = e.clientY - $sketch.getBoundingClientRect().top;
 
 			flag = true;
 			dot_flag = true;
@@ -385,8 +386,8 @@ if($sketch) {
 			if (flag) {
 				prevX = currX;
 				prevY = currY;
-				currX = e.clientX - $sketch.getBoundingClientRect().left;;
-				currY = e.clientY - $sketch.getBoundingClientRect().top;;
+				currX = e.clientX - $sketch.getBoundingClientRect().left;
+				currY = e.clientY - $sketch.getBoundingClientRect().top;
 				draw();
 			}
 		}
@@ -396,7 +397,7 @@ if($sketch) {
 	if($form) {
 		// Edit sketch
 		if((!document.getElementById('postid').value.length == 0) && (!$sketch.dataset.sketch.length == 0)) {
-			const $img = new Image;
+			const $img = new Image();
 			$img.src = $sketch.dataset.sketch;
 
 			$img.onload = function(){
@@ -425,7 +426,7 @@ if($sketch) {
 			if(!sketchEmpty($sketch)) {
 				document.getElementById('postsketch').value = $sketch.toDataURL('image/png');
 			}
-		})
+		});
 	}
 }
 
