@@ -20,9 +20,6 @@
 	// Language (ISO 639-1)
 	const SITELANG = 'en';
 
-	// Font family
-	const FONTFAMILY = 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
-
 	// Colors (hexadecimal)
 	const BODYCOLOR = '#eee';
 	const BOXCOLOR = '#fff';
@@ -74,6 +71,8 @@ if(get_kvp(TPL, 'firstuse') === false) {
 
 	set_file(null, CSS, <<< 'EOD'
 :root {
+	--f-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+	--f-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
 	--f-size: 1.6rem;
 	--f-line: 1.5;
 }
@@ -94,7 +93,7 @@ html {
 body {
 	background-color: var(--c-body);
 	color: var(--c-text);
-	font-family: var(--f-family);
+	font-family: var(--f-sans);
 	font-size: var(--f-size);
 	line-height: var(--f-line);
 	max-width: 76.8rem;
@@ -114,20 +113,22 @@ a:is(:hover, :focus) {
 	color: var(--c-box);
 	text-decoration: none;
 }
-code {
-	background-color: var(--c-body);
-	font-family: var(--f-family);
-	font-size: var(--f-size);
-}
 label {
 	color: var(--c-accent);
 	font-weight: bold;
 	display: block;
 	padding-bottom: 0.5rem;
 }
-input {
-	font-family: var(--f-family);
+:is(code, input, button) {
 	font-size: var(--f-size);
+}
+code {
+	background-color: var(--c-body);
+	font-family: var(--f-mono);
+}
+input {
+	background-color: var(--c-box);
+	font-family: var(--f-sans);
 	width: 100%;
 	height: 3.5rem;
 	padding: 0 1rem;
@@ -136,7 +137,7 @@ input {
 }
 textarea {
 	background-color: var(--c-box);
-	font-family: var(--f-family);
+	font-family: var(--f-mono);
 	font-size: var(--f-size);
 	line-height: var(--f-line);
 	display: block;
@@ -153,8 +154,7 @@ textarea:focus {
 :is(button, .button) {
 	background-color: var(--c-accent);
 	color: var(--c-box);
-	font-family: var(--f-family);
-	font-size: var(--f-size);
+	font-family: var(--f-sans);
 	font-weight: bold;
 	line-height: 1;
 	display: inline-flex;
@@ -230,6 +230,9 @@ header a {
 }
 .box > *:last-child {
 	margin-bottom: 0;
+}
+.post-text {
+	font-family: var(--f-mono);
 }
 .post-sketch {
 	margin-bottom: 1rem;
@@ -446,7 +449,7 @@ EOD
 	<link href="{{PAGEHOME}}?feed" type="application/atom+xml" title="{{SITENAME}} feed" rel="alternate">
 	<link rel="stylesheet" type="text/css" href="{{DATAPATH}}{{CSS}}" media="screen">
 
-	<style>:root { --f-family: {{FONTFAMILY}}; --c-body: {{BODYCOLOR}}; --c-box: {{BOXCOLOR}}; --c-text: {{TEXTCOLOR}}; --c-accent: {{ACCENTCOLOR}}; }</style>
+	<style>:root { --c-body: {{BODYCOLOR}}; --c-box: {{BOXCOLOR}}; --c-text: {{TEXTCOLOR}}; --c-accent: {{ACCENTCOLOR}}; }</style>
 
 </head>
 
@@ -674,7 +677,7 @@ function tpl_set($t, $w, $r) {
 
 // Templates
 function tpl_header() {
-	echo tpl(T_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'PAGEHOME', PAGEHOME, 'DATAPATH', DATAPATH, 'TPL', TPL, 'CSS', CSS, 'FONTFAMILY', FONTFAMILY, 'BODYCOLOR', BODYCOLOR, 'BOXCOLOR', BOXCOLOR, 'TEXTCOLOR', TEXTCOLOR, 'ACCENTCOLOR', ACCENTCOLOR, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
+	echo tpl(T_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'PAGEHOME', PAGEHOME, 'DATAPATH', DATAPATH, 'TPL', TPL, 'CSS', CSS, 'BODYCOLOR', BODYCOLOR, 'BOXCOLOR', BOXCOLOR, 'TEXTCOLOR', TEXTCOLOR, 'ACCENTCOLOR', ACCENTCOLOR, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
 }
 function tpl_footer() {
 	echo tpl(T_FOOTER, 'DATAPATH', DATAPATH, 'JS', JS);
@@ -853,7 +856,7 @@ if(!isset($_GET['edit'])) {
 	foreach($p as $m) {
 		echo '<article class="box post" itemscope itemtype="https://schema.org/BlogPosting">';
 
-		echo '<p itemprop="articleBody">'. parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))) .'</p>';
+		echo '<p class="post-text" itemprop="articleBody">'. parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))) .'</p>';
 
 		$sketch = get_kvp($m[KEY], D_POSTSKETCH);
 		if($sketch) {
