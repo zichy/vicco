@@ -113,6 +113,9 @@ a:is(:hover, :focus) {
 	color: var(--c-box);
 	text-decoration: none;
 }
+h1 {
+	line-height: 1;
+}
 label {
 	color: var(--c-accent);
 	font-weight: bold;
@@ -225,6 +228,14 @@ header a {
 	margin-bottom: 2rem;
 	border-radius: 1rem;
 }
+@media (max-width: 767px) {
+	.box {
+		padding: 2rem;
+		margin-right: -2rem;
+		margin-left: -2rem;
+		border-radius: 0;
+	}
+}
 .box > *:first-child {
 	margin-top: 0;
 }
@@ -241,9 +252,7 @@ header a {
 	text-decoration: none;
 }
 .post-meta {
-	display: flex;
 	flex-direction: column;
-	gap: 2rem;
 }
 @media (min-width: 768px) {
 	.post-meta {
@@ -262,18 +271,14 @@ header a {
 	margin-bottom: 2rem;
 }
 .panel-meta {
-	display: flex;
-	gap: 1rem;
+	justify-content: space-between;
 }
-@media (min-width: 768px) {
-	.panel-meta {
-		justify-content: space-between;
-	}
+.row {
+	display: flex;
+	gap: 1.5rem;
 }
 nav {
-	display: flex;
 	justify-content: center;
-	gap: 1rem;
 }
 #sketch {
 	background-color: var(--c-box);
@@ -472,7 +477,7 @@ EOD
 EOD
 	); set_kvp(TPL, T_POSTADMIN, <<< 'EOD'
 
-	<form class="admin" action="{{SCRIPTNAME}}" method="post">
+	<form class="admin row" action="{{SCRIPTNAME}}" method="post">
 		<input type="hidden" name="postid" value="{{POSTID}}">
 		<a class="button" href="?edit={{POSTID}}">Edit</a>
 		<button type="submit" class="delete" name="delete">Delete</button>
@@ -503,10 +508,10 @@ EOD
 		</details>
 	</div>
 
-	<div class="panel-meta">
+	<div class="panel-meta row">
 		<button type="submit" id="submit" name="submit">Publish</button>
 
-		<div>
+		<div class="row">
 			<button type="reset" id="reset">Reset</button>
 			<button type="submit" name="logout">Logout</button>
 		</div>
@@ -863,7 +868,7 @@ if(!isset($_GET['edit'])) {
 			echo '<img src="'. $sketch .'" alt="Sketch" class="post-sketch" width="668" height="501" loading="lazy">';
 		}
 
-		echo '<footer class="post-meta">';
+		echo '<footer class="post-meta row">';
 
 		echo tpl(T_POSTFOOTER, 'POSTID', $m[KEY], 'POSTDATE', date('d M Y H:i:s', $m[VALUE]), 'POSTDATETIME', date('Y-m-d H:i:s', $m[VALUE]));
 
@@ -878,7 +883,7 @@ if(!isset($_GET['edit'])) {
 
 // Navigation
 if(!isset($_GET['p']) && !isset($_GET['edit'])) {
-	echo '<nav>';
+	echo '<nav class="row">';
 
 	if(@$_GET['skip'] > 0) {
 		echo tpl(T_NEWER, 'NEWER', (@$_GET['skip'] > 0 ? @$_GET['skip'] - POSTSPERPAGE:0).'&amp;s='.@urlencode($_GET['s']));
