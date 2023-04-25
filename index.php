@@ -1,3 +1,7 @@
+<!--
+SPDX-License-Identifier: BSD-2-Clause
+SPDX-FileCopyrightText: Copyright (c) 2015–2023 lawl(†), zichy
+-->
 <?php
 
 //************************************//
