@@ -887,11 +887,11 @@ if(!isset($_GET['edit'])) {
 }
 
 // Navigation
-if(!isset($_GET['p']) && !isset($_GET['edit'])) {
+if(!isset($_GET['p']) && !isset($_GET['edit']) && $results >= POSTSPERPAGE) {
 	echo '<nav class="row">';
 
 	if(@$_GET['skip'] > 0) {
-		echo tpl(T_NEWER, 'NEWER', (@$_GET['skip'] > 0 ? @$_GET['skip'] - POSTSPERPAGE:0).'&amp;s='.@urlencode($_GET['s']));
+		echo tpl(T_NEWER, 'NEWER', (@$_GET['skip'] > 0 ? @$_GET['skip'] - POSTSPERPAGE : 0).'&amp;s='.@urlencode($_GET['s']));
 	}
 
 	if(@$_GET['skip'] + POSTSPERPAGE < $results) {
