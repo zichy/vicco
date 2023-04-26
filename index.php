@@ -844,7 +844,7 @@ if(!empty($_GET['s'])) {
 }
 $results = sizeof($p);
 if($results == 0) {
-	tpl_error('There are no search results.');
+	tpl_error('No search results were found.');
 }
 
 // Sorting
