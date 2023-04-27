@@ -49,8 +49,7 @@ const T_POSTADMIN = 'postadmin';
 const T_POSTFOOTER = 'postfooter';
 const T_ADMIN = 'addpost';
 const T_ERROR = 'error';
-const T_NEWER = 'nav_newer';
-const T_OLDER = 'nav_older';
+const T_NAVLINK = 'navlink';
 const T_ADMINLOGIN = 'login';
 const ATOM_FOOTER = 'atom_footer';
 const ATOM_HEADER = 'atom_header';
@@ -549,14 +548,9 @@ EOD
 </section>
 
 EOD
-	); set_kvp(TPL, T_NEWER, <<< 'EOD'
+	); set_kvp(TPL, T_NAVLINK, <<< 'EOD'
 
-<a href="?skip={{NEWER}}" class="button">Newer</a>
-
-EOD
-	); set_kvp(TPL, T_OLDER, <<< 'EOD'
-
-<a href="?skip={{OLDER}}" class="button">Older</a>
+<a href="?skip={{LINK}}" class="button">{{TEXT}}</a>
 
 EOD
 	); set_kvp(TPL, T_FOOTER, <<< 'EOD'
@@ -891,11 +885,11 @@ if(!isset($_GET['p']) && !isset($_GET['edit']) && $results >= POSTSPERPAGE) {
 	echo '<nav class="row">';
 
 	if(@$_GET['skip'] > 0) {
-		echo tpl(T_NEWER, 'NEWER', (@$_GET['skip'] > 0 ? @$_GET['skip'] - POSTSPERPAGE : 0).'&amp;s='.@urlencode($_GET['s']));
+		echo tpl(T_NAVLINK, 'LINK', (@$_GET['skip'] > 0 ? @$_GET['skip'] - POSTSPERPAGE : 0).'&amp;s='.@urlencode($_GET['s']), 'TEXT', 'Newer');
 	}
 
 	if(@$_GET['skip'] + POSTSPERPAGE < $results) {
-		echo tpl(T_OLDER, 'OLDER', (@$_GET['skip'] + POSTSPERPAGE < $results ? @$_GET['skip'] + POSTSPERPAGE : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']));
+		echo tpl(T_NAVLINK, 'LINK', (@$_GET['skip'] + POSTSPERPAGE < $results ? @$_GET['skip'] + POSTSPERPAGE : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']), 'TEXT', 'Older');
 	}
 
 	echo '</nav>';
