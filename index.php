@@ -541,7 +541,7 @@ EOD
 EOD
 	); set_kvp(TPL, T_ERROR, <<< 'EOD'
 
-<section class="box error">
+<section class="box">
 	<h2>Error</h2>
 	<p>{{ERRORTEXT}}
 	<p><a class="button" href="{{SCRIPTNAME}}">Go back</a>
