@@ -55,7 +55,6 @@ const ATOM_FOOTER = 'atom_footer';
 const ATOM_HEADER = 'atom_header';
 const ATOM_ITEM = 'atom_item';
 const D_POSTCONTENT = 'postcontent';
-const D_POSTSKETCH = 'postsketch';
 const D_POSTDATE = 'postdate';
 const D_POSTDATETIME = 'postdatetime';
 const D_POSTID = 'postid';
@@ -249,9 +248,6 @@ header a {
 .post-text {
 	font-family: var(--f-mono);
 }
-.post-sketch {
-	margin-bottom: 1rem;
-}
 .post footer a {
 	text-decoration: none;
 }
@@ -283,14 +279,6 @@ header a {
 }
 nav {
 	justify-content: center;
-}
-#sketch {
-	background-color: var(--c-box);
-	display: block;
-	width: 668px;
-	height: 501px;
-	margin-bottom: 1rem;
-	border: 2px solid var(--c-accent);
 }
 
 EOD
@@ -325,121 +313,6 @@ if($adminForms) {
 			}
 		});
 	});
-}
-
-// Sketch
-const $sketch = document.getElementById('sketch');
-if($sketch) {
-	var ctx,
-		flag = false,
-		prevX = 0,
-		currX = 0,
-		prevY = 0,
-		currY = 0,
-		dot_flag = false;
-
-	var color = getComputedStyle(document.documentElement).getPropertyValue('--c-text'),
-		size = 4;
-
-	ctx = $sketch.getContext('2d', {
-		antialias: true,
-		willReadFrequently: true,
-	});
-	w = $sketch.width;
-	h = $sketch.height;
-
-	$sketch.addEventListener('mousemove', function (e) {
-		findxy('move', e);
-	}, false);
-	$sketch.addEventListener('mousedown', function (e) {
-		findxy('down', e);
-	}, false);
-	$sketch.addEventListener('mouseup', function (e) {
-		findxy('up', e);
-	}, false);
-	$sketch.addEventListener('mouseout', function (e) {
-		findxy('out', e);
-	}, false);
-
-	function draw() {
-		ctx.beginPath();
-		ctx.moveTo(prevX, prevY);
-		ctx.lineTo(currX, currY);
-		ctx.strokeStyle = color;
-		ctx.lineWidth = size;
-		ctx.stroke();
-		ctx.closePath();
-	}
-
-	function findxy(res, e) {
-		if (res == 'down') {
-			prevX = currX;
-			prevY = currY;
-			currX = e.clientX - $sketch.getBoundingClientRect().left;
-			currY = e.clientY - $sketch.getBoundingClientRect().top;
-
-			flag = true;
-			dot_flag = true;
-
-			if (dot_flag) {
-				ctx.beginPath();
-				ctx.fillStyle = size;
-				ctx.fillRect(currX, currY, 2, 2);
-				ctx.closePath();
-				dot_flag = false;
-			}
-		}
-
-		if (res == 'up' || res == 'out') {
-			flag = false;
-		}
-
-		if (res == 'move') {
-			if (flag) {
-				prevX = currX;
-				prevY = currY;
-				currX = e.clientX - $sketch.getBoundingClientRect().left;
-				currY = e.clientY - $sketch.getBoundingClientRect().top;
-				draw();
-			}
-		}
-	}
-
-	$form = $sketch.closest('form');
-	if($form) {
-		// Edit sketch
-		if((!document.getElementById('postid').value.length == 0) && (!$sketch.dataset.sketch.length == 0)) {
-			const $img = new Image();
-			$img.src = $sketch.dataset.sketch;
-
-			$img.onload = function(){
-				ctx.drawImage($img, 0, 0);
-			};
-
-			$form.querySelector('details').open = true;
-		}
-
-		// Reset sketch
-		const $reset = document.getElementById('reset');
-		if($reset) {
-			$reset.addEventListener('click', () => {
-				ctx.clearRect(0, 0, w, h);
-			});
-		}
-
-		// Submit sketch
-		$form.addEventListener('submit', () => {
-			function sketchEmpty(sketch) {
-				return !ctx
-					.getImageData(0, 0, sketch.width, sketch.height).data
-					.some(channel => channel !== 0);
-			}
-
-			if(!sketchEmpty($sketch)) {
-				document.getElementById('postsketch').value = $sketch.toDataURL('image/png');
-			}
-		});
-	}
 }
 
 EOD
@@ -501,16 +374,8 @@ EOD
 
 <form class="box panel" action="{{SCRIPTNAME}}" method="post">
 	<input type="hidden" name="postid" id="postid" value="{{POSTID}}">
-	<input type="hidden" name="postsketch" id="postsketch">
 
-	<div>
-		<textarea id="postcontent" name="postcontent" placeholder="Start typing &hellip;" aria-label="Post content" spellcheck="false" autofocus>{{POSTCONTENT}}</textarea>
-
-		<details>
-			<summary>Sketch</summary>
-			<canvas width="668" height="501" id="sketch" data-sketch="{{SKETCHDATA}}"></canvas>
-		</details>
-	</div>
+	<textarea id="postcontent" name="postcontent" placeholder="Start typing &hellip;" aria-label="Post content" spellcheck="false" autofocus>{{POSTCONTENT}}</textarea>
 
 	<div class="panel-meta row">
 		<button type="submit" id="submit" name="submit">Publish</button>
@@ -765,8 +630,8 @@ if(loggedin()) {
 	// Submit posts
 	if(isset($_POST['submit'])) {
 		$r = 0;
-		if(empty($_POST[D_POSTCONTENT]) && empty($_POST[D_POSTSKETCH])) {
-			tpl_error('Your post must contain text or a sketch.');
+		if(empty($_POST[D_POSTCONTENT])) {
+			tpl_error('Your post must contain text.');
 		}
 		if(empty($_POST[D_POSTID])) {
 			$r = create_record(uniqid());
@@ -778,9 +643,6 @@ if(loggedin()) {
 			$r = $_POST[D_POSTID];
 		}
 		set_kvp($r, D_POSTCONTENT, $_POST[D_POSTCONTENT]);
-		if(!empty($_POST[D_POSTSKETCH])) {
-			set_kvp($r, D_POSTSKETCH, $_POST[D_POSTSKETCH]);
-		}
 		create_index(D_POSTDATE, D_POSTDATE);
 	}
 
@@ -801,9 +663,9 @@ if(loggedin()) {
 		if(!record_exists($e)) {
 			tpl_error('The post you wish to edit does not exist.');
 		}
-		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTCONTENT', get_kvp($e, D_POSTCONTENT), 'POSTID', $e, 'SKETCHDATA', get_kvp($e, D_POSTSKETCH));
+		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTCONTENT', get_kvp($e, D_POSTCONTENT), 'POSTID', $e);
 	} else {
-		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTCONTENT', '', 'POSTID', '', 'SKETCHDATA', '');
+		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTCONTENT', '', 'POSTID', '');
 	}
 } elseif(isset($_POST['submit']) || isset($_POST['delete']) || (isset($_GET['edit']))) {
 	tpl_error('Nice try.');
@@ -861,11 +723,6 @@ if(!isset($_GET['edit'])) {
 		echo '<article class="box post" itemscope itemtype="https://schema.org/BlogPosting">';
 
 		echo '<p class="post-text" itemprop="articleBody">'. parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))) .'</p>';
-
-		$sketch = get_kvp($m[KEY], D_POSTSKETCH);
-		if($sketch) {
-			echo '<img src="'. $sketch .'" alt="Sketch" class="post-sketch" width="668" height="501" loading="lazy">';
-		}
 
 		echo '<footer class="post-meta row">';
 
