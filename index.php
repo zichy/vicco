@@ -103,11 +103,6 @@ body {
 	padding: 0 2rem;
 	margin: 4rem auto;
 }
-img {
-	display: block;
-	max-width: 100%;
-	height: auto;
-}
 a {
 	color: var(--c-accent);
 }
