@@ -248,9 +248,6 @@ header a {
 .post-text {
 	font-family: var(--f-mono);
 }
-.post footer a {
-	text-decoration: none;
-}
 .post-meta {
 	flex-direction: column;
 }
@@ -260,6 +257,9 @@ header a {
 		align-items: end;
 		justify-content: space-between;
 	}
+}
+.post-meta a {
+	text-decoration: none;
 }
 @media (min-width: 768px) {
 	.site-meta {
