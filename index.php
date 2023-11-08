@@ -31,6 +31,9 @@
 	const TEXTCOLOR = '#000';
 	const ACCENTCOLOR = '#00f';
 
+	// Date format
+	const DATEFORMAT = 'd M Y H:i:s';
+
 	// Posts per page
 	const POSTSPERPAGE = 10;
 
@@ -721,7 +724,7 @@ if(!isset($_GET['edit'])) {
 
 		echo '<footer class="post-meta row">';
 
-		echo tpl(T_POSTFOOTER, 'POSTID', $m[KEY], 'POSTDATE', date('d M Y H:i:s', $m[VALUE]), 'POSTDATETIME', date('Y-m-d H:i:s', $m[VALUE]));
+		echo tpl(T_POSTFOOTER, 'POSTID', $m[KEY], 'POSTDATE', date(DATEFORMAT, $m[VALUE]), 'POSTDATETIME', date('Y-m-d H:i:s', $m[VALUE]));
 
 		if(loggedin()) {
 			echo tpl(T_POSTADMIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTID', $m[KEY],);
