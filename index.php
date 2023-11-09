@@ -174,16 +174,6 @@ textarea:focus {
 :is(button, .button):hover {
 	text-decoration: underline;
 }
-summary {
-	color: var(--c-accent);
-	font-weight: bold;
-	padding: 0.5rem 0;
-}
-:is(summary:hover, summary:focus) {
-	text-decoration: underline;
-	outline: 0;
-	cursor: pointer;
-}
 header {
 	margin-bottom: 2rem;
 }
