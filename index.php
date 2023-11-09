@@ -144,8 +144,7 @@ textarea {
 	line-height: var(--f-line);
 	display: block;
 	width: 100%;
-	padding: 0;
-	margin-bottom: 2rem;
+	padding: 0 0 2rem 0;
 	border: 0;
 	resize: none;
 }
