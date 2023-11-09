@@ -309,9 +309,7 @@ if($adminForms) {
 EOD
 	);
 	set_kvp(TPL, T_HEADER, <<< 'EOD'
-<!DOCTYPE html>
-<html lang="{{SITELANG}}">
-<head>
+<!DOCTYPE html><html lang="{{SITELANG}}"><head>
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -319,7 +317,7 @@ EOD
 
 	<title>{{SITENAME}}</title>
 
-	<link href="{{PAGEHOME}}?feed" type="application/atom+xml" title="{{SITENAME}} feed" rel="alternate">
+	<link href="/?feed" type="application/atom+xml" title="{{SITENAME}} feed" rel="alternate">
 	<link rel="stylesheet" type="text/css" href="{{DATAPATH}}{{CSS}}" media="screen">
 
 	<style>:root { --c-body: {{BODYCOLOR}}; --c-box: {{BOXCOLOR}}; --c-text: {{TEXTCOLOR}}; --c-accent: {{ACCENTCOLOR}}; }</style>
@@ -330,11 +328,11 @@ EOD
 
 <header>
 	<div>
-		<h1 itemprop="name"><a href="{{PAGEHOME}}">{{SITENAME}}</a></h1>
+		<h1 itemprop="name"><a href="/">{{SITENAME}}</a></h1>
 		<p itemprop="description">{{SITEDESC}}</p>
 	</div>
 
-	<form class="search" action="{{SCRIPTNAME}}" method="get" role="search">
+	<form class="search" action="/" method="get" role="search">
 		<input type="text" name="s" aria-label="Search terms">
 		<button type="submit">Search</button>
 	</form>
@@ -345,7 +343,7 @@ EOD
 EOD
 	); set_kvp(TPL, T_POSTADMIN, <<< 'EOD'
 
-	<form class="admin row" action="{{SCRIPTNAME}}" method="post">
+	<form class="admin row" action="/" method="post">
 		<input type="hidden" name="postid" value="{{POSTID}}">
 		<a class="button" href="?edit={{POSTID}}">Edit</a>
 		<button type="submit" class="delete" name="delete">Delete</button>
@@ -363,7 +361,7 @@ EOD
 EOD
 	); set_kvp(TPL, T_ADMIN, <<< 'EOD'
 
-<form class="box panel" action="{{SCRIPTNAME}}" method="post">
+<form class="box panel" action="/" method="post">
 	<input type="hidden" name="postid" id="postid" value="{{POSTID}}">
 
 	<textarea id="postcontent" name="postcontent" placeholder="Start typing &hellip;" aria-label="Post content" spellcheck="false" rows="1" autofocus>{{POSTCONTENT}}</textarea>
@@ -377,7 +375,7 @@ EOD
 EOD
 	); set_kvp(TPL, T_ADMINLOGIN, <<< 'EOD'
 
-<form class="box login" action="{{SCRIPTNAME}}" method="post">
+<form class="box login" action="/" method="post">
 	<h2>Administration</h2>
 	<div>
 		<label for="username">Username</label>
@@ -396,7 +394,7 @@ EOD
 <section class="box">
 	<h2>Error</h2>
 	<p>{{ERRORTEXT}}
-	<p><a class="button" href="{{SCRIPTNAME}}">Go back</a>
+	<p><a class="button" href="/">Go back</a>
 </section>
 
 EOD
@@ -523,7 +521,7 @@ function tpl_set($t, $w, $r) {
 
 // Templates
 function tpl_header() {
-	echo tpl(T_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'PAGEHOME', PAGEHOME, 'DATAPATH', DATAPATH, 'TPL', TPL, 'CSS', CSS, 'BODYCOLOR', BODYCOLOR, 'BOXCOLOR', BOXCOLOR, 'TEXTCOLOR', TEXTCOLOR, 'ACCENTCOLOR', ACCENTCOLOR, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
+	echo tpl(T_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'DATAPATH', DATAPATH, 'TPL', TPL, 'CSS', CSS, 'BODYCOLOR', BODYCOLOR, 'BOXCOLOR', BOXCOLOR, 'TEXTCOLOR', TEXTCOLOR, 'ACCENTCOLOR', ACCENTCOLOR);
 }
 function tpl_footer() {
 	echo '</main>';
@@ -533,7 +531,7 @@ function tpl_footer() {
 	echo '</body></html>';
 }
 function tpl_error($text) {
-	echo tpl(T_ERROR, 'ERRORTEXT', $text, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
+	echo tpl(T_ERROR, 'ERRORTEXT', $text);
 	tpl_footer();
 	die();
 }
@@ -593,7 +591,7 @@ if(isset($_GET['login'])) {
 		header('Location: '.$_SERVER['PHP_SELF']);
 		die();
 	} else {
-		echo tpl(T_ADMINLOGIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
+		echo tpl(T_ADMINLOGIN);
 		tpl_footer();
 		die();
 	}
@@ -644,9 +642,9 @@ if(loggedin()) {
 		if(!record_exists($e)) {
 			tpl_error('The post you wish to edit does not exist.');
 		}
-		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTCONTENT', get_kvp($e, D_POSTCONTENT), 'POSTID', $e);
+		echo tpl(T_ADMIN, 'POSTCONTENT', get_kvp($e, D_POSTCONTENT), 'POSTID', $e);
 	} else {
-		echo tpl(T_ADMIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTCONTENT', '', 'POSTID', '');
+		echo tpl(T_ADMIN, 'POSTCONTENT', '', 'POSTID', '');
 	}
 } elseif(isset($_POST['submit']) || isset($_POST['delete']) || (isset($_GET['edit']))) {
 	tpl_error('Nice try.');
@@ -710,7 +708,7 @@ if(!isset($_GET['edit'])) {
 		echo tpl(T_POSTFOOTER, 'POSTID', $m[KEY], 'POSTDATE', date(DATEFORMAT, $m[VALUE]), 'POSTDATETIME', date('Y-m-d H:i:s', $m[VALUE]));
 
 		if(loggedin()) {
-			echo tpl(T_POSTADMIN, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME'], 'POSTID', $m[KEY],);
+			echo tpl(T_POSTADMIN, 'POSTID', $m[KEY],);
 		}
 
 		echo '</footer></article>';
