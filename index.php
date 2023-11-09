@@ -118,7 +118,6 @@ h1 {
 	line-height: 1;
 }
 label {
-	color: var(--c-accent);
 	font-weight: bold;
 	display: block;
 	padding-bottom: 0.5rem;
