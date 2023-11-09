@@ -47,7 +47,6 @@ const TPL = 'tpl';
 const CSS = 'style.css';
 const JS = 'script.js';
 const T_HEADER = 'header';
-const T_FOOTER = 'footer';
 const T_POSTADMIN = 'postadmin';
 const T_POSTFOOTER = 'postfooter';
 const T_ADMIN = 'addpost';
@@ -408,16 +407,6 @@ EOD
 <a href="?skip={{LINK}}" class="button">{{TEXT}}</a>
 
 EOD
-	); set_kvp(TPL, T_FOOTER, <<< 'EOD'
-
-</main>
-
-<script src="{{DATAPATH}}{{JS}}"></script>
-
-</body>
-</html>
-
-EOD
 	); set_kvp(TPL, ATOM_HEADER, <<< 'EOD'
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
@@ -539,7 +528,11 @@ function tpl_header() {
 	echo tpl(T_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'PAGEHOME', PAGEHOME, 'DATAPATH', DATAPATH, 'TPL', TPL, 'CSS', CSS, 'BODYCOLOR', BODYCOLOR, 'BOXCOLOR', BOXCOLOR, 'TEXTCOLOR', TEXTCOLOR, 'ACCENTCOLOR', ACCENTCOLOR, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
 }
 function tpl_footer() {
-	echo tpl(T_FOOTER, 'DATAPATH', DATAPATH, 'JS', JS);
+	echo '</main>';
+	if(loggedin()) {
+		echo '<script src="'.DATAPATH.JS.'"></script>';
+	}
+	echo '</body></html>';
 }
 function tpl_error($text) {
 	echo tpl(T_ERROR, 'ERRORTEXT', $text, 'SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
