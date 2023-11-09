@@ -288,9 +288,7 @@ if($textarea) {
 		$el.style.height = '';
 		$el.style.height = Math.min($el.scrollHeight, heightLimit) + 'px';
 	}
-
 	resizeArea($textarea);
-
 	$textarea.addEventListener('input', function(e){
 		const $target = e.target || e.srcElement;
 		resizeArea($target);
