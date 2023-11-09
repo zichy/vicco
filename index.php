@@ -279,7 +279,6 @@ nav {
 EOD
 	);
 	set_file(null, JS, <<< 'EOD'
-// Size text input
 const $textarea = document.getElementById('postcontent');
 if($textarea) {
 	function resizeArea($el) {
@@ -294,7 +293,6 @@ if($textarea) {
 	});
 }
 
-// Confirm post deletion
 const $adminForms = document.querySelectorAll('.admin');
 if($adminForms) {
 	$adminForms.forEach(($form) => {
