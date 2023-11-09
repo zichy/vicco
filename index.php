@@ -515,9 +515,6 @@ function tpl() {
 	}
 	return $t;
 }
-function tpl_set($t, $w, $r) {
-	return str_replace('{{'.$w.'}}', $r, $t);	
-}
 
 // Templates
 function tpl_header() {
