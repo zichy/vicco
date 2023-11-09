@@ -25,7 +25,7 @@
 	// Language (ISO 639-1)
 	const SITELANG = 'en';
 
-	// Colors (hexadecimal)
+	// Colors (CSS value)
 	const BODYCOLOR = '#eee';
 	const BOXCOLOR = '#fff';
 	const TEXTCOLOR = '#000';
