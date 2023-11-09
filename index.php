@@ -686,34 +686,25 @@ $p = @array_slice($p, $_GET['skip'], POSTSPERPAGE);
 if(!isset($_GET['edit'])) {
 	foreach($p as $m) {
 		echo '<article class="box post" itemscope itemtype="https://schema.org/BlogPosting">';
-
 		echo '<p class="post-text" itemprop="articleBody">'. parse(nl2br(get_kvp($m[KEY], D_POSTCONTENT))) .'</p>';
-
 		echo '<footer class="post-meta row">';
-
 		echo tpl(T_POSTFOOTER, 'POSTID', $m[KEY], 'POSTDATE', date(DATEFORMAT, $m[VALUE]), 'POSTDATETIME', date('Y-m-d H:i:s', $m[VALUE]));
-
 		if(loggedin()) {
 			echo tpl(T_POSTADMIN, 'POSTID', $m[KEY],);
 		}
-
 		echo '</footer></article>';
-
 	}
 }
 
 // Navigation
 if(!isset($_GET['p']) && !isset($_GET['edit']) && $results >= POSTSPERPAGE) {
 	echo '<nav class="row">';
-
 	if(@$_GET['skip'] > 0) {
 		echo tpl(T_NAVLINK, 'LINK', (@$_GET['skip'] > 0 ? @$_GET['skip'] - POSTSPERPAGE : 0).'&amp;s='.@urlencode($_GET['s']), 'TEXT', 'Newer');
 	}
-
 	if(@$_GET['skip'] + POSTSPERPAGE < $results) {
 		echo tpl(T_NAVLINK, 'LINK', (@$_GET['skip'] + POSTSPERPAGE < $results ? @$_GET['skip'] + POSTSPERPAGE : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']), 'TEXT', 'Older');
 	}
-
 	echo '</nav>';
 }
 
