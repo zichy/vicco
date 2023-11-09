@@ -146,7 +146,6 @@ textarea {
 	line-height: var(--f-line);
 	display: block;
 	width: 100%;
-	height: 10rem;
 	padding: 0;
 	margin-bottom: 2rem;
 	border: 0;
@@ -269,7 +268,7 @@ header a {
 	margin-bottom: 2rem;
 }
 .panel-meta {
-	justify-content: space-between;
+	justify-content: end;
 }
 .row {
 	display: flex;
@@ -373,15 +372,11 @@ EOD
 <form class="box panel" action="{{SCRIPTNAME}}" method="post">
 	<input type="hidden" name="postid" id="postid" value="{{POSTID}}">
 
-	<textarea id="postcontent" name="postcontent" placeholder="Start typing &hellip;" aria-label="Post content" spellcheck="false" autofocus>{{POSTCONTENT}}</textarea>
+	<textarea id="postcontent" name="postcontent" placeholder="Start typing &hellip;" aria-label="Post content" spellcheck="false" rows="1" autofocus>{{POSTCONTENT}}</textarea>
 
 	<div class="panel-meta row">
 		<button type="submit" id="submit" name="submit">Publish</button>
-
-		<div class="row">
-			<button type="reset" id="reset">Reset</button>
-			<button type="submit" name="logout">Logout</button>
-		</div>
+		<button type="submit" name="logout">Logout</button>
 	</div>
 </form>
 
