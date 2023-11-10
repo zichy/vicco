@@ -617,11 +617,6 @@ if(loggedin()) {
 		create_index(D_POSTDATE, D_POSTDATE);
 	}
 
-	// Refresh
-	if(isset($_POST['rbindex'])) {
-		create_index(D_POSTDATE, D_POSTDATE);
-	}
-
 	// Edit posts
 	if(isset($_GET['edit'])) {
 		$e = $_GET['edit'];
