@@ -194,7 +194,7 @@ textarea:focus {
 	text-decoration: underline;
 }
 header {
-	margin-bottom: 2rem;
+	margin-block-end: 2rem;
 }
 @media (min-width: 768px) {
 	header {
@@ -217,7 +217,7 @@ header a {
 }
 @media (max-width: 767px) {
 	.search {
-		margin-top: 2rem;
+		margin-block-start: 2rem;
 	}
 }
 .search input {
@@ -231,7 +231,7 @@ header a {
 .box {
 	background-color: var(--c-box);
 	padding: 3rem 3rem 2rem;
-	margin-bottom: 2rem;
+	margin-block-end: 2rem;
 	border-radius: 1rem;
 }
 @media (max-width: 767px) {
@@ -243,10 +243,10 @@ header a {
 	}
 }
 .box > *:first-child {
-	margin-top: 0;
+	margin-block-start: 0;
 }
 .box > *:last-child {
-	margin-bottom: 0;
+	margin-block-end: 0;
 }
 .post-text {
 	font-family: var(--f-mono);
@@ -271,7 +271,7 @@ header a {
 	}
 }
 .login div {
-	margin-bottom: 2rem;
+	margin-block-end: 2rem;
 }
 .panel-meta {
 	justify-content: end;
