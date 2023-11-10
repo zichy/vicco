@@ -3,20 +3,24 @@
 __vicco__ is minimalist microblogging software contained in a single PHP file.
 
 ## Features
+
 * Horrendous code
-* Responsive & brutalist interface
-* PageSpeed score of 100
+* Responsive & brutalist layout
+* Web interface to publish/edit posts
 * Text formatting
-* Atom feed
+* Atom feed (broken)
 
 ## Target audiences
+
 * Hackers — It’s easy to customize.
 * Hipsters — It’s crappy, you could use it as a joke.
 
 ## Requirements
+
 * A web server with PHP
 
 ## Installation
+
 1. Adjust the config variables in `index.php`. Remember to change your credentials.
 2. Upload it to your server and make the directory writable.
 3. Open the site in your browser.
@@ -25,6 +29,7 @@ __vicco__ is minimalist microblogging software contained in a single PHP file.
 You can login with your credentials at `/?login`.
 
 ## Text formatting
+
 There is some [Markdown](https://daringfireball.net/projects/markdown/)-inspired formatting. No block elements, though.
 
 | Input                                                    | Output                                             |
@@ -48,6 +53,7 @@ Haha, no. Basically, I stole [this script](https://github.com/lawl/b.php) and im
 Probably not.
 
 ## Testimonials
+
 > I’m a huge fan of your blog, but I get the creeps from the PHP code.  
 — [sternenseemann](https://github.com/sternenseemann)
 
@@ -55,6 +61,7 @@ Probably not.
 — [riotbib](https://github.com/riotbib)
 
 ## To-do
+
 * Fix Atom feed
 
 ## License
