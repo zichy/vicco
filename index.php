@@ -305,7 +305,7 @@ const $adminForms = document.querySelectorAll('.admin');
 if($adminForms) {
 	$adminForms.forEach(($form) => {
 		$form.addEventListener('submit', (e) => {
-			if(confirm('Do you really want to delete this post?')) {
+			if(confirm()) {
 				$form.submit();
 			} else {
 				e.preventDefault();
