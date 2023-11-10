@@ -129,7 +129,11 @@ a:is(:hover, :focus) {
 	text-decoration: none;
 }
 h1 {
+	font-size: 1.5em;
 	line-height: 1;
+}
+h2 {
+	font-size: 1em;
 }
 label {
 	font-weight: bold;
