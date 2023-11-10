@@ -538,7 +538,7 @@ function tpl_error($text) {
 
 // Go to index
 function rmain() {
-	header('Location: '.$_SERVER['PHP_SELF']);
+	header('Location: /');
 	die();
 }
 
@@ -588,8 +588,7 @@ function loggedin() {
 }
 if(isset($_GET['login'])) {
 	if(loggedin()) {
-		header('Location: '.$_SERVER['PHP_SELF']);
-		die();
+		rmain();
 	} else {
 		echo tpl(T_ADMINLOGIN, 'L_USERNAME', L_USERNAME, 'L_PASSPHRASE', L_PASSPHRASE, 'L_LOGIN', L_LOGIN);
 		tpl_footer();
