@@ -5,41 +5,56 @@
 	SPDX-FileCopyrightText: Copyright (c) 2015–2023 lawl(†), zichy
 */
 
-//************************************//
+// Site name
+const SITENAME = 'vicco';
 
-	// Site name
-	const SITENAME = 'vicco';
+// Description
+const SITEDESC = 'Yet another microblog';
 
-	// Description
-	const SITEDESC = 'Yet another microblog';
+// Username
+const USERNAME = 'admin';
 
-	// URL (with trailing slash)
-	const PAGEHOME = 'https://localhost/blog/';
+// Passphrase
+const PASSPHRASE = 'CHANGEME';
 
-	// Username
-	const USERNAME = 'admin';
+// Colors (CSS value)
+const BODYCOLOR = '#eee';
+const BOXCOLOR = '#fff';
+const TEXTCOLOR = '#000';
+const ACCENTCOLOR = '#00f';
 
-	// Passphrase
-	const PASSPHRASE = 'CHANGEME';
+// Date format
+const DATEFORMAT = 'd M Y H:i:s';
 
-	// Language (ISO 639-1)
-	const SITELANG = 'en';
+// Posts per page
+const POSTSPERPAGE = 10;
 
-	// Colors (CSS value)
-	const BODYCOLOR = '#eee';
-	const BOXCOLOR = '#fff';
-	const TEXTCOLOR = '#000';
-	const ACCENTCOLOR = '#00f';
+// Language (ISO 639-1)
+const SITELANG = 'en';
 
-	// Date format
-	const DATEFORMAT = 'd M Y H:i:s';
+// Language strings
+const L_SEARCH = 'Search';
+const L_PLACEHOLDER = 'Start typing &hellip;';
+const L_POSTCONTENT = 'Post content';
+const L_PUBLISH = 'Publish';
+const L_LOGOUT = 'Logout';
+const L_EDIT = 'Edit';
+const L_DELETE = 'Delete';
+const L_OLDER = 'Older';
+const L_NEWER = 'Newer';
+const L_USERNAME = 'Username';
+const L_PASSPHRASE = 'Passphrase';
+const L_LOGIN = 'Login';
+const L_BACK = 'Go back';
+const L_ERROR = 'Error';
+const L_ERROR_LOGIN = 'The credentials are incorrect.';
+const L_ERROR_EMPTY = 'Your post must contain text.';
+const L_ERROR_POSTEXISTS = 'A post with this ID already exists.';
+const L_ERROR_POSTNONEXISTENT = 'The post you wish to edit does not exist.';
+const L_ERROR_NORESULTS = 'No search results were found.';
+const L_ERROR_HACKER = 'Nice try.';
 
-	// Posts per page
-	const POSTSPERPAGE = 10;
-
-//************************************//
-
-// System constants
+// System constants (Do not change)
 const DATAPATH = 'vicco/';
 const KEY = 'key';
 const VALUE = 'value';
@@ -322,8 +337,8 @@ EOD
 	</div>
 
 	<form class="search" action="/" method="get" role="search">
-		<input type="text" name="s" aria-label="Search terms">
-		<button type="submit">Search</button>
+		<input type="text" name="s" aria-label="{{L_SEARCH}}">
+		<button type="submit">{{L_SEARCH}}</button>
 	</form>
 </header>
 
@@ -332,20 +347,20 @@ EOD
 EOD
 	); set_kvp(TPL, T_POSTADMIN, <<< 'EOD'
 
-	<form class="admin row" action="/" method="post">
-		<input type="hidden" name="postid" value="{{POSTID}}">
-		<a class="button" href="?edit={{POSTID}}">Edit</a>
-		<button type="submit" class="delete" name="delete">Delete</button>
-	</form>
+<form class="admin row" action="/" method="post">
+	<input type="hidden" name="postid" value="{{POSTID}}">
+	<a class="button" href="?edit={{POSTID}}">{{L_EDIT}}</a>
+	<button type="submit" class="delete" name="delete">{{L_DELETE}}</button>
+</form>
 
 EOD
 	); set_kvp(TPL, T_POSTFOOTER, <<< 'EOD'
 
-	<div>
-		<a href="?p={{POSTID}}" itemprop="url" title="Permalink">
-			<time datetime="{{POSTDATETIME}}" itemprop="datePublished" pubdate>{{POSTDATE}}</time>
-		</a>
-	</div>
+<div>
+	<a href="?p={{POSTID}}" itemprop="url">
+		<time datetime="{{POSTDATETIME}}" itemprop="datePublished" pubdate>{{POSTDATE}}</time>
+	</a>
+</div>
 
 EOD
 	); set_kvp(TPL, T_ADMIN, <<< 'EOD'
@@ -353,11 +368,11 @@ EOD
 <form class="box panel" action="/" method="post">
 	<input type="hidden" name="postid" id="postid" value="{{POSTID}}">
 
-	<textarea id="postcontent" name="postcontent" placeholder="Start typing &hellip;" aria-label="Post content" spellcheck="false" rows="1" autofocus>{{POSTCONTENT}}</textarea>
+	<textarea id="postcontent" name="postcontent" placeholder="{{L_PLACEHOLDER}}" aria-label="{{L_POSTCONTENT}}" spellcheck="false" rows="1" autofocus>{{POSTCONTENT}}</textarea>
 
 	<div class="panel-meta row">
-		<button type="submit" id="submit" name="submit">Publish</button>
-		<button type="submit" name="logout">Logout</button>
+		<button type="submit" id="submit" name="submit">{{L_PUBLISH}}</button>
+		<button type="submit" name="logout">{{L_LOGOUT}}</button>
 	</div>
 </form>
 
@@ -365,25 +380,24 @@ EOD
 	); set_kvp(TPL, T_ADMINLOGIN, <<< 'EOD'
 
 <form class="box login" action="/" method="post">
-	<h2>Administration</h2>
 	<div>
-		<label for="username">Username</label>
+		<label for="username">{{L_USERNAME}}</label>
 		<input type="text" id="username" name="username" autocomplete="username">
 	</div>
 	<div>
-		<label for="passphrase">Passphrase</label>
+		<label for="passphrase">{{L_PASSPHRASE}}</label>
 		<input type="password" id="passphrase" name="passphrase" autocomplete="current-password">
 	</div>
-	<button type="submit" name="login">Login</button>
+	<button type="submit" name="login">{{L_LOGIN}}</button>
 </form>
 
 EOD
 	); set_kvp(TPL, T_ERROR, <<< 'EOD'
 
 <section class="box">
-	<h2>Error</h2>
+	<h2>{{L_ERROR}}</h2>
 	<p>{{ERRORTEXT}}
-	<p><a class="button" href="/">Go back</a>
+	<p><a class="button" href="/">{{L_BACK}}</a>
 </section>
 
 EOD
@@ -507,7 +521,7 @@ function tpl() {
 
 // Templates
 function tpl_header() {
-	echo tpl(T_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'DATAPATH', DATAPATH, 'TPL', TPL, 'CSS', CSS, 'BODYCOLOR', BODYCOLOR, 'BOXCOLOR', BOXCOLOR, 'TEXTCOLOR', TEXTCOLOR, 'ACCENTCOLOR', ACCENTCOLOR);
+	echo tpl(T_HEADER, 'SITENAME', SITENAME, 'SITEDESC', SITEDESC, 'SITELANG', SITELANG, 'DATAPATH', DATAPATH, 'CSS', CSS, 'BODYCOLOR', BODYCOLOR, 'BOXCOLOR', BOXCOLOR, 'TEXTCOLOR', TEXTCOLOR, 'ACCENTCOLOR', ACCENTCOLOR, 'L_SEARCH', L_SEARCH);
 }
 function tpl_footer() {
 	echo '</main>';
@@ -517,7 +531,7 @@ function tpl_footer() {
 	echo '</body></html>';
 }
 function tpl_error($text) {
-	echo tpl(T_ERROR, 'ERRORTEXT', $text);
+	echo tpl(T_ERROR, 'L_ERROR', L_ERROR, 'ERRORTEXT', $text, 'L_BACK', L_BACK);
 	tpl_footer();
 	die();
 }
@@ -577,7 +591,7 @@ if(isset($_GET['login'])) {
 		header('Location: '.$_SERVER['PHP_SELF']);
 		die();
 	} else {
-		echo tpl(T_ADMINLOGIN);
+		echo tpl(T_ADMINLOGIN, 'L_USERNAME', L_USERNAME, 'L_PASSPHRASE', L_PASSPHRASE, 'L_LOGIN', L_LOGIN);
 		tpl_footer();
 		die();
 	}
@@ -588,7 +602,7 @@ if(isset($_POST['login'])) {
 		set_cookie();
 		rmain();
 	} else {
-		tpl_error('The credentials are incorrect.');
+		tpl_error(L_ERROR_LOGIN);
 	}
 }
 if(loggedin()) {
@@ -596,14 +610,14 @@ if(loggedin()) {
 	if(isset($_POST['submit'])) {
 		$r = 0;
 		if(empty($_POST[D_POSTCONTENT])) {
-			tpl_error('Your post must contain text.');
+			tpl_error(L_ERROR_EMPTY);
 		}
 		if(empty($_POST[D_POSTID])) {
 			$r = create_record(uniqid());
 			set_kvp($r, D_POSTDATE, time());
 		} else {
 			if(!record_exists($_POST[D_POSTID])) {
-				tpl_error('An error occured.');
+				tpl_error(L_ERROR_POSTEXISTS);
 			}
 			$r = $_POST[D_POSTID];
 		}
@@ -621,14 +635,14 @@ if(loggedin()) {
 	if(isset($_GET['edit'])) {
 		$e = $_GET['edit'];
 		if(!record_exists($e)) {
-			tpl_error('The post you wish to edit does not exist.');
+			tpl_error(L_ERROR_POSTNONEXISTENT);
 		}
-		echo tpl(T_ADMIN, 'POSTCONTENT', get_kvp($e, D_POSTCONTENT), 'POSTID', $e);
+		echo tpl(T_ADMIN, 'L_PLACEHOLDER', L_PLACEHOLDER, 'L_POSTCONTENT', L_POSTCONTENT, 'POSTCONTENT', get_kvp($e, D_POSTCONTENT), 'POSTID', $e, 'L_PUBLISH', L_PUBLISH, 'L_LOGOUT', L_LOGOUT);
 	} else {
-		echo tpl(T_ADMIN, 'POSTCONTENT', '', 'POSTID', '');
+		echo tpl(T_ADMIN, 'L_PLACEHOLDER', L_PLACEHOLDER, 'L_POSTCONTENT', L_POSTCONTENT, 'POSTCONTENT', '', 'POSTID', '', 'L_PUBLISH', L_PUBLISH, 'L_LOGOUT', L_LOGOUT);
 	}
 } elseif(isset($_POST['submit']) || isset($_POST['delete']) || (isset($_GET['edit']))) {
-	tpl_error('Nice try.');
+	tpl_error(L_ERROR_HACKER);
 }
 
 // Logout
@@ -660,7 +674,7 @@ if(!empty($_GET['s'])) {
 }
 $results = sizeof($p);
 if($results == 0) {
-	tpl_error('No search results were found.');
+	tpl_error(L_ERROR_NORESULTS);
 }
 
 // Sorting
@@ -685,7 +699,7 @@ if(!isset($_GET['edit'])) {
 		echo '<footer class="post-meta row">';
 		echo tpl(T_POSTFOOTER, 'POSTID', $m[KEY], 'POSTDATE', date(DATEFORMAT, $m[VALUE]), 'POSTDATETIME', date('Y-m-d H:i:s', $m[VALUE]));
 		if(loggedin()) {
-			echo tpl(T_POSTADMIN, 'POSTID', $m[KEY],);
+			echo tpl(T_POSTADMIN, 'POSTID', $m[KEY], 'L_EDIT', L_EDIT, 'L_DELETE', L_DELETE);
 		}
 		echo '</footer></article>';
 	}
@@ -695,10 +709,10 @@ if(!isset($_GET['edit'])) {
 if(!isset($_GET['p']) && !isset($_GET['edit']) && $results >= POSTSPERPAGE) {
 	echo '<nav class="row">';
 	if(@$_GET['skip'] > 0) {
-		echo tpl(T_NAVLINK, 'LINK', (@$_GET['skip'] > 0 ? @$_GET['skip'] - POSTSPERPAGE : 0).'&amp;s='.@urlencode($_GET['s']), 'TEXT', 'Newer');
+		echo tpl(T_NAVLINK, 'LINK', (@$_GET['skip'] > 0 ? @$_GET['skip'] - POSTSPERPAGE : 0).'&amp;s='.@urlencode($_GET['s']), 'TEXT', L_NEWER);
 	}
 	if(@$_GET['skip'] + POSTSPERPAGE < $results) {
-		echo tpl(T_NAVLINK, 'LINK', (@$_GET['skip'] + POSTSPERPAGE < $results ? @$_GET['skip'] + POSTSPERPAGE : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']), 'TEXT', 'Older');
+		echo tpl(T_NAVLINK, 'LINK', (@$_GET['skip'] + POSTSPERPAGE < $results ? @$_GET['skip'] + POSTSPERPAGE : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']), 'TEXT', L_OLDER);
 	}
 	echo '</nav>';
 }
