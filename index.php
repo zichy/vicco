@@ -76,7 +76,7 @@ if(get_kvp(DB, 'firstuse') === false) {
 	set_file(null, CSS, <<< 'EOD'
 :root {
 	--f-sans: system-ui, sans-serif;
-	--f-serif: serif;
+	--f-mono: ui-monospace, monospace;
 	--f-size: 1.6rem;
 	--f-line: 1.5;
 }
@@ -98,7 +98,7 @@ body {
 	background-color: #eee;
 	color: #000;
 	font-size: var(--f-size);
-	font-family: var(--f-serif);
+	font-family: var(--f-mono);
 	line-height: var(--f-line);
 	max-width: 80ch;
 	min-width: 375px;
@@ -120,10 +120,6 @@ h1 {
 h2 {
 	font-size: 1em;
 }
-time {
-	font-size: 0.85em;
-	font-family: var(--f-sans);
-}
 label {
 	font-weight: bold;
 	display: block;
@@ -133,7 +129,8 @@ label {
 	font-size: var(--f-size);
 }
 code {
-	background-color: #eee;
+	background-color: #ddd;
+	box-shadow: 0.25em 0 0 #ddd, -0.25em 0 0 #ddd;
 }
 input {
 	background-color: #fff;
@@ -150,7 +147,7 @@ input:focus {
 textarea {
 	background-color: transparent;
 	font-size: var(--f-size);
-	font-family: var(--f-family);
+	font-family: var(--f-mono);
 	line-height: var(--f-line);
 	display: block;
 	width: 100%;
@@ -186,6 +183,7 @@ textarea:focus {
 	text-decoration: underline;
 }
 header {
+	font-family: var(--f-sans);
 	margin-block-end: 2rem;
 }
 @media (min-width: 80ch) {
@@ -234,6 +232,7 @@ header a {
 	margin-block-end: 1.5em;
 }
 .post-meta {
+	font-family: var(--f-sans);
 	flex-direction: row;
 	justify-content: space-between;
 }
