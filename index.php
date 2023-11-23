@@ -379,7 +379,7 @@ function tpl() {
 }
 
 // Templates
-function tpl_footer() { ?>
+function footer() { ?>
 	</main>
 	<?php if (loggedin()): ?>
 		<script src="<?= DATAPATH.JS ?>"></script>
@@ -387,14 +387,14 @@ function tpl_footer() { ?>
 	</body></html>
 <?php }
 
-function tpl_error($text) { ?>
+function error($text) { ?>
 	<section class="box">
 		<h2><?= L_ERROR ?></h2>
 		<p><?= $text ?>
 		<p><a class="button" href="/"><?= L_BACK ?></a>
 	</section>
 <?php 
-	tpl_footer();
+	footer();
 	die();
 }
 
@@ -517,7 +517,7 @@ if(isset($_GET['login'])) {
 			<button type="submit" name="login"><?= L_LOGIN ?></button>
 		</form>
 	<?php
-		tpl_footer();
+		footer();
 		die();
 	}
 }
@@ -527,7 +527,7 @@ if(isset($_POST['login'])) {
 		set_cookie();
 		rmain();
 	} else {
-		tpl_error(L_ERROR_LOGIN);
+		error(L_ERROR_LOGIN);
 	}
 }
 if(loggedin()) {
@@ -535,14 +535,14 @@ if(loggedin()) {
 	if(isset($_POST['submit'])) {
 		$r = 0;
 		if(empty($_POST[D_POSTCONTENT])) {
-			tpl_error(L_ERROR_EMPTY);
+			error(L_ERROR_EMPTY);
 		}
 		if(empty($_POST[D_POSTID])) {
 			$r = create_record(uniqid());
 			set_kvp($r, D_POSTDATE, time());
 		} else {
 			if(!record_exists($_POST[D_POSTID])) {
-				tpl_error(L_ERROR_POSTEXISTS);
+				error(L_ERROR_POSTEXISTS);
 			}
 			$r = $_POST[D_POSTID];
 		}
@@ -564,7 +564,7 @@ if(loggedin()) {
 	}
 
 	if (editing() && !record_exists($_GET['edit'])) {
-		tpl_error(L_ERROR_POSTNONEXISTENT);
+		error(L_ERROR_POSTNONEXISTENT);
 	} ?>
 
 	<form class="box panel" action="/" method="post">
@@ -578,7 +578,7 @@ if(loggedin()) {
 	</form>
 
 <?php } elseif(isset($_POST['submit']) || isset($_POST['delete']) || (isset($_GET['edit']))) {
-	tpl_error(L_ERROR_HACKER);
+	error(L_ERROR_HACKER);
 }
 
 // Logout
@@ -610,7 +610,7 @@ if(!empty($_GET['s'])) {
 }
 $results = sizeof($p);
 if($results == 0) {
-	tpl_error(L_ERROR_NORESULTS);
+	error(L_ERROR_NORESULTS);
 }
 
 // Sorting
@@ -663,6 +663,6 @@ if(!isset($_GET['p']) && !isset($_GET['edit']) && $results >= POSTSPERPAGE) { ?>
 <?php }
 
 // Footer
-tpl_footer();
+footer();
 
 ?>
