@@ -75,6 +75,8 @@ if(get_kvp(DB, 'firstuse') === false) {
 
 	set_file(null, CSS, <<< 'EOD'
 :root {
+	--f-sans: system-ui, sans-serif;
+	--f-serif: serif;
 	--f-size: 1.6rem;
 	--f-line: 1.5;
 }
@@ -95,8 +97,8 @@ html {
 body {
 	background-color: #eee;
 	color: #000;
-	font-family: var(--f-sans);
 	font-size: var(--f-size);
+	font-family: var(--f-serif);
 	line-height: var(--f-line);
 	max-width: 80ch;
 	min-width: 375px;
@@ -119,7 +121,8 @@ h2 {
 	font-size: 1em;
 }
 time {
-	font-style: italic;
+	font-size: 0.85em;
+	font-family: var(--f-sans);
 }
 label {
 	font-weight: bold;
@@ -162,7 +165,7 @@ textarea:focus {
 	background-color: #fff;
 	color: currentColor;
 	font-size: 0.85em;
-	font-family: sans-serif;
+	font-family: var(--f-sans);
 	font-weight: bold;
 	line-height: 1;
 	display: inline-flex;
