@@ -308,7 +308,9 @@ function set_file($r, $k, $v) {
 }
 
 function set_kvp($r, $k, $v) {
-	file_put_contents(DATAPATH.sanitize_key($r).'/'.sanitize_key($k),$v);
+	$f = DATAPATH.sanitize_key($r).'/'.sanitize_key($k);
+	file_put_contents($f,$v);
+	chmod($f, 0600);
 }
 
 function get_kvp($r, $k) {
