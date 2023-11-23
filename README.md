@@ -5,8 +5,8 @@ __vicco__ is minimalist microblogging software contained in a single PHP file.
 ## Features
 
 * Horrendous code
-* Responsive & brutalist layout
-* Web interface to publish/edit posts
+* Responsive layout
+* Web interface to publish and edit posts
 * Text formatting
 * Atom feed (broken)
 
@@ -17,7 +17,8 @@ __vicco__ is minimalist microblogging software contained in a single PHP file.
 
 ## Requirements
 
-* A web server with PHP
+* Web server with PHP
+* SSL/TLS certificate
 
 ## Installation
 
@@ -44,13 +45,13 @@ There is some [Markdown](https://daringfireball.net/projects/markdown/)-inspired
 ## FAQ
 
 **Are there any dependencies? Should I use Composer?**  
-What the fuck? This is literally _one_ PHP file.
+There are no dependencies. This is literally _one_ PHP file.
 
-**Given that you released PHP software, you know how to write PHP, right?**  
-Haha, no. Basically, I stole [this script](https://github.com/lawl/b.php) and improved it for the worse.
+**Since you published PHP software, you know how to write PHP, right?**  
+Haha, no. Basically, I stole [this script](https://github.com/lawl/b.php) (with permission) and improved it for the worse.
 
 **Uh… follow-up question: Is vicco secure?**  
-Probably not.
+It should be secure enough to run a crappy blog.
 
 ## Testimonials
 
