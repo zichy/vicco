@@ -139,6 +139,7 @@ input {
 	height: 3.5rem;
 	padding-inline: 1rem;
 	border: 1px solid #888;
+	border-radius: 0;
 }
 input:focus {
 	background-color: #fe9;
