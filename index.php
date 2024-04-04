@@ -86,11 +86,11 @@ html {
 	scroll-behavior: smooth;
 }
 *:focus {
-	outline: 1px solid currentColor;
-	outline-offset: 1px;
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
 }
 body {
-	background-color: #eee;
+	background-color: #fff;
 	color: #000;
 	font-size: var(--f-size);
 	font-family: var(--f-mono);
@@ -102,7 +102,7 @@ body {
 	overflow-x: hidden;
 }
 a {
-	color: #00c;
+	color: #00f;
 }
 a:is(:hover, :focus) {
 	background-color: #fe9;
@@ -124,17 +124,17 @@ label {
 	font-size: var(--f-size);
 }
 code {
-	background-color: #ddd;
-	box-shadow: 0.25em 0 0 #ddd, -0.25em 0 0 #ddd;
+	background-color: #ccc;
+	box-shadow: 0.25em 0 0 #ccc, -0.25em 0 0 #ccc;
 }
 input {
 	background-color: #fff;
-	font-family: var(--f-sans);
+	font-family: var(--f-mono);
 	width: 100%;
 	height: 3.5rem;
 	padding-inline: 1rem;
-	border: 1px solid #888;
-	border-radius: 0;
+	border: 1px solid #00f;
+	border-radius: 0.5rem;
 }
 input:focus {
 	background-color: #fe9;
@@ -156,7 +156,7 @@ textarea:focus {
 }
 :is(button, .button) {
 	background-color: #fff;
-	color: currentColor;
+	color: #00f;
 	font-size: 0.85em;
 	font-family: var(--f-sans);
 	font-weight: bold;
@@ -167,34 +167,37 @@ textarea:focus {
 	text-decoration: none;
 	height: 3.5rem;
 	padding-inline: 1rem;
-	margin: 0;
-	border: 1px solid #888;
+	border: 1px solid #00f;
+	border-radius: 0.5rem;
 	cursor: pointer;
 	touch-action: manipulation;
 	user-select: none;
 	-webkit-user-select: none;
 }
 :is(button, .button):hover {
-	background-color: #fff;
-	text-decoration: underline;
+	background-color: #fe9;
 }
-header {
+.row {
+	display: flex;
+	gap: 1.5rem;
+}
+.header {
+	color: #00f;
 	font-family: var(--f-sans);
 	margin-block-end: 2rem;
 }
 @media (min-width: 80ch) {
-	header {
+	.header {
 		display: flex;
 		justify-content: space-between;
 		align-items: flex-end;
 		gap: 2rem 4rem;
 	}
 }
-header :where(h1, p) {
+.header :is(h1, p) {
 	margin: 0;
 }
-header a {
-	color: var(--c-text);
+.header a {
 	text-decoration: none;
 }
 .search {
@@ -206,12 +209,19 @@ header a {
 		margin-top: 1rem;
 	}
 }
+.search input {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
 .search button {
 	margin-left: -1px;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
 }
 .box {
-	background-color: #fff;
+	background-color: #eee;
 	padding: 3rem 3rem 2rem;
+	border-radius: 0.5rem;
 	margin-block-end: 2rem;
 }
 @media (max-width: 80ch) {
@@ -232,7 +242,8 @@ header a {
 	flex-direction: row;
 	justify-content: space-between;
 }
-.post-meta a {
+.permalink {
+	color: #666;
 	text-decoration: none;
 }
 @media (min-width: 80ch) {
@@ -247,12 +258,8 @@ header a {
 .panel-meta {
 	justify-content: end;
 }
-.row {
-	display: flex;
-	gap: 1.5rem;
-}
-nav {
-	justify-content: center;
+.footer {
+	justify-content: space-between;
 }
 
 EOD
@@ -489,7 +496,7 @@ if(isset($_GET['feed'])) {
 
 <body itemscope itemtype="http://schema.org/Blog">
 
-<header>
+<header class="header">
 	<div>
 		<h1 itemprop="name">
 		<?php if (!empty($_GET)): ?>
