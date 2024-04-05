@@ -2,8 +2,6 @@
 
 __vicco__ is minimalist microblogging software contained in a single PHP file.
 
-![](https://github.com/zichy/vicco/assets/173749/0d8aefbe-db86-469e-af6a-5e359e337d24)
-
 ## Features
 
 * Horrendous code
