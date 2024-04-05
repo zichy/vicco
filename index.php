@@ -70,10 +70,11 @@ if(get_kvp(Sys::$db, 'firstuse') === false) {
 
 	set_file(null, Sys::$css, <<< 'EOD'
 :root {
-	--f-sans: system-ui, sans-serif;
-	--f-mono: ui-monospace, monospace;
-	--f-size: 1.6rem;
-	--f-line: 1.5;
+	--sans: system-ui, sans-serif;
+	--mono: ui-monospace, monospace;
+	--size: 1.6rem;
+	--line: 1.5;
+	--border: 2px solid #00f;
 }
 * {
 	box-sizing: border-box;
@@ -86,15 +87,15 @@ html {
 	scroll-behavior: smooth;
 }
 *:focus {
-	outline: 2px solid currentColor;
+	outline: var(--border);
 	outline-offset: 2px;
 }
 body {
 	background-color: #fff;
 	color: #000;
-	font-size: var(--f-size);
-	font-family: var(--f-mono);
-	line-height: var(--f-line);
+	font-size: var(--size);
+	font-family: var(--mono);
+	line-height: var(--line);
 	max-width: 80ch;
 	min-width: 375px;
 	padding-inline: 2rem;
@@ -121,7 +122,7 @@ label {
 	padding-block-end: 0.5rem;
 }
 :is(code, input, button) {
-	font-size: var(--f-size);
+	font-size: var(--size);
 }
 code {
 	background-color: #ccc;
@@ -129,11 +130,11 @@ code {
 }
 input {
 	background-color: #fff;
-	font-family: var(--f-mono);
+	font-family: var(--mono);
 	width: 100%;
 	height: 3.5rem;
 	padding-inline: 1rem;
-	border: 1px solid #00f;
+	border: var(--border);
 	border-radius: 0.5rem;
 }
 input:focus {
@@ -142,9 +143,9 @@ input:focus {
 }
 textarea {
 	background-color: transparent;
-	font-size: var(--f-size);
-	font-family: var(--f-mono);
-	line-height: var(--f-line);
+	font-size: var(--size);
+	font-family: var(--mono);
+	line-height: var(--line);
 	display: block;
 	width: 100%;
 	padding: 0 0 2rem 0;
@@ -158,7 +159,7 @@ textarea:focus {
 	background-color: #fff;
 	color: #00f;
 	font-size: 0.85em;
-	font-family: var(--f-sans);
+	font-family: var(--sans);
 	font-weight: bold;
 	line-height: 1;
 	display: inline-flex;
@@ -167,7 +168,7 @@ textarea:focus {
 	text-decoration: none;
 	height: 3.5rem;
 	padding-inline: 1rem;
-	border: 1px solid #00f;
+	border: var(--border);
 	border-radius: 0.5rem;
 	cursor: pointer;
 	touch-action: manipulation;
@@ -183,7 +184,7 @@ textarea:focus {
 }
 .header {
 	color: #00f;
-	font-family: var(--f-sans);
+	font-family: var(--sans);
 	margin-block-end: 2rem;
 }
 @media (min-width: 80ch) {
@@ -214,7 +215,7 @@ textarea:focus {
 	border-bottom-right-radius: 0;
 }
 .search button {
-	margin-left: -1px;
+	margin-left: -2px;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 }
@@ -241,7 +242,7 @@ textarea:focus {
 	margin-block-end: 1.5em;
 }
 .post-meta {
-	font-family: var(--f-sans);
+	font-family: var(--sans);
 	flex-direction: row;
 	justify-content: space-between;
 }
