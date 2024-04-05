@@ -607,18 +607,20 @@ if(isLoggedin()) {
 
 	if (isEditing() && !record_exists($_GET['edit'])) {
 		error(Lang::$errorPostNonexistent);
-	} ?>
+	}
 
-	<form class="box panel" action="/" method="post">
-		<input type="hidden" name="postid" id="postid" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
-		<textarea id="postcontent" name="postcontent" placeholder="<?= Lang::$placeholder ?>" aria-label="<?= Lang::$postcontent ?>" spellcheck="false" rows="1" autofocus><?= (isEditing() ? get_kvp($_GET['edit'], Sys::$postContent) : '') ?></textarea>
+	if (!isset($_GET['p'])): ?>
+		<form class="box panel" action="/" method="post">
+			<input type="hidden" name="postid" id="postid" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
+			<textarea id="postcontent" name="postcontent" placeholder="<?= Lang::$placeholder ?>" aria-label="<?= Lang::$postcontent ?>" spellcheck="false" rows="1" autofocus><?= (isEditing() ? get_kvp($_GET['edit'], Sys::$postContent) : '') ?></textarea>
 
-		<div class="panel-meta row">
-			<button type="submit" id="submit" name="submit"><?= (isEditing() ? Lang::$save : Lang::$publish) ?></button>
-		</div>
-	</form>
+			<div class="panel-meta row">
+				<button type="submit" id="submit" name="submit"><?= (isEditing() ? Lang::$save : Lang::$publish) ?></button>
+			</div>
+		</form>
+	<?php endif;
 
-<?php } elseif(isset($_POST['submit']) || isset($_POST['delete']) || isEditing()) {
+} elseif(isset($_POST['submit']) || isset($_POST['delete']) || isEditing()) {
 	error(Lang::$errorHacker);
 }
 
