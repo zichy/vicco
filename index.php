@@ -375,6 +375,18 @@ function get_index($n) {
 	return unserialize(get_kvp(Sys::$db, 'index_'.$n));
 }
 
+// Status
+function isLoggedin() {
+	if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === tpl(Sys::$cookie)) {
+		return true;
+	}
+}
+function isEditing() {
+	if (isset($_GET['edit'])) {
+		return true;
+	}
+}
+
 // Template function
 function tpl() {
 	$f = func_get_args();
@@ -391,7 +403,7 @@ function footer($results = 0) { ?>
 	</main>
 	<footer class="footer row">
 		<?php 
-			if(!isset($_GET['p']) && !editing() && $results >= Config::$postsPerPage) { ?>
+			if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage) { ?>
 				<nav class="row">
 					<?php if (@$_GET['skip'] > 0): ?>
 						<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0).'&amp;s='.@urlencode($_GET['s']) ?>" class="button">&larr; <?= Lang::$newer ?></a>
@@ -403,16 +415,16 @@ function footer($results = 0) { ?>
 			<?php }
 		?>
 
-		<?php if(Config::$showLogin && !isset($_GET['login']) && !loggedin()): ?>
+		<?php if(Config::$showLogin && !isset($_GET['login']) && !isLoggedin()): ?>
 			<a class="button" href="?login">Login</a>
-		<?php elseif(loggedin()): ?>
+		<?php elseif(isLoggedin()): ?>
 			<form action="/" method="post">
 				<button type="submit" name="logout"><?= Lang::$logout ?></button>
 			</form>
 		<?php endif ?>
 	</footer>
 
-	<?php if (loggedin()): ?>
+	<?php if (isLoggedin()): ?>
 		<script src="<?= Sys::$path.Sys::$js ?>"></script>
 	<?php endif ?>
 	</body></html>
@@ -531,19 +543,8 @@ function delete_cookie() {
 }
 
 // Login
-function loggedin() {
-	if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === tpl(Sys::$cookie)) {
-		return true;
-	}
-}
-function editing() {
-	if (isset($_GET['edit'])) {
-		return true;
-	}
-}
-
 if(isset($_GET['login'])) {
-	if(loggedin()) {
+	if(isLoggedin()) {
 		rmain();
 	} else { ?>
 		<form class="box login" action="/" method="post">
@@ -571,7 +572,7 @@ if(isset($_POST['login'])) {
 		error(Lang::$errorLogin);
 	}
 }
-if(loggedin()) {
+if(isLoggedin()) {
 	// Submit posts
 	if(isset($_POST['submit'])) {
 		$r = 0;
@@ -597,20 +598,20 @@ if(loggedin()) {
 		create_index(Sys::$postDate, Sys::$postDate);
 	} 
 
-	if (editing() && !record_exists($_GET['edit'])) {
+	if (isEditing() && !record_exists($_GET['edit'])) {
 		error(Lang::$errorPostNonexistent);
 	} ?>
 
 	<form class="box panel" action="/" method="post">
-		<input type="hidden" name="postid" id="postid" value="<?= (editing() ? $_GET['edit'] : '') ?>">
-		<textarea id="postcontent" name="postcontent" placeholder="<?= Lang::$placeholder ?>" aria-label="<?= Lang::$postcontent ?>" spellcheck="false" rows="1" autofocus><?= (editing() ? get_kvp($_GET['edit'], Sys::$postContent) : '') ?></textarea>
+		<input type="hidden" name="postid" id="postid" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
+		<textarea id="postcontent" name="postcontent" placeholder="<?= Lang::$placeholder ?>" aria-label="<?= Lang::$postcontent ?>" spellcheck="false" rows="1" autofocus><?= (isEditing() ? get_kvp($_GET['edit'], Sys::$postContent) : '') ?></textarea>
 
 		<div class="panel-meta row">
-			<button type="submit" id="submit" name="submit"><?= (editing() ? Lang::$save : Lang::$publish) ?></button>
+			<button type="submit" id="submit" name="submit"><?= (isEditing() ? Lang::$save : Lang::$publish) ?></button>
 		</div>
 	</form>
 
-<?php } elseif(isset($_POST['submit']) || isset($_POST['delete']) || editing()) {
+<?php } elseif(isset($_POST['submit']) || isset($_POST['delete']) || isEditing()) {
 	error(Lang::$errorHacker);
 }
 
@@ -661,7 +662,7 @@ if(isset($_GET['p']) && record_exists($_GET['p'])) {
 
 $p = @array_slice($p, $_GET['skip'], Config::$postsPerPage);
 
-if(!editing()) {
+if(!isEditing()) {
 	foreach($p as $m): ?>
 		<article class="box post" itemscope itemtype="https://schema.org/BlogPosting">
 			<p class="post-text" itemprop="articleBody"><?= parse(nl2br(get_kvp($m[Sys::$key], Sys::$postContent))) ?></p>
@@ -671,7 +672,7 @@ if(!editing()) {
 						<time datetime="<?= date('Y-m-d H:i:s', $m[Sys::$value]) ?>" itemprop="datePublished" pubdate><?= date(Config::$dateFormat, $m[Sys::$value]) ?></time>
 					</a>
 				</div>
-			<?php if (loggedin()): ?>
+			<?php if (isLoggedin()): ?>
 				<form class="admin row" action="/" method="post" data-warning="<?= Lang::$deleteWarning ?>">
 					<input type="hidden" name="postid" value="<?= $m[Sys::$key] ?>">
 					<a class="button" href="?edit=<?= $m[Sys::$key] ?>"><?= Lang::$edit ?></a>
