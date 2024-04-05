@@ -391,7 +391,7 @@ function footer($results = 0) { ?>
 	</main>
 	<footer class="footer row">
 		<?php 
-			if(!isset($_GET['p']) && !isset($_GET['edit']) && $results >= Config::$postsPerPage) { ?>
+			if(!isset($_GET['p']) && !editing() && $results >= Config::$postsPerPage) { ?>
 				<nav class="row">
 					<?php if (@$_GET['skip'] > 0): ?>
 						<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0).'&amp;s='.@urlencode($_GET['s']) ?>" class="button">&larr; <?= Lang::$newer ?></a>
@@ -536,6 +536,12 @@ function loggedin() {
 		return true;
 	}
 }
+function editing() {
+	if (isset($_GET['edit'])) {
+		return true;
+	}
+}
+
 if(isset($_GET['login'])) {
 	if(loggedin()) {
 		rmain();
@@ -591,13 +597,6 @@ if(loggedin()) {
 		create_index(Sys::$postDate, Sys::$postDate);
 	} 
 
-	// Edit posts
-	function editing() {
-		if (isset($_GET['edit'])) {
-			return true;
-		}
-	}
-
 	if (editing() && !record_exists($_GET['edit'])) {
 		error(Lang::$errorPostNonexistent);
 	} ?>
@@ -611,8 +610,8 @@ if(loggedin()) {
 		</div>
 	</form>
 
-<?php } elseif(isset($_POST['submit']) || isset($_POST['delete']) || (isset($_GET['edit']))) {
 	error(Lang::$hacker);
+<?php } elseif(isset($_POST['submit']) || isset($_POST['delete']) || editing()) {
 }
 
 // Logout
@@ -662,7 +661,7 @@ if(isset($_GET['p']) && record_exists($_GET['p'])) {
 
 $p = @array_slice($p, $_GET['skip'], Config::$postsPerPage);
 
-if(!isset($_GET['edit'])) {
+if(!editing()) {
 	foreach($p as $m): ?>
 		<article class="box post" itemscope itemtype="https://schema.org/BlogPosting">
 			<p class="post-text" itemprop="articleBody"><?= parse(nl2br(get_kvp($m[Sys::$key], Sys::$postContent))) ?></p>
