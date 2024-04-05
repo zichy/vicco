@@ -404,18 +404,16 @@ function tpl() {
 function footer($results = 0) { ?>
 	</main>
 	<footer class="footer row">
-		<?php 
-			if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage) { ?>
-				<nav class="row">
-					<?php if (@$_GET['skip'] > 0): ?>
-						<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0).'&amp;s='.@urlencode($_GET['s']) ?>" class="button">&larr; <?= Lang::$newer ?></a>
-					<?php endif ?>
-					<?php if (@$_GET['skip'] + Config::$postsPerPage < $results): ?>
-						<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><?= Lang::$older ?> &rarr;</a>
-					<?php endif ?>
-				</nav>
-			<?php }
-		?>
+		<?php if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage) { ?>
+			<nav class="row">
+				<?php if (@$_GET['skip'] > 0): ?>
+					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0).'&amp;s='.@urlencode($_GET['s']) ?>" class="button">&larr; <?= Lang::$newer ?></a>
+				<?php endif ?>
+				<?php if (@$_GET['skip'] + Config::$postsPerPage < $results): ?>
+					<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><?= Lang::$older ?> &rarr;</a>
+				<?php endif ?>
+			</nav>
+		<?php } ?>
 
 		<?php if(Config::$showLogin && !isset($_GET['login']) && !isLoggedin()): ?>
 			<a class="button" href="?login">Login</a>
