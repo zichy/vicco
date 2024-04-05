@@ -265,7 +265,6 @@ textarea:focus {
 .footer {
 	justify-content: space-between;
 }
-
 EOD
 	);
 	set_file(null, Sys::$js, <<< 'EOD'
@@ -296,7 +295,6 @@ if($adminForms) {
 		});
 	});
 }
-
 EOD
 	); set_kvp(Sys::$db, 'firstuse', 1);
 }
