@@ -610,8 +610,8 @@ if(loggedin()) {
 		</div>
 	</form>
 
-	error(Lang::$hacker);
 <?php } elseif(isset($_POST['submit']) || isset($_POST['delete']) || editing()) {
+	error(Lang::$errorHacker);
 }
 
 // Logout
