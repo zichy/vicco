@@ -457,6 +457,11 @@ function parse($t) {
 	$t = preg_replace('/\@(.*?)\@/', '<code>\1</code>', $t);
 	$t = preg_replace('/\[([^\[]+)\]\(([^\)]+)\)/', '<a href=\'\2\'>\1</a>', $t);
 	$t = preg_replace('/\[(.*?)\]/', '<a href=\'\1\'>\1</a>', $t);
+	$t = '<p>' . $t . '</p>';
+	$t = str_replace("\r\n\r\n", "</p><p>", $t);
+	$t = str_replace("\n\n", "</p><p>", $t);
+	$t = str_replace("\r\n", "<br>", $t);
+	$t = str_replace("\n", "<br>", $t);   
 	return $t;
 }
 
@@ -481,7 +486,7 @@ if(isset($_GET['feed'])) {
 <entry>
 	<title><?= date(Config::$dateFormat, $m[Sys::$value]) ?></title>
 	<link href="<?= $u . '?p='.$m[Sys::$key] ?>" />
-	<content type="html"><![CDATA[<?= parse(nl2br(get_kvp($m[Sys::$key], Sys::$postContent))) ?>]]></content>
+	<content type="html"><![CDATA[<?= parse(get_kvp($m[Sys::$key], Sys::$postContent)) ?>]]></content>
 	<updated><?= date('Y-m-d\TH:i:sP', $m[Sys::$value]) ?></updated>
 	<id>urn:uuid:<?= $m[Sys::$key] ?></id>
 </entry>
@@ -629,7 +634,7 @@ $p = get_index(Sys::$postDate);
 if(!empty($_GET['s'])) {
 	$s = explode(' ',$_GET['s']);
 	foreach($p as $k => $m) {
-		$c = strtolower(parse(nl2br(get_kvp($m[Sys::$key], Sys::$postContent))));
+		$c = strtolower(parse(get_kvp($m[Sys::$key], Sys::$postContent)));
 		$f = true;
 		for($i = 0; $i < sizeof($s); $i++) {
 			if(strpos($c, strtolower($s[$i])) === false) {
@@ -665,7 +670,7 @@ $p = @array_slice($p, $_GET['skip'], Config::$postsPerPage);
 if(!isEditing()) {
 	foreach($p as $m): ?>
 		<article class="box post" itemscope itemtype="https://schema.org/BlogPosting">
-			<p class="post-text" itemprop="articleBody"><?= parse(nl2br(get_kvp($m[Sys::$key], Sys::$postContent))) ?></p>
+			<div class="post-text block" itemprop="articleBody"><?= parse(get_kvp($m[Sys::$key], Sys::$postContent)) ?></div>
 			<footer class="post-meta row">
 				<div>
 					<a class="permalink" href="?p=<?= $m[Sys::$key] ?>" itemprop="url">
