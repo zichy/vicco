@@ -218,6 +218,12 @@ textarea:focus {
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 }
+.block > *:first-child {
+	margin-block-start: 0;
+}
+.block > *:last-child {
+	margin-block-end: 0;
+}
 .box {
 	background-color: #eee;
 	padding: 3rem 3rem 2rem;
@@ -230,9 +236,6 @@ textarea:focus {
 		margin-inline-start: -2rem;
 		margin-inline-end: -2rem;
 	}
-}
-.box > *:first-child {
-	margin-block-start: 0;
 }
 .post-text {
 	margin-block-end: 1.5em;
@@ -432,7 +435,7 @@ function footer($results = 0) { ?>
 
 // Error template
 function error($text) { ?>
-	<section class="box">
+	<section class="box block">
 		<h2><?= Lang::$error ?></h2>
 		<p><?= $text ?>
 		<p><a class="button" href="/"><?= Lang::$back ?></a>
