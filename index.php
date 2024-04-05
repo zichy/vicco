@@ -461,7 +461,7 @@ function parse($t) {
 	$t = str_replace("\r\n\r\n", "</p><p>", $t);
 	$t = str_replace("\n\n", "</p><p>", $t);
 	$t = str_replace("\r\n", "<br>", $t);
-	$t = str_replace("\n", "<br>", $t);   
+	$t = str_replace("\n", "<br>", $t);
 	return $t;
 }
 
