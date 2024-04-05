@@ -86,7 +86,7 @@ html {
 	font-size: 62.5%;
 	scroll-behavior: smooth;
 }
-*:focus {
+*:focus-visible {
 	outline: var(--border);
 	outline-offset: 2px;
 }
