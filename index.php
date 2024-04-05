@@ -440,7 +440,7 @@ function error($text) { ?>
 		<p><?= $text ?>
 		<p><a class="button" href="/"><?= Lang::$back ?></a>
 	</section>
-<?php 
+<?php
 	footer();
 	die();
 }
