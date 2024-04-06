@@ -666,7 +666,6 @@ uasort($p, function($a, $b) {
 if(isset($_GET['p']) && record_exists($_GET['p'])) {
 	$p = array(array(Sys::$value => get_kvp($_GET['p'], Sys::$postDate), Sys::$key => $_GET['p']));
 }
-
 $p = @array_slice($p, $_GET['skip'], Config::$postsPerPage);
 
 if(!isEditing()) {
