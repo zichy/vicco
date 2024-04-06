@@ -31,14 +31,15 @@ __vicco__ is minimalist microblogging software contained in a single PHP file.
 
 There is some [Markdown](https://daringfireball.net/projects/markdown/)-inspired formatting. No block elements, though.
 
-| Input                                                    | Output                                             |
-| ---                                                      | ---                                                |
-| `**strong**` / `__strong__`                              | __strong__                                         |
-| `*italic*` / `_italic_`                                  | _italic_                                           |
-| `~delete~`                                               | ~~delete~~                                         |
-| `:"quote":`                                              | <q>quote</q>                                       |
-| `@code@`                                                 | `code`                                             |
-| `[https://example.org]` / `[title](https://example.org)` | https://example.org / [title](https://example.org) |
+| Input                          | Output                       |
+| ---                            | ---                          |
+| `**strong**` / `__strong__`    | __strong__                   |
+| `*italic*` / `_italic_`        | _italic_                     |
+| `~delete~`                     | ~~delete~~                   |
+| `:"quote":`                    | <q>quote</q>                 |
+| `@code@`                       | `code`                       |
+| `[https://example.org]`        | https://example.org          |
+| `[title](https://example.org)` | [title](https://example.org) |
 
 ## FAQ
 
