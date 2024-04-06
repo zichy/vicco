@@ -664,11 +664,13 @@ uasort($p, function($a, $b) {
 	}
 });
 
+// Get posts
 if(isset($_GET['p']) && record_exists($_GET['p'])) {
 	$p = array(array(Sys::$value => get_kvp($_GET['p'], Sys::$postDate), Sys::$key => $_GET['p']));
 }
 $p = @array_slice($p, $_GET['skip'], Config::$postsPerPage);
 
+// Posts
 if(!isEditing()) {
 	foreach($p as $m): ?>
 		<article class="box post" itemscope itemtype="https://schema.org/BlogPosting">
