@@ -249,6 +249,7 @@ textarea:focus {
 .permalink {
 	color: #666;
 	text-decoration: none;
+	align-self: start;
 }
 @media (min-width: 80ch) {
 	.site-meta {
@@ -673,11 +674,9 @@ if(!isEditing()) {
 		<article class="box post" itemscope itemtype="https://schema.org/BlogPosting">
 			<div class="post-text block" itemprop="articleBody"><?= parse(get_kvp($m[Sys::$key], Sys::$postContent)) ?></div>
 			<footer class="post-meta row">
-				<div>
-					<a class="permalink" href="?p=<?= $m[Sys::$key] ?>" itemprop="url">
-						<time datetime="<?= date('Y-m-d H:i:s', $m[Sys::$value]) ?>" itemprop="datePublished" pubdate><?= date(Config::$dateFormat, $m[Sys::$value]) ?></time>
-					</a>
-				</div>
+				<a class="permalink" href="?p=<?= $m[Sys::$key] ?>" itemprop="url">
+					<time datetime="<?= date('Y-m-d H:i:s', $m[Sys::$value]) ?>" itemprop="datePublished" pubdate><?= date(Config::$dateFormat, $m[Sys::$value]) ?></time>
+				</a>
 			<?php if (isLoggedin()): ?>
 				<form class="admin row" action="/" method="post" data-warning="<?= Lang::$deleteWarning ?>">
 					<input type="hidden" name="postid" value="<?= $m[Sys::$key] ?>">
