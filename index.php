@@ -401,48 +401,6 @@ function tpl() {
 	return $t;
 }
 
-// Footer template
-function footer($results = 0) { ?>
-	</main>
-	<footer class="footer row">
-		<?php if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage) { ?>
-			<nav class="row">
-				<?php if (@$_GET['skip'] > 0): ?>
-					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0).'&amp;s='.@urlencode($_GET['s']) ?>" class="button">&larr; <?= Lang::$newer ?></a>
-				<?php endif ?>
-				<?php if (@$_GET['skip'] + Config::$postsPerPage < $results): ?>
-					<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><?= Lang::$older ?> &rarr;</a>
-				<?php endif ?>
-			</nav>
-		<?php } ?>
-
-		<?php if(Config::$showLogin && !isset($_GET['login']) && !isLoggedin()): ?>
-			<a class="button" href="?login">Login</a>
-		<?php elseif(isLoggedin()): ?>
-			<form action="/" method="post">
-				<button type="submit" name="logout"><?= Lang::$logout ?></button>
-			</form>
-		<?php endif ?>
-	</footer>
-
-	<?php if (isLoggedin()): ?>
-		<script src="<?= Sys::$path.Sys::$js ?>"></script>
-	<?php endif ?>
-	</body></html>
-<?php }
-
-// Error template
-function error($text) { ?>
-	<section class="box block">
-		<h2><?= Lang::$error ?></h2>
-		<p><?= $text ?>
-		<p><a class="button" href="/"><?= Lang::$back ?></a>
-	</section>
-<?php
-	footer();
-	die();
-}
-
 // Go to index
 function rmain() {
 	header('Location: /');
@@ -536,6 +494,48 @@ if(isset($_GET['feed'])) {
 
 <main>
 <?php
+
+// Footer template
+function footer($results = 0) { ?>
+	</main>
+	<footer class="footer row">
+		<?php if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage) { ?>
+			<nav class="row">
+				<?php if (@$_GET['skip'] > 0): ?>
+					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0).'&amp;s='.@urlencode($_GET['s']) ?>" class="button">&larr; <?= Lang::$newer ?></a>
+				<?php endif ?>
+				<?php if (@$_GET['skip'] + Config::$postsPerPage < $results): ?>
+					<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><?= Lang::$older ?> &rarr;</a>
+				<?php endif ?>
+			</nav>
+		<?php } ?>
+
+		<?php if(Config::$showLogin && !isset($_GET['login']) && !isLoggedin()): ?>
+			<a class="button" href="?login">Login</a>
+		<?php elseif(isLoggedin()): ?>
+			<form action="/" method="post">
+				<button type="submit" name="logout"><?= Lang::$logout ?></button>
+			</form>
+		<?php endif ?>
+	</footer>
+
+	<?php if (isLoggedin()): ?>
+		<script src="<?= Sys::$path.Sys::$js ?>"></script>
+	<?php endif ?>
+	</body></html>
+<?php }
+
+// Error template
+function error($text) { ?>
+	<section class="box block">
+		<h2><?= Lang::$error ?></h2>
+		<p><?= $text ?>
+		<p><a class="button" href="/"><?= Lang::$back ?></a>
+	</section>
+<?php
+	footer();
+	die();
+}
 
 // Cookie
 function set_cookie() {
