@@ -310,12 +310,12 @@ function create_record($r) {
 }
 
 function set_file($r, $k, $v) {
-	file_put_contents(Sys::$path.$r.'/'.$k,$v);
+	file_put_contents(Sys::$path.$r.'/'.$k, $v);
 }
 
 function set_kvp($r, $k, $v) {
 	$f = Sys::$path.sanitize_key($r).'/'.sanitize_key($k);
-	file_put_contents($f,$v);
+	file_put_contents($f, $v);
 	chmod($f, 0600);
 }
 
@@ -468,9 +468,7 @@ if(isset($_GET['feed'])) {
 	<link href="/?feed" type="application/atom+xml" title="<?= Config::$name ?> feed" rel="alternate">
 	<link rel="stylesheet" type="text/css" href="<?= Sys::$path.Sys::$css ?>" media="screen">
 
-</head>
-
-<body itemscope itemtype="http://schema.org/Blog">
+</head><body itemscope itemtype="http://schema.org/Blog">
 
 <header class="header">
 	<div>
@@ -490,15 +488,12 @@ if(isset($_GET['feed'])) {
 		<input type="text" name="s" aria-label="<?= Lang::$search ?>">
 		<button type="submit"><?= Lang::$search ?></button>
 	</form>
-</header>
-
-<main>
+</header><main>
 <?php
 
 // Footer template
 function footer($results = 0) { ?>
-	</main>
-	<footer class="footer row">
+	</main><footer class="footer row">
 		<?php if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage) { ?>
 			<nav class="row">
 				<?php if (@$_GET['skip'] > 0): ?>
@@ -635,7 +630,7 @@ $p = get_index(Sys::$postDate);
 
 // Search
 if(!empty($_GET['s'])) {
-	$s = explode(' ',$_GET['s']);
+	$s = explode(' ', $_GET['s']);
 	foreach($p as $k => $m) {
 		$c = strtolower(parse(get_kvp($m[Sys::$key], Sys::$postContent)));
 		$f = true;
