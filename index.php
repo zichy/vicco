@@ -39,7 +39,7 @@ class Lang {
 	static $errorEmpty = 'Your post must not be empty.';
 	static $errorPostExists = 'A post with this ID already exists.';
 	static $errorPostNonexistent = 'The post you wish to edit does not exist.';
-	static $errorNoResults = 'No search results were found.';
+	static $errorNoResults = 'No posts were found.';
 	static $errorHacker = 'Nice try.';
 }
 
@@ -678,7 +678,7 @@ if(!empty($_GET['s'])) {
 	}
 }
 $results = sizeof($p);
-if($results == 0) {
+if(($results == 0) && isSearching()) {
 	error(Lang::$errorNoResults);
 }
 
