@@ -11,6 +11,7 @@ class Config {
 	static $name = 'vicco';
 	static $description = 'Yet another microblog'; // optional
 	static $language = 'en'; // (ISO 639-1)
+	static $themeColor = '#00f';
 	static $dateFormat = 'd M Y, H:i';
 	static $postsPerPage = 10;
 	static $showLogin = true;
@@ -74,7 +75,7 @@ if(get_kvp(Sys::$db, 'firstuse') === false) {
 	--mono: ui-monospace, monospace;
 	--size: 1.6rem;
 	--line: 1.5;
-	--border: 2px solid #00f;
+	--border: 1px solid var(--theme);
 }
 * {
 	box-sizing: border-box;
@@ -86,32 +87,39 @@ html {
 	font-size: 62.5%;
 	scroll-behavior: smooth;
 }
+::selection {
+	background-color: #fe9;
+}
 *:focus-visible {
 	outline: var(--border);
 	outline-offset: 2px;
 }
 body {
 	background-color: #fff;
-	color: #000;
+	color: var(--theme);
 	font-size: var(--size);
-	font-family: var(--mono);
+	font-family: var(--sans);
 	line-height: var(--line);
-	max-width: 80ch;
+	max-width: 1024px;
 	min-width: 375px;
 	padding-inline: 2rem;
 	margin: 4rem auto;
 	overflow-x: hidden;
 }
 a {
-	color: #00f;
+	color: var(--theme);
 }
-a:is(:hover, :focus) {
+a:is(:hover, :focus-visible) {
 	background-color: #fe9;
-	box-decoration-break: clone;
+}
+:is(h1, h2) {
+	margin: 0;
 }
 h1 {
-	font-size: 1.5em;
+	font-size: 1.25em;
+	font-style: italic;
 	line-height: 1;
+	margin-block: 0;
 }
 h2 {
 	font-size: 1em;
@@ -137,37 +145,33 @@ input {
 	border: var(--border);
 	border-radius: 0.5rem;
 }
-input:focus {
-	background-color: #fe9;
-	outline: 0;
-}
 textarea {
 	background-color: transparent;
-	font-size: var(--size);
+	color: var(--theme);
 	font-family: var(--mono);
+	font-size: var(--size);
 	line-height: var(--line);
 	display: block;
 	width: 100%;
-	padding: 0 0 2rem 0;
+	padding: 0;
 	border: 0;
 	resize: none;
 }
-textarea:focus {
+textarea:focus-visible {
 	outline: none;
 }
 :is(button, .button) {
 	background-color: #fff;
-	color: #00f;
+	color: var(--theme);
 	font-size: 0.85em;
 	font-family: var(--sans);
 	font-weight: bold;
+	text-decoration: none;
 	line-height: 1;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	text-decoration: none;
-	height: 3.5rem;
-	padding-inline: 1rem;
+	padding: 0.5rem 1rem;
 	border: var(--border);
 	border-radius: 0.5rem;
 	cursor: pointer;
@@ -175,40 +179,42 @@ textarea:focus {
 	user-select: none;
 	-webkit-user-select: none;
 }
-:is(button, .button):hover {
-	background-color: #fe9;
+:is(button, .button):is(:hover, :focus-visible) {
+	background-color: var(--theme);
+	color: #fff;
 }
 .row {
 	display: flex;
 	gap: 1.5rem;
 }
-.header {
-	color: #00f;
+header {
+	color: var(--theme);
 	font-family: var(--sans);
-	margin-block-end: 2rem;
+	display: flex;
+	gap: 2rem 4rem;
+	padding-block-end: 2rem;
+	border-bottom: var(--border);
 }
-@media (min-width: 80ch) {
-	.header {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-end;
-		gap: 2rem 4rem;
+@media (max-width: 768px) {
+	header {
+		flex-direction: column;
 	}
 }
-.header :is(h1, p) {
+@media (min-width: 769px) {
+	header {
+		justify-content: space-between;
+		align-items: flex-end;
+	}
+}
+header p {
 	margin: 0;
 }
-.header a {
+header a {
 	text-decoration: none;
 }
 .search {
 	display: flex;
 	flex-shrink: 0;
-}
-@media (max-width: 80ch) {
-	.search {
-		margin-top: 1rem;
-	}
 }
 .search input {
 	border-top-right-radius: 0;
@@ -219,52 +225,70 @@ textarea:focus {
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 }
-.block > *:first-child {
+.text > *:first-child {
 	margin-block-start: 0;
 }
-.block > *:last-child {
+.text > *:last-child {
 	margin-block-end: 0;
 }
-.box {
-	background-color: #eee;
-	padding: 3rem 3rem 2rem;
-	border-radius: 0.5rem;
-	margin-block-end: 2rem;
+.grid {
+	display: grid;
+	grid-gap: 2rem 3rem;
+	padding-block: 2rem;
 }
-@media (max-width: 80ch) {
-	.box {
-		padding: 2rem;
-		margin-inline-start: -2rem;
-		margin-inline-end: -2rem;
+@media (max-width: 768px) {
+	.grid {
+		grid-template-rows: auto;
 	}
 }
+@media (min-width: 769px) {
+	.grid {
+		grid-template-columns: 1fr 16rem;
+	}
+}
+.post:not(:last-child) {
+	border-bottom: var(--border);
+}
 .post-text {
-	margin-block-end: 1.5em;
+	font-family: var(--mono);
 }
 .post-meta {
-	font-family: var(--sans);
-	flex-direction: row;
-	justify-content: space-between;
+	display: flex;
+	flex-direction: column;
+	row-gap: 1rem;
 }
 .permalink {
-	color: #666;
 	text-decoration: none;
 	align-self: start;
 }
-@media (min-width: 80ch) {
-	.site-meta {
-		display: flex;
-		justify-content: space-between;
-	}
+time {
+	font-weight: bold;
+}
+.box {
+	padding-block: 2rem;
 }
 .login div {
 	margin-block-end: 2rem;
+}
+.panel:not(:last-child) {
+	border-bottom: var(--border);
 }
 .panel-meta {
 	justify-content: end;
 }
 .footer {
-	justify-content: space-between;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	grid-template-areas: 'nav acc';
+	grid-column-gap: 4rem;
+	padding-block-start: 2rem;
+	border-top: var(--border);
+}
+nav {
+	grid-area: nav;
+}
+.acc {
+	grid-area: acc;
 }
 EOD
 	);
@@ -467,10 +491,11 @@ if(isset($_GET['feed'])) {
 
 	<link href="/?feed" type="application/atom+xml" title="<?= Config::$name ?> feed" rel="alternate">
 	<link rel="stylesheet" type="text/css" href="<?= Sys::$path.Sys::$css ?>" media="screen">
+	<style>:root { --theme: <?= Config::$themeColor ?>; }</style>
 
 </head><body itemscope itemtype="http://schema.org/Blog">
 
-<header class="header">
+<header>
 	<div>
 		<h1 itemprop="name">
 		<?php if (!empty($_GET)): ?>
@@ -493,7 +518,7 @@ if(isset($_GET['feed'])) {
 
 // Footer template
 function footer($results = 0) { ?>
-	</main><footer class="footer row">
+	</main><footer class="footer">
 		<?php if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage) { ?>
 			<nav class="row">
 				<?php if (@$_GET['skip'] > 0): ?>
@@ -505,13 +530,15 @@ function footer($results = 0) { ?>
 			</nav>
 		<?php } ?>
 
-		<?php if(Config::$showLogin && !isset($_GET['login']) && !isLoggedin()): ?>
-			<a class="button" href="?login">Login</a>
-		<?php elseif(isLoggedin()): ?>
-			<form action="/" method="post">
-				<button type="submit" name="logout"><?= Lang::$logout ?></button>
-			</form>
-		<?php endif ?>
+		<div class="acc">
+			<?php if(Config::$showLogin && !isset($_GET['login']) && !isLoggedin()): ?>
+				<a class="button" href="?login">Login</a>
+			<?php elseif(isLoggedin()): ?>
+				<form action="/" method="post">
+					<button type="submit" name="logout"><?= Lang::$logout ?></button>
+				</form>
+			<?php endif ?>
+		</div>
 	</footer>
 
 	<?php if (isLoggedin()): ?>
@@ -522,7 +549,7 @@ function footer($results = 0) { ?>
 
 // Error template
 function error($text) { ?>
-	<section class="box block">
+	<section class="box text">
 		<h2><?= Lang::$error ?></h2>
 		<p><?= $text ?>
 		<p><a class="button" href="/"><?= Lang::$back ?></a>
@@ -603,12 +630,12 @@ if(isLoggedin()) {
 		error(Lang::$errorPostNonexistent);
 	}
 
-	if (!isset($_GET['p'])): ?>
-		<form class="box panel" action="/" method="post">
-			<input type="hidden" name="postid" id="postid" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
-			<textarea id="postcontent" name="postcontent" placeholder="<?= Lang::$placeholder ?>" aria-label="<?= Lang::$postcontent ?>" spellcheck="false" rows="1" autofocus><?= (isEditing() ? get_kvp($_GET['edit'], Sys::$postContent) : '') ?></textarea>
+	if (!(isset($_GET['p']) && !(isset($_GET['s'])))): ?>
+		<form class="panel grid" action="/" method="post">
+			<textarea id="postcontent" name="postcontent" placeholder="<?= Lang::$placeholder ?>" aria-label="<?= Lang::$postcontent ?>" spellcheck="false" rows="1" autofocus required><?= (isEditing() ? get_kvp($_GET['edit'], Sys::$postContent) : '') ?></textarea>
 
-			<div class="panel-meta row">
+			<div class="panel-meta">
+				<input type="hidden" name="<?= Sys::$postId ?>" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
 				<button type="submit" id="submit" name="submit"><?= (isEditing() ? Lang::$save : Lang::$publish) ?></button>
 			</div>
 		</form>
@@ -668,19 +695,24 @@ $p = @array_slice($p, $_GET['skip'], Config::$postsPerPage);
 // Posts
 if(!isEditing()) {
 	foreach($p as $m): ?>
-		<article class="box post" itemscope itemtype="https://schema.org/BlogPosting">
-			<div class="post-text block" itemprop="articleBody"><?= parse(get_kvp($m[Sys::$key], Sys::$postContent)) ?></div>
-			<footer class="post-meta row">
-				<a class="permalink" href="?p=<?= $m[Sys::$key] ?>" itemprop="url">
-					<time datetime="<?= date('Y-m-d H:i:s', $m[Sys::$value]) ?>" itemprop="datePublished" pubdate><?= date(Config::$dateFormat, $m[Sys::$value]) ?></time>
-				</a>
-			<?php if (isLoggedin()): ?>
-				<form class="admin row" action="/" method="post" data-warning="<?= Lang::$deleteWarning ?>">
-					<input type="hidden" name="postid" value="<?= $m[Sys::$key] ?>">
-					<a class="button" href="?edit=<?= $m[Sys::$key] ?>"><?= Lang::$edit ?></a>
-					<button type="submit" class="delete" name="delete"><?= Lang::$delete ?></button>
-				</form>
-			<?php endif ?>
+		<article class="post grid" itemscope itemtype="https://schema.org/BlogPosting">
+			<div class="post-text text" itemprop="articleBody"><?= parse(get_kvp($m[Sys::$key], Sys::$postContent)) ?></div>
+			<footer class="post-meta">
+				<?php $time = "<time datetime=\"".date('Y-m-d H:i:s', $m[Sys::$value])."\" itemprop=\"datePublished\" pubdate>".date(Config::$dateFormat, $m[Sys::$value])."</time>" ?>
+				<?php if (!isset($_GET['p'])): ?>
+					<a class="permalink" href="?p=<?= $m[Sys::$key] ?>" itemprop="url">
+						<?= $time ?>
+					</a>
+				<?php else: ?>
+					<?= $time ?>
+				<?php endif ?>
+				<?php if (isLoggedin()): ?>
+					<form class="admin row" action="/" method="post" data-warning="<?= Lang::$deleteWarning ?>">
+						<input type="hidden" name="<?= Sys::$postId ?>" value="<?= $m[Sys::$key] ?>">
+						<a class="button" href="?edit=<?= $m[Sys::$key] ?>"><?= Lang::$edit ?></a>
+						<button type="submit" class="delete" name="delete"><?= Lang::$delete ?></button>
+					</form>
+				<?php endif ?>
 			</footer>
 		</article>
 	<?php endforeach;
