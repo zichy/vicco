@@ -21,7 +21,7 @@ class Lang {
 	static $author = 'Anonymous';
 	static $search = 'Search';
 	static $placeholder = 'Start typing &hellip;';
-	static $postcontent = 'Post content';
+	static $content = 'Post content';
 	static $publish = 'Publish';
 	static $save = 'Save';
 	static $logout = 'Logout';
@@ -45,16 +45,9 @@ class Lang {
 
 class Sys {
 	static $path = 'vicco/';
-	static $key = 'key';
-	static $value = 'value';
 	static $db = 'db';
 	static $css = 'style.css';
 	static $js = 'script.js';
-	static $postContent = 'postcontent';
-	static $postDate = 'postdate';
-	static $postDateTime = 'postdatetime';
-	static $postId = 'postid';
-	static $cookie = 'cookie';
 }
 
 session_start();
@@ -67,7 +60,7 @@ if(get_kvp(Sys::$db, 'firstuse') === false) {
 		}
 	}
 	create_record(Sys::$db);
-	create_index(Sys::$postDate, Sys::$postDate);
+	create_index('date', 'date');
 
 	set_file(null, Sys::$css, <<< 'EOD'
 :root {
@@ -293,7 +286,7 @@ nav {
 EOD
 	);
 	set_file(null, Sys::$js, <<< 'EOD'
-const $textarea = document.getElementById('postcontent');
+const $textarea = document.getElementById('content');
 if($textarea) {
 	function resizeArea($el) {
 		let heightLimit = 500;
@@ -387,9 +380,9 @@ function create_index($n, $k) {
 	$h = opendir(Sys::$path);
 	for($i = 0; ($e = readdir($h)) !== false; $i++) {
 		if ($e != '.' && $e != '..' && $e != Sys::$db) {
-			$d[$i][Sys::$key] = $e;
-			$d[$i][Sys::$value] = get_kvp($e, $k);
-			if($d[$i][Sys::$value] === false) {
+			$d[$i]['key'] = $e;
+			$d[$i]['value'] = get_kvp($e, $k);
+			if($d[$i]['value'] === false) {
 				array_pop($d);
 			}
 		}
@@ -404,7 +397,7 @@ function get_index($n) {
 
 // Status
 function isLoggedin() {
-	if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === tpl(Sys::$cookie)) {
+	if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === db('cookie')) {
 		return true;
 	}
 }
@@ -419,8 +412,8 @@ function isSearching() {
 	}
 }
 
-// Template function
-function tpl() {
+// Check database
+function db() {
 	$f = func_get_args();
 	$n = sizeof($f) - 1;
 	$t = get_kvp(Sys::$db, $f[0]);
@@ -455,7 +448,7 @@ function parse($t) {
 
 // Feed
 if(isset($_GET['feed'])) {
-	$p = @array_slice(get_index(Sys::$postDate), 0, 20);
+	$p = @array_slice(get_index('date'), 0, 20);
 	$u = 'https://$_SERVER[HTTP_HOST]';
 	$f = 'https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]';
 	header('Content-type: application/atom+xml'); ?>
@@ -472,11 +465,11 @@ if(isset($_GET['feed'])) {
 <link href="<?= $f ?>" rel="self"/>
 <?php foreach($p as $m): ?>
 <entry>
-	<title><?= date(Config::$dateFormat, $m[Sys::$value]) ?></title>
-	<link href="<?= $u . '?p='.$m[Sys::$key] ?>" />
-	<content type="html"><![CDATA[<?= parse(get_kvp($m[Sys::$key], Sys::$postContent)) ?>]]></content>
-	<updated><?= date('Y-m-d\TH:i:sP', $m[Sys::$value]) ?></updated>
-	<id>urn:uuid:<?= $m[Sys::$key] ?></id>
+	<title><?= date(Config::$dateFormat, $m['value']) ?></title>
+	<link href="<?= $u . '?p='.$m['key'] ?>" />
+	<content type="html"><![CDATA[<?= parse(get_kvp($m['key'], 'content')) ?>]]></content>
+	<updated><?= date('Y-m-d\TH:i:sP', $m['value']) ?></updated>
+	<id>urn:uuid:<?= $m['key'] ?></id>
 </entry>
 <?php endforeach ?>
 </feed><?php die();
@@ -567,11 +560,11 @@ function error($text) { ?>
 // Cookie
 function set_cookie() {
 	$identifier = bin2hex(random_bytes('64'));
-	set_kvp(Sys::$db, Sys::$cookie, $identifier);
+	set_kvp(Sys::$db, 'cookie', $identifier);
 	setcookie('vicco', $identifier, time()+(3600*24*30));
 }
 function delete_cookie() {
-	delete_kvp(Sys::$db, Sys::$cookie);
+	delete_kvp(Sys::$db, 'cookie');
 	setcookie('vicco', '', time()-(3600*24*30));
 }
 
@@ -609,26 +602,26 @@ if(isLoggedin()) {
 	// Submit posts
 	if(isset($_POST['submit'])) {
 		$r = 0;
-		if(empty($_POST[Sys::$postContent])) {
+		if(empty($_POST['content'])) {
 			error(Lang::$errorEmpty);
 		}
-		if(empty($_POST[Sys::$postId])) {
+		if(empty($_POST['id'])) {
 			$r = create_record(uniqid());
-			set_kvp($r, Sys::$postDate, time());
+			set_kvp($r, 'date', time());
 		} else {
-			if(!record_exists($_POST[Sys::$postId])) {
+			if(!record_exists($_POST['id'])) {
 				error(Lang::$errorPostExists);
 			}
-			$r = $_POST[Sys::$postId];
+			$r = $_POST['id'];
 		}
-		set_kvp($r, Sys::$postContent, $_POST[Sys::$postContent]);
-		create_index(Sys::$postDate, Sys::$postDate);
+		set_kvp($r, 'content', $_POST['content']);
+		create_index('date', 'date');
 	}
 
 	// Delete posts
 	if(isset($_POST['delete'])) {
-		record_delete($_POST['postid']);
-		create_index(Sys::$postDate, Sys::$postDate);
+		record_delete($_POST['id']);
+		create_index('date', 'date');
 	} 
 
 	if (isEditing() && !record_exists($_GET['edit'])) {
@@ -637,10 +630,10 @@ if(isLoggedin()) {
 
 	if ((!(isset($_GET['p'])) && !isSearching())): ?>
 		<form class="panel grid" action="/" method="post">
-			<textarea id="postcontent" name="postcontent" placeholder="<?= Lang::$placeholder ?>" aria-label="<?= Lang::$postcontent ?>" spellcheck="false" rows="1" autofocus required><?= (isEditing() ? get_kvp($_GET['edit'], Sys::$postContent) : '') ?></textarea>
+			<textarea id="content" name="content" placeholder="<?= Lang::$placeholder ?>" aria-label="<?= Lang::$content ?>" spellcheck="false" rows="1" autofocus required><?= (isEditing() ? get_kvp($_GET['edit'], 'content') : '') ?></textarea>
 
 			<div class="panel-meta">
-				<input type="hidden" name="<?= Sys::$postId ?>" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
+				<input type="hidden" name="id" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
 				<button type="submit" id="submit" name="submit"><?= (isEditing() ? Lang::$save : Lang::$publish) ?></button>
 			</div>
 		</form>
@@ -658,13 +651,13 @@ if(isset($_POST['logout'])) {
 }
 
 // Posts
-$p = get_index(Sys::$postDate);
+$p = get_index('date');
 
 // Search
 if(!empty($_GET['s'])) {
 	$s = explode(' ', $_GET['s']);
 	foreach($p as $k => $m) {
-		$c = strtolower(parse(get_kvp($m[Sys::$key], Sys::$postContent)));
+		$c = strtolower(parse(get_kvp($m['key'], 'content')));
 		$f = true;
 		for($i = 0; $i < sizeof($s); $i++) {
 			if(strpos($c, strtolower($s[$i])) === false) {
@@ -684,16 +677,16 @@ if(($results == 0) && isSearching()) {
 
 // Sorting
 uasort($p, function($a, $b) {
-	if($a[Sys::$value] == $b[Sys::$value]) {
+	if($a['value'] == $b['value']) {
 		return 0;
 	} else {
-		return $b[Sys::$value] <=> $a[Sys::$value];
+		return $b['value'] <=> $a['value'];
 	}
 });
 
 // Get posts
 if(isset($_GET['p']) && record_exists($_GET['p'])) {
-	$p = array(array(Sys::$value => get_kvp($_GET['p'], Sys::$postDate), Sys::$key => $_GET['p']));
+	$p = array(array('value' => get_kvp($_GET['p'], 'date'), 'key' => $_GET['p']));
 }
 $p = @array_slice($p, $_GET['skip'], Config::$postsPerPage);
 
@@ -701,11 +694,11 @@ $p = @array_slice($p, $_GET['skip'], Config::$postsPerPage);
 if(!isEditing()) {
 	foreach($p as $m): ?>
 		<article class="post grid" itemscope itemtype="https://schema.org/BlogPosting">
-			<div class="post-text text" itemprop="articleBody"><?= parse(get_kvp($m[Sys::$key], Sys::$postContent)) ?></div>
+			<div class="post-text text" itemprop="articleBody"><?= parse(get_kvp($m['key'], 'content')) ?></div>
 			<footer class="post-meta">
-				<?php $time = "<time datetime=\"".date('Y-m-d H:i:s', $m[Sys::$value])."\" itemprop=\"datePublished\" pubdate>".date(Config::$dateFormat, $m[Sys::$value])."</time>" ?>
+				<?php $time = "<time datetime=\"".date('Y-m-d H:i:s', $m['value'])."\" itemprop=\"datePublished\" pubdate>".date(Config::$dateFormat, $m['value'])."</time>" ?>
 				<?php if (!isset($_GET['p'])): ?>
-					<a class="permalink" href="?p=<?= $m[Sys::$key] ?>" itemprop="url">
+					<a class="permalink" href="?p=<?= $m['key'] ?>" itemprop="url">
 						<?= $time ?>
 					</a>
 				<?php else: ?>
@@ -713,8 +706,8 @@ if(!isEditing()) {
 				<?php endif ?>
 				<?php if (isLoggedin()): ?>
 					<form class="admin row" action="/" method="post" data-warning="<?= Lang::$deleteWarning ?>">
-						<input type="hidden" name="<?= Sys::$postId ?>" value="<?= $m[Sys::$key] ?>">
-						<a class="button" href="?edit=<?= $m[Sys::$key] ?>"><?= Lang::$edit ?></a>
+						<input type="hidden" name="id" value="<?= $m['key'] ?>">
+						<a class="button" href="?edit=<?= $m['key'] ?>"><?= Lang::$edit ?></a>
 						<button type="submit" class="delete" name="delete"><?= Lang::$delete ?></button>
 					</form>
 				<?php endif ?>
