@@ -413,6 +413,11 @@ function isEditing() {
 		return true;
 	}
 }
+function isSearching() {
+	if (isset($_GET['s'])) {
+		return true;
+	}
+}
 
 // Template function
 function tpl() {
@@ -630,7 +635,7 @@ if(isLoggedin()) {
 		error(Lang::$errorPostNonexistent);
 	}
 
-	if (!(isset($_GET['p']) && !(isset($_GET['s'])))): ?>
+	if ((!(isset($_GET['p'])) && !isSearching())): ?>
 		<form class="panel grid" action="/" method="post">
 			<textarea id="postcontent" name="postcontent" placeholder="<?= Lang::$placeholder ?>" aria-label="<?= Lang::$postcontent ?>" spellcheck="false" rows="1" autofocus required><?= (isEditing() ? get_kvp($_GET['edit'], Sys::$postContent) : '') ?></textarea>
 
