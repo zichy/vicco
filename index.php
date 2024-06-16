@@ -6,10 +6,10 @@
 */
 
 class Config {
-	static $username = 'admin';
-	static $passphrase = 'CHANGEME';
 	static $name = 'vicco';
 	static $description = 'Yet another microblog'; // optional
+	static $username = 'admin';
+	static $passphrase = 'CHANGEME';
 	static $language = 'en'; // (ISO 639-1)
 	static $themeColor = '#00f';
 	static $dateFormat = 'd M Y, H:i';
