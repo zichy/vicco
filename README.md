@@ -8,7 +8,7 @@ __vicco__ is minimalist microblogging software contained in a single PHP file.
 * Responsive layout
 * Web interface to publish and edit posts
 * Text formatting
-* Atom feed (broken)
+* Atom feed (kind of broken)
 
 ## Target audiences
 
@@ -59,10 +59,6 @@ It should be secure enough to run a crappy blog.
 
 > cute readme  
 — [riotbib](https://github.com/riotbib)
-
-## To-do
-
-* Fix Atom feed
 
 ## License
 
