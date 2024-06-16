@@ -510,7 +510,7 @@ if(isset($_GET['feed'])) {
 	</div>
 
 	<form class="search" action="/" method="get" role="search">
-		<input type="text" name="s" aria-label="<?= Lang::$search ?>">
+		<input type="search" name="s" aria-label="<?= Lang::$search ?>" required>
 		<button type="submit"><?= Lang::$search ?></button>
 	</form>
 </header><main>
