@@ -450,7 +450,7 @@ function parse($t) {
 
 // Feed
 if(isset($_GET['feed'])) {
-	$p = @array_slice(get_index(Sys::$postDate), 0, Config::$postsPerPage);
+	$p = @array_slice(get_index(Sys::$postDate), 0, 20);
 	$u = 'https://$_SERVER[HTTP_HOST]';
 	$f = 'https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]';
 	header('Content-type: application/atom+xml'); ?>
