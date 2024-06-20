@@ -286,6 +286,10 @@ nav {
 EOD
 	);
 	set_file(null, Sys::$js, <<< 'EOD'
+if (window.history.replaceState) {
+	window.history.replaceState(null, null, window.location.href);
+}
+
 const $textarea = document.getElementById('content');
 if($textarea) {
 	function resizeArea($el) {
