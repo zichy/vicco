@@ -11,7 +11,8 @@ class Config {
 	static $username = 'admin';
 	static $passphrase = 'CHANGEME';
 	static $language = 'en'; // (ISO 639-1)
-	static $themeColor = '#00f';
+	static $bgColor = '#fff';
+	static $textColor = '#00f';
 	static $dateFormat = 'd M Y, H:i';
 	static $postsPerPage = 10;
 	static $showLogin = true;
@@ -68,7 +69,7 @@ if(get_kvp(Sys::$db, 'firstuse') === false) {
 	--mono: ui-monospace, monospace;
 	--size: 1.6rem;
 	--line: 1.5;
-	--border: 1px solid var(--theme);
+	--border: 1px solid var(--text);
 }
 * {
 	box-sizing: border-box;
@@ -88,8 +89,8 @@ html {
 	outline-offset: 2px;
 }
 body {
-	background-color: #fff;
-	color: var(--theme);
+	background-color: var(--background);
+	color: var(--text);
 	font-size: var(--size);
 	font-family: var(--sans);
 	line-height: var(--line);
@@ -100,7 +101,7 @@ body {
 	overflow-x: hidden;
 }
 a {
-	color: var(--theme);
+	color: var(--text);
 }
 a:is(:hover, :focus-visible) {
 	background-color: #fe9;
@@ -130,7 +131,7 @@ code {
 	box-shadow: 0.25em 0 0 #ccc, -0.25em 0 0 #ccc;
 }
 input {
-	background-color: #fff;
+	background-color: inherit;
 	font-family: var(--mono);
 	width: 100%;
 	height: 3.5rem;
@@ -140,7 +141,7 @@ input {
 }
 textarea {
 	background-color: transparent;
-	color: var(--theme);
+	color: var(--text);
 	font-family: var(--mono);
 	font-size: var(--size);
 	line-height: var(--line);
@@ -154,7 +155,7 @@ textarea:focus-visible {
 	outline: none;
 }
 :is(button, .button) {
-	background-color: #fff;
+	background-color: inherit;
 	color: inherit;
 	font-size: 0.85em;
 	font-family: var(--sans);
@@ -173,15 +174,15 @@ textarea:focus-visible {
 	-webkit-user-select: none;
 }
 :is(button, .button):is(:hover, :focus-visible) {
-	background-color: var(--theme);
-	color: #fff;
+	background-color: var(--text);
+	color: var(--background);
 }
 .row {
 	display: flex;
 	gap: 1.5rem;
 }
 header {
-	color: var(--theme);
+	color: var(--text);
 	font-family: var(--sans);
 	display: flex;
 	gap: 2rem 4rem;
@@ -493,7 +494,7 @@ if(isset($_GET['feed'])) {
 
 	<link href="/?feed" type="application/atom+xml" title="<?= Config::$name ?> feed" rel="alternate">
 	<link rel="stylesheet" type="text/css" href="<?= Sys::$path.Sys::$css ?>" media="screen">
-	<style>:root { --theme: <?= Config::$themeColor ?>; }</style>
+	<style>:root { --background: <?= Config::$bgColor ?>; --text: <?= Config::$textColor ?>; }</style>
 
 </head><body itemscope itemtype="http://schema.org/Blog">
 
