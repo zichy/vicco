@@ -210,11 +210,11 @@ header a {
 	flex-shrink: 0;
 }
 .search input {
+	border-right: 0;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 }
 .search button {
-	margin-left: -2px;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 }
