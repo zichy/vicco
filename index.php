@@ -56,7 +56,7 @@ session_start();
 if(get_kvp(Sys::$db, 'firstuse') === false) {
 	if(!record_exists('')) {
 		if(!mkdir(Sys::$path)) {
-			die('No write permissions to create the folder "'.Sys::$path.'".');
+			die('No write permissions to create the folder ' . Sys::$path);
 		}
 	}
 	create_record(Sys::$db);
@@ -327,22 +327,22 @@ function create_record($r) {
 }
 
 function set_file($r, $k, $v) {
-	file_put_contents(Sys::$path.$r.'/'.$k, $v);
+	file_put_contents(Sys::$path . $r . '/' . $k, $v);
 }
 
 function set_kvp($r, $k, $v) {
-	$f = Sys::$path.sanitize_key($r).'/'.sanitize_key($k);
+	$f = Sys::$path.sanitize_key($r) . '/' . sanitize_key($k);
 	file_put_contents($f, $v);
 	chmod($f, 0600);
 }
 
 function get_kvp($r, $k) {
-	$p = Sys::$path.sanitize_key($r).'/'.sanitize_key($k);
+	$p = Sys::$path.sanitize_key($r) . '/' . sanitize_key($k);
 	return file_exists($p) ? file_get_contents($p) : false;
 }
 
 function delete_kvp($r, $kvp) {
-	unlink(Sys::$path.sanitize_key($r).'/'.sanitize_key($kvp));
+	unlink(Sys::$path.sanitize_key($r) . '/' . sanitize_key($kvp));
 }
 
 function record_exists($p) {
@@ -356,7 +356,7 @@ function record_delete($r) {
 		$h = opendir(Sys::$path.$r);
 		for($i = 0; ($e = readdir($h)) !== false; $i++) {
 			if ($e != '.' && $e != '..' ) {
-				unlink(Sys::$path.$r.'/'.$e);
+				unlink(Sys::$path . $r . '/' . $e);
 			}
 		}
 		closedir($h);
@@ -388,11 +388,11 @@ function create_index($n, $k) {
 		}
 	}
 	closedir($h);
-	set_kvp(Sys::$db, 'index_'.$n, serialize($d));
+	set_kvp(Sys::$db, 'index_' . $n, serialize($d));
 }
 
 function get_index($n) {
-	return unserialize(get_kvp(Sys::$db, 'index_'.$n));
+	return unserialize(get_kvp(Sys::$db, 'index_' . $n));
 }
 
 // Status
@@ -418,7 +418,7 @@ function db() {
 	$n = sizeof($f) - 1;
 	$t = get_kvp(Sys::$db, $f[0]);
 	for($i = 1; $i < $n; $i += 2) {
-		$t = str_replace('{{'.$f[$i].'}}', $f[$i + 1], $t);
+		$t = str_replace('{{' . $f[$i] . '}}', $f[$i + 1], $t);
 	}
 	return $t;
 }
@@ -466,7 +466,7 @@ if(isset($_GET['feed'])) {
 <?php foreach($p as $m): ?>
 <entry>
 	<title><?= date(Config::$dateFormat, $m['value']) ?></title>
-	<link href="<?= $u . '?p='.$m['key'] ?>" />
+	<link href="<?= $u . '?p=' . $m['key'] ?>" />
 	<content type="html"><![CDATA[<?= parse(get_kvp($m['key'], 'content')) ?>]]></content>
 	<updated><?= date('Y-m-d\TH:i:sP', $m['value']) ?></updated>
 	<id>urn:uuid:<?= $m['key'] ?></id>
@@ -520,10 +520,10 @@ function footer($results = 0) { ?>
 		<?php if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage) { ?>
 			<nav class="row">
 				<?php if (@$_GET['skip'] > 0): ?>
-					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0).'&amp;s='.@urlencode($_GET['s']) ?>" class="button">&larr; <?= Lang::$newer ?></a>
+					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0) . '&amp;s=' . @urlencode($_GET['s']) ?>" class="button">&larr; <?= Lang::$newer ?></a>
 				<?php endif ?>
 				<?php if (@$_GET['skip'] + Config::$postsPerPage < $results): ?>
-					<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><?= Lang::$older ?> &rarr;</a>
+					<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']) . '&amp;s=' . @urlencode($_GET['s']) ?>" class="button"><?= Lang::$older ?> &rarr;</a>
 				<?php endif ?>
 			</nav>
 		<?php } ?>
