@@ -449,8 +449,8 @@ function parse($t) {
 // Feed
 if(isset($_GET['feed'])) {
 	$p = @array_slice(get_index('date'), 0, 20);
-	$u = 'https://$_SERVER[HTTP_HOST]';
-	$f = 'https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]';
+	$u = 'https://' . $_SERVER['HTTP_HOST'];
+	$f = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	header('Content-type: application/atom+xml'); ?>
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
