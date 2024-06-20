@@ -6,8 +6,8 @@
 */
 
 class Config {
-	static $name = 'vicco';
-	static $description = 'Yet another microblog'; // optional
+	static $blogName = 'vicco';
+	static $blogDesc = 'Yet another microblog'; // optional
 	static $username = 'admin';
 	static $passphrase = 'CHANGEME';
 	static $language = 'en'; // (ISO 639-1)
@@ -459,9 +459,9 @@ if(isset($_GET['feed'])) {
 	header('Content-type: application/atom+xml'); ?>
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-<title><?= Config::$name ?></title>
-<?php if (!empty(Config::$description)): ?>
-<subtitle><?= Config::$description ?></subtitle>
+<title><?= Config::$blogName ?></title>
+<?php if (!empty(Config::$blogDesc)): ?>
+<subtitle><?= Config::$blogDesc ?></subtitle>
 <author>
 	<name><?= Lang::$author ?></name>
 </author>
@@ -486,13 +486,13 @@ if(isset($_GET['feed'])) {
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<?php if (!empty(Config::$description)): ?>
-		<meta name="description" content="<?= Config::$description ?>">
+	<?php if (!empty(Config::$blogDesc)): ?>
+		<meta name="description" content="<?= Config::$blogDesc ?>">
 	<?php endif ?>
 
-	<title><?= Config::$name ?></title>
+	<title><?= Config::$blogName ?></title>
 
-	<link href="/?feed" type="application/atom+xml" title="<?= Config::$name ?> feed" rel="alternate">
+	<link href="/?feed" type="application/atom+xml" title="<?= Config::$blogName ?> feed" rel="alternate">
 	<link rel="stylesheet" type="text/css" href="<?= Sys::$path.Sys::$css ?>" media="screen">
 	<style>:root { --background: <?= Config::$bgColor ?>; --text: <?= Config::$textColor ?>; }</style>
 
@@ -502,13 +502,13 @@ if(isset($_GET['feed'])) {
 	<div>
 		<h1 itemprop="name">
 		<?php if (!empty($_GET)): ?>
-			<a href="/"><?= Config::$name ?></a>
+			<a href="/"><?= Config::$blogName ?></a>
 		<?php else: ?>
-			<?= Config::$name ?>
+			<?= Config::$blogName ?>
 		<?php endif ?>
 		</h1>
-	<?php if (!empty(Config::$description)): ?>
-		<p itemprop="description"><?= Config::$description ?></p>
+	<?php if (!empty(Config::$blogDesc)): ?>
+		<p itemprop="description"><?= Config::$blogDesc ?></p>
 	<?php endif ?>
 	</div>
 
