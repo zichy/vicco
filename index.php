@@ -155,7 +155,7 @@ textarea:focus-visible {
 }
 :is(button, .button) {
 	background-color: #fff;
-	color: var(--theme);
+	color: inherit;
 	font-size: 0.85em;
 	font-family: var(--sans);
 	font-weight: bold;
