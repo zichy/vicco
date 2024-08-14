@@ -74,7 +74,6 @@ if(get_kvp(Sys::$db, 'firstuse') === false) {
 * {
 	box-sizing: border-box;
 	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
 	text-rendering: optimizeLegibility;
 }
 html {
