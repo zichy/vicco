@@ -588,11 +588,11 @@ if(isset($_GET['login'])) {
 		<form class="box login" action="/" method="post">
 			<div>
 				<label for="username"><?= Lang::$username ?></label>
-				<input type="text" id="username" name="username" autocomplete="username">
+				<input type="text" id="username" name="username" autocomplete="username" required>
 			</div>
 			<div>
 				<label for="passphrase"><?= Lang::$passphrase ?></label>
-				<input type="password" id="passphrase" name="passphrase" autocomplete="current-password">
+				<input type="password" id="passphrase" name="passphrase" autocomplete="current-password" required>
 			</div>
 			<button type="submit" name="login"><?= Lang::$login ?></button>
 		</form>
