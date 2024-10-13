@@ -1,14 +1,14 @@
 # vicco
 
-__vicco__ is minimalist microblogging software contained in a single PHP file.
+__vicco__ is brutalist microblogging software contained in a single PHP file.
 
 ## Features
 
-* Horrendous code
 * Responsive layout
-* Web interface to publish and edit posts
+* Web interface to publish, edit, and delete posts
 * Text formatting
 * Atom feed (kind of broken)
+* No ActivityPub support
 
 ## Target audiences
 
