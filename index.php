@@ -704,6 +704,9 @@ $p = @array_slice($p, $_GET['skip'], Config::$postsPerPage);
 
 // Posts
 if(!isEditing()) {
+	if(isset($_GET['p']) && empty($_GET['p'])) {
+		error(Lang::$errorNoResults);
+	}
 	foreach($p as $m): ?>
 		<article class="post grid" itemscope itemtype="https://schema.org/BlogPosting">
 			<div class="post-text text" itemprop="articleBody"><?= parse(get_kvp($m['key'], 'content')) ?></div>
