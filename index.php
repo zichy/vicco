@@ -71,7 +71,7 @@ if(get_kvp(Sys::$db, 'firstuse') === false) {
 	--mono: ui-monospace, monospace;
 	--size: 1.6rem;
 	--line: 1.5;
-	--border: 1px solid var(--text);
+	--border: 2px solid var(--text);
 }
 * {
 	box-sizing: border-box;
