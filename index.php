@@ -131,29 +131,32 @@ code {
 	background-color: var(--accent);
 	box-shadow: 0.25em 0 0 var(--accent), -0.25em 0 0 var(--accent);
 }
-input {
-	background-color: inherit;
+:is(input, textarea) {
+	background-color: transparent;
+	color: var(--text);
 	font-family: var(--mono);
+	font-size: var(--size);
+}
+:is(input, textarea):focus-visible {
+	outline: none;
+}
+input {
 	width: 100%;
 	height: 3.5rem;
 	padding-inline: 1rem;
 	border: var(--border);
 	border-radius: 0.5rem;
 }
+input:is(:hover, :focus) {
+	background-color: var(--accent);
+}
 textarea {
-	background-color: transparent;
-	color: var(--text);
-	font-family: var(--mono);
-	font-size: var(--size);
 	line-height: var(--line);
 	display: block;
 	width: 100%;
 	padding: 0;
 	border: 0;
 	resize: none;
-}
-textarea:focus-visible {
-	outline: none;
 }
 :is(button, .button) {
 	background-color: inherit;
@@ -183,7 +186,6 @@ textarea:focus-visible {
 	gap: 1.5rem;
 }
 header {
-	color: var(--text);
 	font-family: var(--sans);
 	display: flex;
 	gap: 2rem 4rem;
