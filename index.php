@@ -13,6 +13,7 @@ class Config {
 	static $language = 'en'; // (ISO 639-1)
 	static $bgColor = '#fff';
 	static $textColor = '#00f';
+	static $accentColor = '#fe9';
 	static $dateFormat = 'd M Y, H:i';
 	static $postsPerPage = 10;
 	static $postsFeed = 20;
@@ -82,7 +83,7 @@ html {
 	scroll-behavior: smooth;
 }
 ::selection {
-	background-color: #fe9;
+	background-color: var(--accent);
 }
 *:focus-visible {
 	outline: var(--border);
@@ -104,7 +105,7 @@ a {
 	color: var(--text);
 }
 a:is(:hover, :focus-visible) {
-	background-color: #fe9;
+	background-color: var(--accent);
 }
 :is(h1, h2) {
 	margin: 0;
@@ -127,8 +128,8 @@ label {
 	font-size: var(--size);
 }
 code {
-	background-color: #ccc;
-	box-shadow: 0.25em 0 0 #ccc, -0.25em 0 0 #ccc;
+	background-color: var(--accent);
+	box-shadow: 0.25em 0 0 var(--accent), -0.25em 0 0 var(--accent);
 }
 input {
 	background-color: inherit;
@@ -494,7 +495,7 @@ if(isset($_GET['feed'])) {
 
 	<link href="/?feed" type="application/atom+xml" title="<?= Config::$blogName ?> feed" rel="alternate">
 	<link rel="stylesheet" type="text/css" href="<?= Sys::$path.Sys::$css ?>" media="screen">
-	<style>:root { --background: <?= Config::$bgColor ?>; --text: <?= Config::$textColor ?>; }</style>
+	<style>:root { --background: <?= Config::$bgColor ?>; --text: <?= Config::$textColor ?>; --accent: <?= Config::$accentColor ?>; }</style>
 
 </head><body itemscope itemtype="http://schema.org/Blog">
 
