@@ -15,6 +15,7 @@ class Config {
 	static $textColor = '#00f';
 	static $dateFormat = 'd M Y, H:i';
 	static $postsPerPage = 10;
+	static $postsFeed = 20;
 	static $showLogin = true;
 }
 
@@ -452,7 +453,7 @@ function parse($t) {
 
 // Feed
 if(isset($_GET['feed'])) {
-	$p = @array_slice(get_index('date'), 0, 20);
+	$p = @array_slice(get_index('date'), 0, Config::$postsFeed);
 	$u = 'https://' . $_SERVER['HTTP_HOST'];
 	$f = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	header('Content-type: application/atom+xml'); ?>
