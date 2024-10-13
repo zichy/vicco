@@ -23,7 +23,7 @@ class Config {
 class Lang {
 	static $author = 'Anonymous';
 	static $search = 'Search';
-	static $placeholder = 'Start typing &hellip;';
+	static $placeholder = 'Start writing &hellip;';
 	static $content = 'Post content';
 	static $publish = 'Publish';
 	static $save = 'Save';
