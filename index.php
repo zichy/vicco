@@ -119,6 +119,9 @@ h1 {
 h2 {
 	font-size: 1em;
 }
+h2 + p {
+	margin-block-start: 0;
+}
 label {
 	font-weight: bold;
 	display: block;
