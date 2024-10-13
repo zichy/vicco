@@ -503,7 +503,7 @@ if(isset($_GET['feed'])) {
 	<link rel="stylesheet" type="text/css" href="<?= Sys::$path.Sys::$css ?>" media="screen">
 	<style>:root { --background: <?= Config::$bgColor ?>; --text: <?= Config::$textColor ?>; --accent: <?= Config::$accentColor ?>; }</style>
 
-</head><body itemscope itemtype="http://schema.org/Blog">
+</head><body itemscope itemtype="https://schema.org/Blog">
 
 <header>
 	<div>
