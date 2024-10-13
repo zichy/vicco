@@ -112,7 +112,6 @@ a:is(:hover, :focus-visible) {
 }
 h1 {
 	font-size: 1.25em;
-	font-style: italic;
 	line-height: 1;
 	margin-block: 0;
 }
@@ -190,6 +189,7 @@ textarea {
 }
 header {
 	font-family: var(--sans);
+	font-style: italic;
 	display: flex;
 	gap: 2rem 4rem;
 	padding-block-end: 2rem;
