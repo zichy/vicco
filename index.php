@@ -168,6 +168,7 @@ textarea {
 	font-weight: bold;
 	text-decoration: none;
 	line-height: 1;
+	white-space: norwap;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
