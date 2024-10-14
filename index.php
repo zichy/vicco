@@ -268,8 +268,8 @@ time {
 .box {
 	padding-block: 2rem;
 }
-.login div {
-	margin-block-end: 2rem;
+.login input + label {
+	margin-block-start: 2rem;
 }
 .panel:not(:last-child) {
 	border-bottom: var(--border);
@@ -585,16 +585,17 @@ if(isset($_GET['login'])) {
 	if(isLoggedin()) {
 		rmain();
 	} else { ?>
-		<form class="box login" action="/" method="post">
+		<form class="box grid login" action="/" method="post">
 			<div>
 				<label for="username"><?= Lang::$username ?></label>
 				<input type="text" id="username" name="username" autocomplete="username" required>
-			</div>
-			<div>
+
 				<label for="passphrase"><?= Lang::$passphrase ?></label>
 				<input type="password" id="passphrase" name="passphrase" autocomplete="current-password" required>
 			</div>
-			<button type="submit" name="login"><?= Lang::$login ?></button>
+			<div>
+				<button type="submit" name="login"><?= Lang::$login ?></button>
+			</div>
 		</form>
 	<?php
 		footer();
