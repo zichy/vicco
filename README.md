@@ -1,6 +1,6 @@
 # vicco
 
-__vicco__ is brutalist microblogging software contained in a single PHP file.
+vicco is brutalist microblogging software contained in a single PHP file.
 
 ## Features
 
@@ -46,8 +46,8 @@ There is some [Markdown](https://daringfireball.net/projects/markdown/)-inspired
 **Are there any dependencies? Should I use Composer?**  
 There are no dependencies. This is literally _one_ PHP file.
 
-**Since you published PHP software, you know how to write PHP, right?**  
-Haha, no. Basically, I stole [this script](https://github.com/lawl/b.php) (with permission) and improved it for the worse.
+**How did this software come to be?**  
+I stole [this script](https://github.com/lawl/b.php) (with permission) and improved it for the worse.
 
 **Uh… follow-up question: Is vicco secure?**  
 It should be secure enough to run a crappy blog.
