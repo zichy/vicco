@@ -20,7 +20,7 @@ class Config {
 	static $showLogin = true;
 }
 
-class Lang {
+class L10n {
 	static $author = 'Anonymous';
 	static $search = 'Search';
 	static $placeholder = 'Start writing &hellip;';
@@ -470,7 +470,7 @@ if(isset($_GET['feed'])) {
 <?php if (!empty(Config::$blogDesc)): ?>
 <subtitle><?= Config::$blogDesc ?></subtitle>
 <author>
-	<name><?= Lang::$author ?></name>
+	<name><?= L10n::$author ?></name>
 </author>
 <?php endif ?>
 <link href="<?= $u ?>" />
@@ -520,8 +520,8 @@ if(isset($_GET['feed'])) {
 	</div>
 
 	<form class="search" action="/" method="get" role="search">
-		<input type="search" name="s" aria-label="<?= Lang::$search ?>" required>
-		<button type="submit"><?= Lang::$search ?></button>
+		<input type="search" name="s" aria-label="<?= L10n::$search ?>" required>
+		<button type="submit"><?= L10n::$search ?></button>
 	</form>
 </header><main>
 <?php
@@ -532,10 +532,10 @@ function footer($results = 0) { ?>
 		<?php if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage) { ?>
 			<nav class="row">
 				<?php if (@$_GET['skip'] > 0): ?>
-					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0) . '&amp;s=' . @urlencode($_GET['s']) ?>" class="button">&larr; <?= Lang::$newer ?></a>
+					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0) . '&amp;s=' . @urlencode($_GET['s']) ?>" class="button">&larr; <?= L10n::$newer ?></a>
 				<?php endif ?>
 				<?php if (@$_GET['skip'] + Config::$postsPerPage < $results): ?>
-					<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']) . '&amp;s=' . @urlencode($_GET['s']) ?>" class="button"><?= Lang::$older ?> &rarr;</a>
+					<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']) . '&amp;s=' . @urlencode($_GET['s']) ?>" class="button"><?= L10n::$older ?> &rarr;</a>
 				<?php endif ?>
 			</nav>
 		<?php } ?>
@@ -545,7 +545,7 @@ function footer($results = 0) { ?>
 				<a class="button" href="?login">Login</a>
 			<?php elseif(isLoggedin()): ?>
 				<form action="/" method="post">
-					<button type="submit" name="logout"><?= Lang::$logout ?></button>
+					<button type="submit" name="logout"><?= L10n::$logout ?></button>
 				</form>
 			<?php endif ?>
 		</div>
@@ -560,9 +560,9 @@ function footer($results = 0) { ?>
 // Error template
 function error($text) { ?>
 	<section class="box text">
-		<h2><?= Lang::$error ?></h2>
+		<h2><?= L10n::$error ?></h2>
 		<p><?= $text ?>
-		<p><a class="button" href="/"><?= Lang::$back ?></a>
+		<p><a class="button" href="/"><?= L10n::$back ?></a>
 	</section>
 <?php
 	footer();
@@ -587,14 +587,14 @@ if(isset($_GET['login'])) {
 	} else { ?>
 		<form class="box grid login" action="/" method="post">
 			<div>
-				<label for="username"><?= Lang::$username ?></label>
+				<label for="username"><?= L10n::$username ?></label>
 				<input type="text" id="username" name="username" autocomplete="username" required>
 
-				<label for="passphrase"><?= Lang::$passphrase ?></label>
+				<label for="passphrase"><?= L10n::$passphrase ?></label>
 				<input type="password" id="passphrase" name="passphrase" autocomplete="current-password" required>
 			</div>
 			<div>
-				<button type="submit" name="login"><?= Lang::$login ?></button>
+				<button type="submit" name="login"><?= L10n::$login ?></button>
 			</div>
 		</form>
 	<?php
@@ -608,7 +608,7 @@ if(isset($_POST['login'])) {
 		set_cookie();
 		rmain();
 	} else {
-		error(Lang::$errorLogin);
+		error(L10n::$errorLogin);
 	}
 }
 if(isLoggedin()) {
@@ -616,14 +616,14 @@ if(isLoggedin()) {
 	if(isset($_POST['submit'])) {
 		$r = 0;
 		if(empty($_POST['content'])) {
-			error(Lang::$errorEmpty);
+			error(L10n::$errorEmpty);
 		}
 		if(empty($_POST['id'])) {
 			$r = create_record(uniqid());
 			set_kvp($r, 'date', time());
 		} else {
 			if(!record_exists($_POST['id'])) {
-				error(Lang::$errorPostExists);
+				error(L10n::$errorPostExists);
 			}
 			$r = $_POST['id'];
 		}
@@ -638,22 +638,22 @@ if(isLoggedin()) {
 	} 
 
 	if (isEditing() && !record_exists($_GET['edit'])) {
-		error(Lang::$errorPostNonexistent);
+		error(L10n::$errorPostNonexistent);
 	}
 
 	if ((!(isset($_GET['p'])) && !isSearching())): ?>
 		<form class="panel grid" action="/" method="post">
-			<textarea id="content" name="content" placeholder="<?= Lang::$placeholder ?>" aria-label="<?= Lang::$content ?>" spellcheck="false" rows="1" autofocus required><?= (isEditing() ? get_kvp($_GET['edit'], 'content') : '') ?></textarea>
+			<textarea id="content" name="content" placeholder="<?= L10n::$placeholder ?>" aria-label="<?= L10n::$content ?>" spellcheck="false" rows="1" autofocus required><?= (isEditing() ? get_kvp($_GET['edit'], 'content') : '') ?></textarea>
 
 			<div class="panel-meta">
 				<input type="hidden" name="id" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
-				<button type="submit" id="submit" name="submit"><?= (isEditing() ? Lang::$save : Lang::$publish) ?></button>
+				<button type="submit" id="submit" name="submit"><?= (isEditing() ? L10n::$save : L10n::$publish) ?></button>
 			</div>
 		</form>
 	<?php endif;
 
 } elseif(isset($_POST['submit']) || isset($_POST['delete']) || isEditing()) {
-	error(Lang::$errorHacker);
+	error(L10n::$errorHacker);
 }
 
 // Logout
@@ -685,7 +685,7 @@ if(!empty($_GET['s'])) {
 }
 $results = sizeof($p);
 if(($results == 0) && isSearching()) {
-	error(Lang::$errorNoResults);
+	error(L10n::$errorNoResults);
 }
 
 // Sorting
@@ -706,7 +706,7 @@ $p = @array_slice($p, $_GET['skip'], Config::$postsPerPage);
 // Posts
 if(!isEditing()) {
 	if(isset($_GET['p']) && empty($_GET['p'])) {
-		error(Lang::$errorNoResults);
+		error(L10n::$errorNoResults);
 	}
 	foreach($p as $m): ?>
 		<article class="post grid" itemscope itemtype="https://schema.org/BlogPosting">
@@ -721,10 +721,10 @@ if(!isEditing()) {
 					<?= $time ?>
 				<?php endif ?>
 				<?php if (isLoggedin()): ?>
-					<form class="admin row" action="/" method="post" data-warning="<?= Lang::$deleteWarning ?>">
+					<form class="admin row" action="/" method="post" data-warning="<?= L10n::$deleteWarning ?>">
 						<input type="hidden" name="id" value="<?= $m['key'] ?>">
-						<a class="button" href="?edit=<?= $m['key'] ?>"><?= Lang::$edit ?></a>
-						<button type="submit" class="delete" name="delete"><?= Lang::$delete ?></button>
+						<a class="button" href="?edit=<?= $m['key'] ?>"><?= L10n::$edit ?></a>
+						<button type="submit" class="delete" name="delete"><?= L10n::$delete ?></button>
 					</form>
 				<?php endif ?>
 			</footer>
