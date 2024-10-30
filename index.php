@@ -8,16 +8,23 @@
 class Config {
 	static $blogName = 'vicco';
 	static $blogDesc = 'Yet another microblog'; // optional
+	static $emoji = '🌱'; // optional
 	static $username = 'admin'; // non-public
 	static $passphrase = 'CHANGEME';
 	static $language = 'en'; // (ISO 639-1)
-	static $bgColor = '#fff';
-	static $textColor = '#00f';
-	static $accentColor = '#fe9';
 	static $dateFormat = 'd M Y, H:i';
 	static $postsPerPage = 10;
 	static $postsFeed = 20;
 	static $showLogin = true;
+}
+
+class Color {
+	static $background = '#eee';
+	static $box = '#fff';
+	static $text = '#000';
+	static $meta = '#666';
+	static $interactive = '#00f';
+	static $accent = '#fe9';
 }
 
 class L10n {
@@ -73,7 +80,7 @@ if(getKVP(Sys::$db, 'firstuse') === false) {
 	--mono: ui-monospace, monospace;
 	--size: 1.6rem;
 	--line: 1.5;
-	--border: 2px solid var(--text);
+	--border: 1px solid var(--interactive);
 }
 * {
 	box-sizing: border-box;
@@ -97,17 +104,18 @@ body {
 	font-size: var(--size);
 	font-family: var(--sans);
 	line-height: var(--line);
-	max-width: 1024px;
+	max-width: 768px;
 	min-width: 375px;
 	padding-inline: 2rem;
 	margin: 4rem auto;
 	overflow-x: hidden;
 }
 a {
-	color: var(--text);
+	color: var(--interactive);
 }
 a:is(:hover, :focus-visible) {
 	background-color: var(--accent);
+	outline: 0.15em solid var(--accent);
 }
 :is(h1, h2) {
 	margin: 0;
@@ -124,7 +132,7 @@ h2 + p {
 	margin-block-start: 0;
 }
 label {
-	font-weight: bold;
+	color: var(--interactive);
 	display: block;
 	padding-block-end: 0.5rem;
 }
@@ -135,8 +143,13 @@ code {
 	background-color: var(--accent);
 	box-shadow: 0.25em 0 0 var(--accent), -0.25em 0 0 var(--accent);
 }
+.form {
+	display: flex;
+	flex-direction: column;
+	row-gap: 2rem;
+}
 :is(input, textarea) {
-	background-color: transparent;
+	background-color: var(--box);
 	color: var(--text);
 	font-family: var(--mono);
 	font-size: var(--size);
@@ -163,8 +176,8 @@ textarea {
 	resize: none;
 }
 :is(button, .button) {
-	background-color: inherit;
-	color: inherit;
+	background-color: var(--box);
+	color: var(--interactive);
 	font-size: 0.85em;
 	font-family: var(--sans);
 	font-weight: bold;
@@ -183,20 +196,19 @@ textarea {
 	-webkit-user-select: none;
 }
 :is(button, .button):is(:hover, :focus-visible) {
-	background-color: var(--text);
+	background-color: var(--interactive);
 	color: var(--background);
+	outline: 0;
 }
 .row {
 	display: flex;
-	gap: 1.5rem;
+	column-gap: 1.5rem;
 }
 header {
 	font-family: var(--sans);
-	font-style: italic;
 	display: flex;
 	gap: 2rem 4rem;
 	padding-block-end: 2rem;
-	border-bottom: var(--border);
 }
 @media (max-width: 768px) {
 	header {
@@ -209,11 +221,13 @@ header {
 		align-items: flex-end;
 	}
 }
-header p {
-	margin: 0;
-}
 header a {
+	color: currentColor;
 	text-decoration: none;
+}
+header p {
+	color: var(--meta);
+	margin: 0;
 }
 .search {
 	display: flex;
@@ -234,50 +248,25 @@ header a {
 .text > *:last-child {
 	margin-block-end: 0;
 }
-.grid {
-	display: grid;
-	grid-gap: 2rem 3rem;
-	padding-block: 2rem;
-}
-@media (max-width: 768px) {
-	.grid {
-		grid-template-rows: auto;
-	}
-}
-@media (min-width: 769px) {
-	.grid {
-		grid-template-columns: 1fr 16rem;
-	}
-}
 .post:not(:last-child) {
-	border-bottom: var(--border);
+	margin-block-end: 2rem;
 }
-.post-text {
-	font-family: var(--mono);
+.box {
+	background-color: var(--box);
+	padding: 2rem;
+	border-radius: 0.5rem;
 }
-.post-meta {
-	display: flex;
-	flex-direction: column;
-	row-gap: 1rem;
+.box-meta {
+	color: var(--meta);
+	margin-block-start: 1rem;
 }
 .permalink {
+	color: currentColor;
 	text-decoration: none;
 	align-self: start;
 }
-time {
-	font-weight: bold;
-}
-.box {
-	padding-block: 2rem;
-}
-.login input + label {
-	margin-block-start: 2rem;
-}
-.panel:not(:last-child) {
-	border-bottom: var(--border);
-}
-.panel-meta {
-	justify-content: end;
+.panel {
+	margin-block-end: 2rem;
 }
 .footer {
 	display: grid;
@@ -285,7 +274,6 @@ time {
 	grid-template-areas: 'nav acc';
 	grid-column-gap: 4rem;
 	padding-block-start: 2rem;
-	border-top: var(--border);
 }
 nav {
 	grid-area: nav;
@@ -534,13 +522,20 @@ if(isset($_GET['feed'])) {
 
 	<link href="/?feed" type="application/atom+xml" title="<?= Config::$blogName ?> feed" rel="alternate">
 	<link rel="stylesheet" type="text/css" href="<?= Sys::$path.Sys::$css ?>" media="screen">
-	<style>:root { --background: <?= Config::$bgColor ?>; --text: <?= Config::$textColor ?>; --accent: <?= Config::$accentColor ?>; }</style>
+	<?php if (!empty(Config::$emoji)): ?>
+		<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Ctext%20y=%221em%22%20font-size=%2285%22%3E<?= Config::$emoji ?>%3C/text%3E%3C/svg%3E">
+	<?php endif ?>
+
+	<style>:root { --background: <?= Color::$background ?>; --box: <?= Color::$box ?>; --text: <?= Color::$text ?>; --meta: <?= Color::$meta ?>; --interactive: <?= Color::$interactive ?>; --accent: <?= Color::$accent ?>; }</style>
 
 </head><body itemscope itemtype="https://schema.org/Blog">
 
 <header>
 	<div>
 		<h1 itemprop="name">
+		<?php if (!empty(Config::$emoji)): ?>
+			<span aria-hidden="true"><?= Config::$emoji ?></span>
+		<?php endif ?>
 		<?php if (!empty($_GET)): ?>
 			<a href="/"><?= Config::$blogName ?></a>
 		<?php else: ?>
@@ -565,10 +560,10 @@ function footer($results = 0) { ?>
 		<?php if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage) { ?>
 			<nav class="row">
 				<?php if (@$_GET['skip'] > 0): ?>
-					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0) . '&amp;s=' . @urlencode($_GET['s']) ?>" class="button">&larr; <?= L10n::$newer ?></a>
+					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0) . '&amp;s=' . @urlencode($_GET['s']) ?>" class="button"><span aria-hidden="true">&larr;</span> <?= L10n::$newer ?></a>
 				<?php endif ?>
 				<?php if (@$_GET['skip'] + Config::$postsPerPage < $results): ?>
-					<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']) . '&amp;s=' . @urlencode($_GET['s']) ?>" class="button"><?= L10n::$older ?> &rarr;</a>
+					<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']) . '&amp;s=' . @urlencode($_GET['s']) ?>" class="button"><?= L10n::$older ?> <span aria-hidden="true">&rarr;</span></a>
 				<?php endif ?>
 			</nav>
 		<?php } ?>
@@ -618,11 +613,12 @@ if(isset($_GET['login'])) {
 	if(isLoggedin()) {
 		rmain();
 	} else { ?>
-		<form class="box grid login" action="/" method="post">
+		<form class="box form" action="/" method="post">
 			<div>
 				<label for="username"><?= L10n::$username ?></label>
 				<input type="text" id="username" name="username" autocomplete="username" required>
-
+			</div>
+			<div>
 				<label for="passphrase"><?= L10n::$passphrase ?></label>
 				<input type="password" id="passphrase" name="passphrase" autocomplete="current-password" required>
 			</div>
@@ -681,11 +677,11 @@ if(isLoggedin()) {
 	}
 
 	if ((!(isset($_GET['p'])) && !isSearching())): ?>
-		<form class="panel grid" action="/" method="post">
+		<form class="panel box" action="/" method="post">
+			<input type="hidden" name="id" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
 			<textarea id="content" name="content" placeholder="<?= L10n::$placeholder ?>" aria-label="<?= L10n::$content ?>" spellcheck="false" rows="1" autofocus required><?= (isEditing() ? getPost($_GET['edit'], 'content') : '') ?></textarea>
 
-			<div class="panel-meta">
-				<input type="hidden" name="id" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
+			<div class="box-meta row">
 				<button type="submit" id="submit" name="submit"><?= (isEditing() ? L10n::$save : L10n::$publish) ?></button>
 			</div>
 		</form>
@@ -749,12 +745,12 @@ if(!isEditing()) {
 	}
 	foreach($posts as $post): ?>
 		<?php $id = postId($post['key']); ?>
-		<article class="post grid" itemscope itemtype="https://schema.org/BlogPosting">
+		<article class="post box" itemscope itemtype="https://schema.org/BlogPosting">
 			<div class="post-text text" itemprop="articleBody">
 				<?= parse(getPost($id, 'content')) ?>
 			</div>
-			<footer class="post-meta">
-				<?php $time = "<time datetime=\"".date('Y-m-d H:i:s', getPost($id, 'date'))."\" itemprop=\"datePublished\" pubdate>".date(Config::$dateFormat, getPost($id, 'date'))."</time>" ?>
+			<footer class="box-meta row">
+				<?php $time = "<time datetime=\"".date('Y-m-d H:i:s', getPost($id, 'date'))."\" itemprop=\"datePublished\" pubdate><span aria-hidden=\"true\">&#8984;</span> ".date(Config::$dateFormat, getPost($id, 'date'))."</time>" ?>
 				<?php if (!isset($_GET['p'])): ?>
 					<a class="permalink" href="?p=<?= $id ?>" itemprop="url">
 						<?= $time ?>
