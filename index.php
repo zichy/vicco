@@ -357,15 +357,25 @@ function create_post($id, $content) {
 }
 
 function get_post($id, $value = false) {
-	$file = Sys::$postsPath.$id.'.json';
+	if (!str_ends_with($id, '.json')) {
+		$id = $id.'.json';
+	}
+	$file = Sys::$postsPath.$id;
 
 	if(file_exists($file)) {
 		if (!$value) {
 			return file_get_contents($file);
 		} else {
 			return json_decode((file_get_contents($file)))->$value;
-		} 
+		}
 	}
+}
+
+function postId($id) {
+	if (str_ends_with($id, '.json')) {
+		$id = substr($id, 0, -5);
+	}
+	return $id;
 }
 
 function delete_post($id) {
@@ -422,7 +432,7 @@ function create_index() {
 	for($i = 0; ($e = readdir($h)) !== false; $i++) {
 		if (str_ends_with($e, '.json')) {
 			$d[$i]['key'] = $e;
-			$d[$i]['value'] = get_post(substr($e, 0, -5), 'date');
+			$d[$i]['value'] = get_post(postId($e), 'date');
 			if($d[$i]['value'] === false) {
 				array_pop($d);
 			}
@@ -505,7 +515,7 @@ if(isset($_GET['feed'])) {
 <link href="<?= $blogUrl ?>" />
 <link href="<?= $feedUrl ?>" rel="self"/>
 <?php foreach($posts as $post): ?>
-<?php $id = substr($post['key'], 0, -5) ?>
+<?php $id = postId($post['key']); ?>
 <entry>
 	<title><?= date(Config::$dateFormat, $post['value']) ?></title>
 	<link href="<?= $blogUrl . '?p=' . $id ?>" />
@@ -705,17 +715,17 @@ $posts = get_index();
 // Search
 if(!empty($_GET['s'])) {
 	$s = explode(' ', $_GET['s']);
-	foreach($p as $k => $m) {
-		$c = strtolower(parse(get_kvp($m['key'], 'content')));
+	foreach($posts as $postKey => $postValue) {
+		$content = strtolower(parse(get_post(postId($postValue['key']), 'content')));
 		$f = true;
 		for($i = 0; $i < sizeof($s); $i++) {
-			if(strpos($c, strtolower($s[$i])) === false) {
+			if(strpos($content, strtolower($s[$i])) === false) {
 				$f = false;
 				break;
 			}
 		}
 		if(!$f) {
-			unset($p[$k]);
+			unset($posts[$postKey]);
 		}
 	}
 }
@@ -745,7 +755,7 @@ if(!isEditing()) {
 		error(L10n::$errorNoResults);
 	}
 	foreach($posts as $post): ?>
-		<?php $id = (isset($_GET['p']) ? $post['key'] : substr($post['key'], 0, -5));?>
+		<?php $id = postId($post['key']); ?>
 		<article class="post grid" itemscope itemtype="https://schema.org/BlogPosting">
 			<div class="post-text text" itemprop="articleBody">
 				<?= parse(get_post($id, 'content')) ?>
