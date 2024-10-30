@@ -7,7 +7,7 @@ vicco is brutalist microblogging software contained in a single PHP file.
 * Responsive layout
 * Web interface to publish, edit, and delete posts
 * Text formatting
-* Atom feed (kind of broken)
+* Atom feed (somewhat broken)
 * No ActivityPub support
 
 ## Target audiences
@@ -22,7 +22,7 @@ vicco is brutalist microblogging software contained in a single PHP file.
 
 ## Installation
 
-1. Adjust the config in `index.php`. Remember to change your credentials.
+1. Adjust the config in `index.php`, especially your credentials.
 2. Upload it to your server and make the directory writable.
 3. Open the site in your browser.
 4. It should work.
@@ -46,13 +46,18 @@ There is some [Markdown](https://daringfireball.net/projects/markdown/)-inspired
 **Are there any dependencies? Should I use Composer?**  
 There are no dependencies. This is literally _one_ PHP file.
 
+**Can I rename `index.php`?**  
+You can, but the question is whether you should. (You shouldn’t.)
+
 **How did this software come to be?**  
-I stole [this script](https://github.com/lawl/b.php) (with permission) and improved it for the worse.
+I forked [this script](https://github.com/lawl/b.php) and improved it for the worse.
 
 **Uh… follow-up question: Is vicco secure?**  
 It should be secure enough to run a crappy blog.
 
 ## Testimonials
+
+Send me a PR if you want to add yours!
 
 > I’m a huge fan of your blog, but I get the creeps from the PHP code.  
 — [sternenseemann](https://github.com/sternenseemann)
