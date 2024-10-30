@@ -56,7 +56,7 @@ class L10n {
 class Sys {
 	static $path = 'vicco/';
 	static $postsPath = 'vicco/posts/';
-	static $db = 'db';
+	static $dbPath = 'db';
 	static $css = 'style.css';
 	static $js = 'script.js';
 }
@@ -64,13 +64,13 @@ class Sys {
 session_start();
 
 // Installation
-if(getKVP(Sys::$db, 'firstuse') === false) {
+if(getKVP(Sys::$dbPath, 'firstuse') === false) {
 	if(!recordExists('')) {
 		if(!mkdir(Sys::$path)) {
 			die('No write permissions to create the folder ' . Sys::$path);
 		}
 	}
-	createRecord(Sys::$db);
+	createRecord(Sys::$dbPath);
 	mkdir(Sys::$postsPath);
 	createIndex();
 
@@ -316,7 +316,7 @@ if($adminForms) {
 	});
 }
 EOD
-	); setKVP(Sys::$db, 'firstuse', 1);
+	); setKVP(Sys::$dbPath, 'firstuse', 1);
 }
 
 // Database
@@ -420,11 +420,11 @@ function createIndex() {
 		}
 	}
 	closedir($h);
-	setKVP(Sys::$db, 'index', serialize($d));
+	setKVP(Sys::$dbPath, 'index', serialize($d));
 }
 
 function getIndex() {
-	return unserialize(getKVP(Sys::$db, 'index'));
+	return unserialize(getKVP(Sys::$dbPath, 'index'));
 }
 
 // Status
@@ -448,7 +448,7 @@ function isSearching() {
 function db() {
 	$f = func_get_args();
 	$n = sizeof($f) - 1;
-	$t = getKVP(Sys::$db, $f[0]);
+	$t = getKVP(Sys::$dbPath, $f[0]);
 	for($i = 1; $i < $n; $i += 2) {
 		$t = str_replace('{{' . $f[$i] . '}}', $f[$i + 1], $t);
 	}
@@ -600,11 +600,11 @@ function error($text) { ?>
 // Cookie
 function set_cookie() {
 	$identifier = bin2hex(random_bytes('64'));
-	setKVP(Sys::$db, 'cookie', $identifier);
+	setKVP(Sys::$dbPath, 'cookie', $identifier);
 	setcookie('vicco', $identifier, time()+(3600*24*30));
 }
 function delete_cookie() {
-	deleteKVP(Sys::$db, 'cookie');
+	deleteKVP(Sys::$dbPath, 'cookie');
 	setcookie('vicco', '', time()-(3600*24*30));
 }
 
