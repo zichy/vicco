@@ -480,8 +480,8 @@ function parse($t) {
 	$t = preg_replace('/\~(.*?)\~/', '<del>\1</del>', $t);
 	$t = preg_replace('/\:\"(.*?)\"\:/', '<q>\1</q>', $t);
 	$t = preg_replace('/\@(.*?)\@/', '<code>\1</code>', $t);
-	$t = preg_replace('/\[([^\[]+)\]\(([^\)]+)\)/', '<a href=\'\2\'>\1</a>', $t);
-	$t = preg_replace('/\[(.*?)\]/', '<a href=\'\1\'>\1</a>', $t);
+	$t = preg_replace('/\[([^\[]+)\]\(([^\)]+)\)/', '<a href=\'\2\' rel=\'external nofollow\' target=\'_blank\'>\1</a>', $t);
+	$t = preg_replace('/\[(.*?)\]/', '<a href=\'\1\' rel=\'external nofollow\' target=\'_blank\'>\1</a>', $t);
 	$t = '<p>' . $t . '</p>';
 	$t = str_replace("\r\n\r\n", "</p><p>", $t);
 	$t = str_replace("\n\n", "</p><p>", $t);
