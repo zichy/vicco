@@ -740,6 +740,11 @@ if(isset($_GET['p']) && postExists($_GET['p'])) {
 }
 $posts = @array_slice($posts, $_GET['skip'], Config::$postsPerPage);
 
+// No posts exist
+if(!$posts && !isLoggedin()) {
+	error(L10n::$errorNoResults, false);
+}
+
 // Posts
 if(!isEditing()) {
 	if(isset($_GET['p']) && empty($_GET['p'])) {
@@ -752,13 +757,13 @@ if(!isEditing()) {
 				<?= parse(getPost($id, 'content')) ?>
 			</div>
 			<footer class="box-meta row">
-				<?php $time = "<time datetime=\"".date('Y-m-d H:i:s', getPost($id, 'date'))."\" itemprop=\"datePublished\" pubdate><span aria-hidden=\"true\">&#8984;</span> ".date(Config::$dateFormat, getPost($id, 'date'))."</time>" ?>
+				<?php $time = "<span aria-hidden=\"true\">&#8984;</span> <time datetime=\"".date('Y-m-d H:i:s', getPost($id, 'date'))."\" itemprop=\"datePublished\" pubdate> ".date(Config::$dateFormat, getPost($id, 'date'))."</time>" ?>
 				<?php if (!isset($_GET['p'])): ?>
 					<a class="permalink" href="?p=<?= $id ?>" itemprop="url">
 						<?= $time ?>
 					</a>
 				<?php else: ?>
-					<?= $time ?>
+					<span><?= $time ?></span>
 				<?php endif ?>
 				<?php if (isLoggedin()): ?>
 					<form class="admin row" action="/" method="post" data-warning="<?= L10n::$deleteWarning ?>">
