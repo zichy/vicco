@@ -586,11 +586,13 @@ function footer($results = 0) { ?>
 <?php }
 
 // Error template
-function error($text) { ?>
+function error($text, $backLink = true) { ?>
 	<section class="box text">
 		<h2><?= L10n::$error ?></h2>
 		<p><?= $text ?>
-		<p><a class="button" href="/"><?= L10n::$back ?></a>
+		<?php if($backLink): ?>
+			<p><a class="button" href="/"><?= L10n::$back ?></a>
+		<?php endif ?>
 	</section>
 <?php
 	footer();
