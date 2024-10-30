@@ -8,7 +8,7 @@
 class Config {
 	static $blogName = 'vicco';
 	static $blogDesc = 'Yet another microblog'; // optional
-	static $username = 'admin';
+	static $username = 'admin'; // non-public
 	static $passphrase = 'CHANGEME';
 	static $language = 'en'; // (ISO 639-1)
 	static $bgColor = '#fff';
@@ -48,6 +48,7 @@ class L10n {
 
 class Sys {
 	static $path = 'vicco/';
+	static $postsPath = 'vicco/posts/';
 	static $db = 'db';
 	static $css = 'style.css';
 	static $js = 'script.js';
@@ -56,16 +57,17 @@ class Sys {
 session_start();
 
 // Installation
-if(get_kvp(Sys::$db, 'firstuse') === false) {
-	if(!record_exists('')) {
+if(getKVP(Sys::$db, 'firstuse') === false) {
+	if(!recordExists('')) {
 		if(!mkdir(Sys::$path)) {
 			die('No write permissions to create the folder ' . Sys::$path);
 		}
 	}
-	create_record(Sys::$db);
-	create_index('date', 'date');
+	createRecord(Sys::$db);
+	mkdir(Sys::$postsPath);
+	createIndex();
 
-	set_file(null, Sys::$css, <<< 'EOD'
+	setFile(null, Sys::$css, <<< 'EOD'
 :root {
 	--sans: system-ui, sans-serif;
 	--mono: ui-monospace, monospace;
@@ -293,7 +295,7 @@ nav {
 }
 EOD
 	);
-	set_file(null, Sys::$js, <<< 'EOD'
+	setFile(null, Sys::$js, <<< 'EOD'
 if (window.history.replaceState) {
 	window.history.replaceState(null, null, window.location.href);
 }
@@ -326,45 +328,82 @@ if($adminForms) {
 	});
 }
 EOD
-	); set_kvp(Sys::$db, 'firstuse', 1);
+	); setKVP(Sys::$db, 'firstuse', 1);
 }
 
 // Database
-function create_record($r) {
-	$r = sanitize_key($r);
-	if(!record_exists($r)) {
+function createRecord($r) {
+	$r = sanitizeKey($r);
+	if(!recordExists($r)) {
 		mkdir(Sys::$path.$r);
 	}
 	return $r;
 }
 
-function set_file($r, $k, $v) {
+function setFile($r, $k, $v) {
 	file_put_contents(Sys::$path . $r . '/' . $k, $v);
 }
 
-function set_kvp($r, $k, $v) {
-	$f = Sys::$path.sanitize_key($r) . '/' . sanitize_key($k);
+function setKVP($r, $k, $v) {
+	$f = Sys::$path.sanitizeKey($r) . '/' . $k;
 	file_put_contents($f, $v);
 	chmod($f, 0600);
 }
 
-function get_kvp($r, $k) {
-	$p = Sys::$path.sanitize_key($r) . '/' . sanitize_key($k);
+function createPost($id, $content) {
+	$file = Sys::$postsPath.$id.'.json';
+	file_put_contents($file, $content);
+	chmod($file, 0600);
+}
+
+function getPost($id, $value = false) {
+	if (!str_ends_with($id, '.json')) {
+		$id = $id.'.json';
+	}
+	$file = Sys::$postsPath.$id;
+
+	if(file_exists($file)) {
+		if (!$value) {
+			return file_get_contents($file);
+		} else {
+			return json_decode((file_get_contents($file)))->$value;
+		}
+	}
+}
+
+function postId($id) {
+	if (str_ends_with($id, '.json')) {
+		$id = substr($id, 0, -5);
+	}
+	return $id;
+}
+
+function deletePost($id) {
+	$file = Sys::$postsPath.$id.'.json';
+	unlink($file);
+}
+
+function postExists($id) {
+	return file_exists(Sys::$postsPath.$id.'.json');
+}
+
+function getKVP($r, $k) {
+	$p = Sys::$path.sanitizeKey($r) . '/' . $k;
 	return file_exists($p) ? file_get_contents($p) : false;
 }
 
-function delete_kvp($r, $kvp) {
-	unlink(Sys::$path.sanitize_key($r) . '/' . sanitize_key($kvp));
+function deleteKVP($r, $kvp) {
+	unlink(Sys::$path.sanitizeKey($r) . '/' . sanitizeKey($kvp));
 }
 
-function record_exists($p) {
-	$p = sanitize_key($p);
+function recordExists($p) {
+	$p = sanitizeKey($p);
 	return file_exists(Sys::$path.$p) && is_dir(Sys::$path.$p);
 }
 
 function record_delete($r) {
-	$r = sanitize_key($r);
-	if(record_exists($r)) {
+	$r = sanitizeKey($r);
+	if(recordExists($r)) {
 		$h = opendir(Sys::$path.$r);
 		for($i = 0; ($e = readdir($h)) !== false; $i++) {
 			if ($e != '.' && $e != '..' ) {
@@ -376,35 +415,28 @@ function record_delete($r) {
 	}
 }
 
-function get_keys($r) {
-	$s = scandir(Sys::$path.$r);
-	return array_values(array_filter($s, function($v) {
-		return $v != '.' && $v != '..';
-	}));
-}
-
-function sanitize_key($k) {
+function sanitizeKey($k) {
 	return preg_replace('/[^A-Za-z0-9_]/', '', $k);
 }
 
-function create_index($n, $k) {
+function createIndex() {
 	$d = array();
-	$h = opendir(Sys::$path);
+	$h = opendir(Sys::$postsPath);
 	for($i = 0; ($e = readdir($h)) !== false; $i++) {
-		if ($e != '.' && $e != '..' && $e != Sys::$db) {
+		if (str_ends_with($e, '.json')) {
 			$d[$i]['key'] = $e;
-			$d[$i]['value'] = get_kvp($e, $k);
+			$d[$i]['value'] = getPost(postId($e), 'date');
 			if($d[$i]['value'] === false) {
 				array_pop($d);
 			}
 		}
 	}
 	closedir($h);
-	set_kvp(Sys::$db, 'index_' . $n, serialize($d));
+	setKVP(Sys::$db, 'index', serialize($d));
 }
 
-function get_index($n) {
-	return unserialize(get_kvp(Sys::$db, 'index_' . $n));
+function getIndex() {
+	return unserialize(getKVP(Sys::$db, 'index'));
 }
 
 // Status
@@ -428,7 +460,7 @@ function isSearching() {
 function db() {
 	$f = func_get_args();
 	$n = sizeof($f) - 1;
-	$t = get_kvp(Sys::$db, $f[0]);
+	$t = getKVP(Sys::$db, $f[0]);
 	for($i = 1; $i < $n; $i += 2) {
 		$t = str_replace('{{' . $f[$i] . '}}', $f[$i + 1], $t);
 	}
@@ -460,9 +492,9 @@ function parse($t) {
 
 // Feed
 if(isset($_GET['feed'])) {
-	$p = @array_slice(get_index('date'), 0, Config::$postsFeed);
-	$u = 'https://' . $_SERVER['HTTP_HOST'];
-	$f = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	$posts = @array_slice(getIndex(), 0, Config::$postsFeed);
+	$blogUrl = 'https://' . $_SERVER['HTTP_HOST'];
+	$feedUrl = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	header('Content-type: application/atom+xml'); ?>
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
@@ -473,15 +505,16 @@ if(isset($_GET['feed'])) {
 	<name><?= L10n::$author ?></name>
 </author>
 <?php endif ?>
-<link href="<?= $u ?>" />
-<link href="<?= $f ?>" rel="self"/>
-<?php foreach($p as $m): ?>
+<link href="<?= $blogUrl ?>" />
+<link href="<?= $feedUrl ?>" rel="self"/>
+<?php foreach($posts as $post): ?>
+<?php $id = postId($post['key']); ?>
 <entry>
-	<title><?= date(Config::$dateFormat, $m['value']) ?></title>
-	<link href="<?= $u . '?p=' . $m['key'] ?>" />
-	<content type="html"><![CDATA[<?= parse(get_kvp($m['key'], 'content')) ?>]]></content>
-	<updated><?= date('Y-m-d\TH:i:sP', $m['value']) ?></updated>
-	<id>urn:uuid:<?= $m['key'] ?></id>
+	<title><?= date(Config::$dateFormat, $post['value']) ?></title>
+	<link href="<?= $blogUrl . '?p=' . $id ?>" />
+	<content type="html"><![CDATA[<?= parse(getPost($id, 'content')) ?>]]></content>
+	<updated><?= date('Y-m-d\TH:i:sP', $post['value']) ?></updated>
+	<id>urn:uuid:<?= $id ?></id>
 </entry>
 <?php endforeach ?>
 </feed><?php die();
@@ -572,11 +605,11 @@ function error($text) { ?>
 // Cookie
 function set_cookie() {
 	$identifier = bin2hex(random_bytes('64'));
-	set_kvp(Sys::$db, 'cookie', $identifier);
+	setKVP(Sys::$db, 'cookie', $identifier);
 	setcookie('vicco', $identifier, time()+(3600*24*30));
 }
 function delete_cookie() {
-	delete_kvp(Sys::$db, 'cookie');
+	deleteKVP(Sys::$db, 'cookie');
 	setcookie('vicco', '', time()-(3600*24*30));
 }
 
@@ -614,36 +647,42 @@ if(isset($_POST['login'])) {
 if(isLoggedin()) {
 	// Submit posts
 	if(isset($_POST['submit'])) {
-		$r = 0;
 		if(empty($_POST['content'])) {
 			error(L10n::$errorEmpty);
 		}
+
+		$post = new stdClass();
+		$id = 0;
+
 		if(empty($_POST['id'])) {
-			$r = create_record(uniqid());
-			set_kvp($r, 'date', time());
+			$id = uniqid();
+			$post->date = time();
 		} else {
-			if(!record_exists($_POST['id'])) {
+			if(!postExists($_POST['id'])) {
 				error(L10n::$errorPostExists);
 			}
-			$r = $_POST['id'];
+			$id = $_POST['id'];
+			$post->date = getPost($id, 'date');
 		}
-		set_kvp($r, 'content', $_POST['content']);
-		create_index('date', 'date');
+
+		$post->content = $_POST['content'];
+		createPost($id, json_encode($post));
+		createIndex();
 	}
 
 	// Delete posts
 	if(isset($_POST['delete'])) {
-		record_delete($_POST['id']);
-		create_index('date', 'date');
-	} 
+		deletePost($_POST['id']);
+		createIndex();
+	}
 
-	if (isEditing() && !record_exists($_GET['edit'])) {
+	if (isEditing() && !postExists($_GET['edit'])) {
 		error(L10n::$errorPostNonexistent);
 	}
 
 	if ((!(isset($_GET['p'])) && !isSearching())): ?>
 		<form class="panel grid" action="/" method="post">
-			<textarea id="content" name="content" placeholder="<?= L10n::$placeholder ?>" aria-label="<?= L10n::$content ?>" spellcheck="false" rows="1" autofocus required><?= (isEditing() ? get_kvp($_GET['edit'], 'content') : '') ?></textarea>
+			<textarea id="content" name="content" placeholder="<?= L10n::$placeholder ?>" aria-label="<?= L10n::$content ?>" spellcheck="false" rows="1" autofocus required><?= (isEditing() ? getPost($_GET['edit'], 'content') : '') ?></textarea>
 
 			<div class="panel-meta">
 				<input type="hidden" name="id" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
@@ -664,32 +703,32 @@ if(isset($_POST['logout'])) {
 }
 
 // Posts
-$p = get_index('date');
+$posts = getIndex();
 
 // Search
 if(!empty($_GET['s'])) {
 	$s = explode(' ', $_GET['s']);
-	foreach($p as $k => $m) {
-		$c = strtolower(parse(get_kvp($m['key'], 'content')));
+	foreach($posts as $postKey => $postValue) {
+		$content = strtolower(parse(getPost(postId($postValue['key']), 'content')));
 		$f = true;
 		for($i = 0; $i < sizeof($s); $i++) {
-			if(strpos($c, strtolower($s[$i])) === false) {
+			if(strpos($content, strtolower($s[$i])) === false) {
 				$f = false;
 				break;
 			}
 		}
 		if(!$f) {
-			unset($p[$k]);
+			unset($posts[$postKey]);
 		}
 	}
 }
-$results = sizeof($p);
+$results = sizeof($posts);
 if(($results == 0) && isSearching()) {
 	error(L10n::$errorNoResults);
 }
 
 // Sorting
-uasort($p, function($a, $b) {
+uasort($posts, function($a, $b) {
 	if($a['value'] == $b['value']) {
 		return 0;
 	} else {
@@ -698,23 +737,26 @@ uasort($p, function($a, $b) {
 });
 
 // Get posts
-if(isset($_GET['p']) && record_exists($_GET['p'])) {
-	$p = array(array('value' => get_kvp($_GET['p'], 'date'), 'key' => $_GET['p']));
+if(isset($_GET['p']) && postExists($_GET['p'])) {
+	$posts = array(array('value' => json_decode(getPost($_GET['p']))->date, 'key' => $_GET['p']));
 }
-$p = @array_slice($p, $_GET['skip'], Config::$postsPerPage);
+$posts = @array_slice($posts, $_GET['skip'], Config::$postsPerPage);
 
 // Posts
 if(!isEditing()) {
 	if(isset($_GET['p']) && empty($_GET['p'])) {
 		error(L10n::$errorNoResults);
 	}
-	foreach($p as $m): ?>
+	foreach($posts as $post): ?>
+		<?php $id = postId($post['key']); ?>
 		<article class="post grid" itemscope itemtype="https://schema.org/BlogPosting">
-			<div class="post-text text" itemprop="articleBody"><?= parse(get_kvp($m['key'], 'content')) ?></div>
+			<div class="post-text text" itemprop="articleBody">
+				<?= parse(getPost($id, 'content')) ?>
+			</div>
 			<footer class="post-meta">
-				<?php $time = "<time datetime=\"".date('Y-m-d H:i:s', $m['value'])."\" itemprop=\"datePublished\" pubdate>".date(Config::$dateFormat, $m['value'])."</time>" ?>
+				<?php $time = "<time datetime=\"".date('Y-m-d H:i:s', getPost($id, 'date'))."\" itemprop=\"datePublished\" pubdate>".date(Config::$dateFormat, getPost($id, 'date'))."</time>" ?>
 				<?php if (!isset($_GET['p'])): ?>
-					<a class="permalink" href="?p=<?= $m['key'] ?>" itemprop="url">
+					<a class="permalink" href="?p=<?= $id ?>" itemprop="url">
 						<?= $time ?>
 					</a>
 				<?php else: ?>
@@ -722,8 +764,8 @@ if(!isEditing()) {
 				<?php endif ?>
 				<?php if (isLoggedin()): ?>
 					<form class="admin row" action="/" method="post" data-warning="<?= L10n::$deleteWarning ?>">
-						<input type="hidden" name="id" value="<?= $m['key'] ?>">
-						<a class="button" href="?edit=<?= $m['key'] ?>"><?= L10n::$edit ?></a>
+						<input type="hidden" name="id" value="<?= $id ?>">
+						<a class="button" href="?edit=<?= $id ?>"><?= L10n::$edit ?></a>
 						<button type="submit" class="delete" name="delete"><?= L10n::$delete ?></button>
 					</form>
 				<?php endif ?>
