@@ -57,17 +57,17 @@ class Sys {
 session_start();
 
 // Installation
-if(get_kvp(Sys::$db, 'firstuse') === false) {
-	if(!record_exists('')) {
+if(getKVP(Sys::$db, 'firstuse') === false) {
+	if(!recordExists('')) {
 		if(!mkdir(Sys::$path)) {
 			die('No write permissions to create the folder ' . Sys::$path);
 		}
 	}
-	create_record(Sys::$db);
+	createRecord(Sys::$db);
 	mkdir(Sys::$postsPath);
-	create_index();
+	createIndex();
 
-	set_file(null, Sys::$css, <<< 'EOD'
+	setFile(null, Sys::$css, <<< 'EOD'
 :root {
 	--sans: system-ui, sans-serif;
 	--mono: ui-monospace, monospace;
@@ -295,7 +295,7 @@ nav {
 }
 EOD
 	);
-	set_file(null, Sys::$js, <<< 'EOD'
+	setFile(null, Sys::$js, <<< 'EOD'
 if (window.history.replaceState) {
 	window.history.replaceState(null, null, window.location.href);
 }
@@ -328,35 +328,35 @@ if($adminForms) {
 	});
 }
 EOD
-	); set_kvp(Sys::$db, 'firstuse', 1);
+	); setKVP(Sys::$db, 'firstuse', 1);
 }
 
 // Database
-function create_record($r) {
-	$r = sanitize_key($r);
-	if(!record_exists($r)) {
+function createRecord($r) {
+	$r = sanitizeKey($r);
+	if(!recordExists($r)) {
 		mkdir(Sys::$path.$r);
 	}
 	return $r;
 }
 
-function set_file($r, $k, $v) {
+function setFile($r, $k, $v) {
 	file_put_contents(Sys::$path . $r . '/' . $k, $v);
 }
 
-function set_kvp($r, $k, $v) {
-	$f = Sys::$path.sanitize_key($r) . '/' . $k;
+function setKVP($r, $k, $v) {
+	$f = Sys::$path.sanitizeKey($r) . '/' . $k;
 	file_put_contents($f, $v);
 	chmod($f, 0600);
 }
 
-function create_post($id, $content) {
+function createPost($id, $content) {
 	$file = Sys::$postsPath.$id.'.json';
 	file_put_contents($file, $content);
 	chmod($file, 0600);
 }
 
-function get_post($id, $value = false) {
+function getPost($id, $value = false) {
 	if (!str_ends_with($id, '.json')) {
 		$id = $id.'.json';
 	}
@@ -378,32 +378,32 @@ function postId($id) {
 	return $id;
 }
 
-function delete_post($id) {
+function deletePost($id) {
 	$file = Sys::$postsPath.$id.'.json';
 	unlink($file);
 }
 
-function post_exists($id) {
+function postExists($id) {
 	return file_exists(Sys::$postsPath.$id.'.json');
 }
 
-function get_kvp($r, $k) {
-	$p = Sys::$path.sanitize_key($r) . '/' . $k;
+function getKVP($r, $k) {
+	$p = Sys::$path.sanitizeKey($r) . '/' . $k;
 	return file_exists($p) ? file_get_contents($p) : false;
 }
 
-function delete_kvp($r, $kvp) {
-	unlink(Sys::$path.sanitize_key($r) . '/' . sanitize_key($kvp));
+function deleteKVP($r, $kvp) {
+	unlink(Sys::$path.sanitizeKey($r) . '/' . sanitizeKey($kvp));
 }
 
-function record_exists($p) {
-	$p = sanitize_key($p);
+function recordExists($p) {
+	$p = sanitizeKey($p);
 	return file_exists(Sys::$path.$p) && is_dir(Sys::$path.$p);
 }
 
 function record_delete($r) {
-	$r = sanitize_key($r);
-	if(record_exists($r)) {
+	$r = sanitizeKey($r);
+	if(recordExists($r)) {
 		$h = opendir(Sys::$path.$r);
 		for($i = 0; ($e = readdir($h)) !== false; $i++) {
 			if ($e != '.' && $e != '..' ) {
@@ -415,35 +415,28 @@ function record_delete($r) {
 	}
 }
 
-function get_keys($r) {
-	$s = scandir(Sys::$path.$r);
-	return array_values(array_filter($s, function($v) {
-		return $v != '.' && $v != '..';
-	}));
-}
-
-function sanitize_key($k) {
+function sanitizeKey($k) {
 	return preg_replace('/[^A-Za-z0-9_]/', '', $k);
 }
 
-function create_index() {
+function createIndex() {
 	$d = array();
 	$h = opendir(Sys::$postsPath);
 	for($i = 0; ($e = readdir($h)) !== false; $i++) {
 		if (str_ends_with($e, '.json')) {
 			$d[$i]['key'] = $e;
-			$d[$i]['value'] = get_post(postId($e), 'date');
+			$d[$i]['value'] = getPost(postId($e), 'date');
 			if($d[$i]['value'] === false) {
 				array_pop($d);
 			}
 		}
 	}
 	closedir($h);
-	set_kvp(Sys::$db, 'index', serialize($d));
+	setKVP(Sys::$db, 'index', serialize($d));
 }
 
-function get_index() {
-	return unserialize(get_kvp(Sys::$db, 'index'));
+function getIndex() {
+	return unserialize(getKVP(Sys::$db, 'index'));
 }
 
 // Status
@@ -467,7 +460,7 @@ function isSearching() {
 function db() {
 	$f = func_get_args();
 	$n = sizeof($f) - 1;
-	$t = get_kvp(Sys::$db, $f[0]);
+	$t = getKVP(Sys::$db, $f[0]);
 	for($i = 1; $i < $n; $i += 2) {
 		$t = str_replace('{{' . $f[$i] . '}}', $f[$i + 1], $t);
 	}
@@ -499,7 +492,7 @@ function parse($t) {
 
 // Feed
 if(isset($_GET['feed'])) {
-	$posts = @array_slice(get_index(), 0, Config::$postsFeed);
+	$posts = @array_slice(getIndex(), 0, Config::$postsFeed);
 	$blogUrl = 'https://' . $_SERVER['HTTP_HOST'];
 	$feedUrl = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	header('Content-type: application/atom+xml'); ?>
@@ -519,7 +512,7 @@ if(isset($_GET['feed'])) {
 <entry>
 	<title><?= date(Config::$dateFormat, $post['value']) ?></title>
 	<link href="<?= $blogUrl . '?p=' . $id ?>" />
-	<content type="html"><![CDATA[<?= parse(get_post($id, 'content')) ?>]]></content>
+	<content type="html"><![CDATA[<?= parse(getPost($id, 'content')) ?>]]></content>
 	<updated><?= date('Y-m-d\TH:i:sP', $post['value']) ?></updated>
 	<id>urn:uuid:<?= $id ?></id>
 </entry>
@@ -612,11 +605,11 @@ function error($text) { ?>
 // Cookie
 function set_cookie() {
 	$identifier = bin2hex(random_bytes('64'));
-	set_kvp(Sys::$db, 'cookie', $identifier);
+	setKVP(Sys::$db, 'cookie', $identifier);
 	setcookie('vicco', $identifier, time()+(3600*24*30));
 }
 function delete_cookie() {
-	delete_kvp(Sys::$db, 'cookie');
+	deleteKVP(Sys::$db, 'cookie');
 	setcookie('vicco', '', time()-(3600*24*30));
 }
 
@@ -665,31 +658,31 @@ if(isLoggedin()) {
 			$id = uniqid();
 			$post->date = time();
 		} else {
-			if(!post_exists($_POST['id'])) {
+			if(!postExists($_POST['id'])) {
 				error(L10n::$errorPostExists);
 			}
 			$id = $_POST['id'];
-			$post->date = get_post($id, 'date');
+			$post->date = getPost($id, 'date');
 		}
 
 		$post->content = $_POST['content'];
-		create_post($id, json_encode($post));
-		create_index();
+		createPost($id, json_encode($post));
+		createIndex();
 	}
 
 	// Delete posts
 	if(isset($_POST['delete'])) {
-		delete_post($_POST['id']);
-		create_index();
+		deletePost($_POST['id']);
+		createIndex();
 	}
 
-	if (isEditing() && !post_exists($_GET['edit'])) {
+	if (isEditing() && !postExists($_GET['edit'])) {
 		error(L10n::$errorPostNonexistent);
 	}
 
 	if ((!(isset($_GET['p'])) && !isSearching())): ?>
 		<form class="panel grid" action="/" method="post">
-			<textarea id="content" name="content" placeholder="<?= L10n::$placeholder ?>" aria-label="<?= L10n::$content ?>" spellcheck="false" rows="1" autofocus required><?= (isEditing() ? get_post($_GET['edit'], 'content') : '') ?></textarea>
+			<textarea id="content" name="content" placeholder="<?= L10n::$placeholder ?>" aria-label="<?= L10n::$content ?>" spellcheck="false" rows="1" autofocus required><?= (isEditing() ? getPost($_GET['edit'], 'content') : '') ?></textarea>
 
 			<div class="panel-meta">
 				<input type="hidden" name="id" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
@@ -710,13 +703,13 @@ if(isset($_POST['logout'])) {
 }
 
 // Posts
-$posts = get_index();
+$posts = getIndex();
 
 // Search
 if(!empty($_GET['s'])) {
 	$s = explode(' ', $_GET['s']);
 	foreach($posts as $postKey => $postValue) {
-		$content = strtolower(parse(get_post(postId($postValue['key']), 'content')));
+		$content = strtolower(parse(getPost(postId($postValue['key']), 'content')));
 		$f = true;
 		for($i = 0; $i < sizeof($s); $i++) {
 			if(strpos($content, strtolower($s[$i])) === false) {
@@ -744,8 +737,8 @@ uasort($posts, function($a, $b) {
 });
 
 // Get posts
-if(isset($_GET['p']) && post_exists($_GET['p'])) {
-	$posts = array(array('value' => json_decode(get_post($_GET['p']))->date, 'key' => $_GET['p']));
+if(isset($_GET['p']) && postExists($_GET['p'])) {
+	$posts = array(array('value' => json_decode(getPost($_GET['p']))->date, 'key' => $_GET['p']));
 }
 $posts = @array_slice($posts, $_GET['skip'], Config::$postsPerPage);
 
@@ -758,10 +751,10 @@ if(!isEditing()) {
 		<?php $id = postId($post['key']); ?>
 		<article class="post grid" itemscope itemtype="https://schema.org/BlogPosting">
 			<div class="post-text text" itemprop="articleBody">
-				<?= parse(get_post($id, 'content')) ?>
+				<?= parse(getPost($id, 'content')) ?>
 			</div>
 			<footer class="post-meta">
-				<?php $time = "<time datetime=\"".date('Y-m-d H:i:s', get_post($id, 'date'))."\" itemprop=\"datePublished\" pubdate>".date(Config::$dateFormat, get_post($id, 'date'))."</time>" ?>
+				<?php $time = "<time datetime=\"".date('Y-m-d H:i:s', getPost($id, 'date'))."\" itemprop=\"datePublished\" pubdate>".date(Config::$dateFormat, getPost($id, 'date'))."</time>" ?>
 				<?php if (!isset($_GET['p'])): ?>
 					<a class="permalink" href="?p=<?= $id ?>" itemprop="url">
 						<?= $time ?>
