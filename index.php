@@ -593,12 +593,12 @@ function footer($results = 0) { ?>
 <?php }
 
 // Error template
-function error($text, $backLink = true) { ?>
+function error($text, $backLink = true, $linkUrl = '/') { ?>
 	<section class="box text">
 		<h2><?= L10n::$error ?></h2>
 		<p><?= $text ?>
 		<?php if($backLink): ?>
-			<p><a class="button" href="/"><?= L10n::$back ?></a>
+			<p><a class="button" href="<?= $linkUrl ?>"><?= L10n::$back ?></a>
 		<?php endif ?>
 	</section>
 <?php
@@ -641,12 +641,12 @@ if(isset($_GET['login'])) {
 	}
 }
 if(isset($_POST['login'])) {
-	if(hash_equals(Config::$username, $_POST['username']) && hash_equals(Config::$passphrase, $_POST['passphrase'])) { 
+	if(hash_equals(Config::$username, $_POST['username']) && hash_equals(Config::$passphrase, $_POST['passphrase'])) {
 		$_SESSION['loggedin'] = true;
 		set_cookie();
 		rmain();
 	} else {
-		error(L10n::$errorLogin);
+		error(L10n::$errorLogin, true, 'javascript:history.back()');
 	}
 }
 if(isLoggedin()) {
