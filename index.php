@@ -13,6 +13,7 @@ class Config {
 	static $passphrase = 'CHANGEME';
 	static $language = 'en'; // (ISO 639-1)
 	static $dateFormat = 'd M Y, H:i';
+	static $fediverseCreator = '@account@mastodon.example'; //optional
 	static $postsPerPage = 10;
 	static $postsFeed = 20;
 	static $showLogin = true;
@@ -514,14 +515,20 @@ if(isset($_GET['feed'])) {
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+
 	<?php if (!empty(Config::$blogDesc)): ?>
 		<meta name="description" content="<?= Config::$blogDesc ?>">
+	<?php endif ?>
+
+	<?php if(!empty(Config::$fediverseCreator) && isset($_GET['p']) && postExists($_GET['p'])): ?>
+		<meta name="fediverse:creator" content="<?= Config::$fediverseCreator ?>">
 	<?php endif ?>
 
 	<title><?= Config::$blogName ?></title>
 
 	<link href="/?feed" type="application/atom+xml" title="<?= Config::$blogName ?> feed" rel="alternate">
 	<link rel="stylesheet" type="text/css" href="<?= Sys::$path.Sys::$css ?>" media="screen">
+
 	<?php if (!empty(Config::$emoji)): ?>
 		<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Ctext%20y=%221em%22%20font-size=%2285%22%3E<?= Config::$emoji ?>%3C/text%3E%3C/svg%3E">
 	<?php endif ?>
