@@ -29,10 +29,8 @@ class Color {
 }
 
 class L10n {
-	static $author = 'Anonymous';
 	static $search = 'Search';
-	static $placeholder = 'Start writing &hellip;';
-	static $content = 'Post content';
+	static $comment = 'Comment';
 	static $publish = 'Publish';
 	static $save = 'Save';
 	static $logout = 'Logout';
@@ -47,7 +45,7 @@ class L10n {
 	static $back = 'Go back';
 	static $error = 'Error';
 	static $errorLogin = 'The credentials are incorrect.';
-	static $errorEmpty = 'Your post must not be empty.';
+	static $errorEmpty = 'Your post must contain a link and a title.';
 	static $errorPostExists = 'A post with this ID already exists.';
 	static $errorPostNonexistent = 'The post you wish to edit does not exist.';
 	static $errorNoResults = 'No posts were found.';
@@ -81,7 +79,7 @@ if(getKVP(Sys::$dbPath, 'firstuse') === false) {
 	--mono: ui-monospace, monospace;
 	--size: 1.6rem;
 	--line: 1.5;
-	--border: 1px solid var(--interactive);
+	--border: 1px solid var(--meta);
 }
 * {
 	box-sizing: border-box;
@@ -96,7 +94,7 @@ html {
 	background-color: var(--accent);
 }
 *:focus-visible {
-	outline: var(--border);
+	outline: 2px solid var(--interactive);
 	outline-offset: 2px;
 }
 body {
@@ -115,10 +113,11 @@ a {
 	color: var(--interactive);
 }
 a:is(:hover, :focus-visible) {
+	color: var(--interactive);
 	background-color: var(--accent);
-	outline: 0.15em solid var(--accent);
 }
 :is(h1, h2) {
+	line-height: 1.2;
 	margin: 0;
 }
 h1 {
@@ -127,13 +126,15 @@ h1 {
 	margin-block: 0;
 }
 h2 {
-	font-size: 1em;
+	font-size: 1.5em;
+}
+h2 a {
+	text-decoration: none;
 }
 h2 + p {
 	margin-block-start: 0;
 }
 label {
-	color: var(--interactive);
 	display: block;
 	padding-block-end: 0.5rem;
 }
@@ -144,52 +145,55 @@ code {
 	background-color: var(--accent);
 	box-shadow: 0.25em 0 0 var(--accent), -0.25em 0 0 var(--accent);
 }
+form {
+	margin: 0;
+}
 .form {
 	display: flex;
 	flex-direction: column;
 	row-gap: 2rem;
+}
+::placeholder {
+	color: var(--meta);
 }
 :is(input, textarea) {
 	background-color: var(--box);
 	color: var(--text);
 	font-family: var(--mono);
 	font-size: var(--size);
+	border: var(--border);
+	border-radius: 0.5rem;
 }
 :is(input, textarea):focus-visible {
-	outline: none;
+	border-color: var(--interactive);
+	outline: 1px solid var(--interactive);
+	outline-offset: 0;
 }
 input {
 	width: 100%;
 	height: 3.5rem;
 	padding-inline: 1rem;
-	border: var(--border);
-	border-radius: 0.5rem;
-}
-input:is(:hover, :focus) {
-	background-color: var(--accent);
 }
 textarea {
 	line-height: var(--line);
 	display: block;
 	width: 100%;
-	padding: 0;
-	border: 0;
+	padding: 1rem;
 	resize: none;
 }
 :is(button, .button) {
-	background-color: var(--box);
-	color: var(--interactive);
+	background-color: var(--interactive);
+	color: var(--box);
 	font-size: 0.85em;
 	font-family: var(--sans);
 	font-weight: bold;
 	text-decoration: none;
 	line-height: 1;
-	white-space: norwap;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	padding: 0.5rem 1rem;
-	border: var(--border);
+	border: 0;
 	border-radius: 0.5rem;
 	cursor: pointer;
 	touch-action: manipulation;
@@ -198,50 +202,36 @@ textarea {
 }
 :is(button, .button):is(:hover, :focus-visible) {
 	background-color: var(--interactive);
-	color: var(--background);
-	outline: 0;
+	color: var(--box);
 }
 .row {
 	display: flex;
 	column-gap: 1.5rem;
 }
-header {
+.header {
 	font-family: var(--sans);
 	display: flex;
 	gap: 2rem 4rem;
 	padding-block-end: 2rem;
 }
 @media (max-width: 768px) {
-	header {
+	.header {
 		flex-direction: column;
 	}
 }
 @media (min-width: 769px) {
-	header {
+	.header {
 		justify-content: space-between;
 		align-items: flex-end;
 	}
 }
-header a {
+.header a {
 	color: currentColor;
 	text-decoration: none;
 }
-header p {
+.header p {
 	color: var(--meta);
 	margin: 0;
-}
-.search {
-	display: flex;
-	flex-shrink: 0;
-}
-.search input {
-	border-right: 0;
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
-}
-.search button {
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
 }
 .text > *:first-child {
 	margin-block-start: 0;
@@ -249,17 +239,30 @@ header p {
 .text > *:last-child {
 	margin-block-end: 0;
 }
+.post {
+	display: flex;
+	flex-direction: column;
+	row-gap: 1rem;
+}
 .post:not(:last-child) {
 	margin-block-end: 2rem;
 }
 .box {
 	background-color: var(--box);
-	padding: 2rem;
+	padding: 1.5rem 2rem;
 	border-radius: 0.5rem;
 }
-.box-meta {
+.meta {
 	color: var(--meta);
-	margin-block-start: 1rem;
+}
+hgroup > * {
+	display: inline;
+}
+hgroup p:before {
+	content: '(';
+}
+hgroup p:after {
+	content: ')';
 }
 .permalink {
 	color: currentColor;
@@ -267,7 +270,16 @@ header p {
 	align-self: start;
 }
 .panel {
+	display: grid;
+	grid-template-areas: 
+		"link title"
+		"comment comment"
+		"submit submit";
+		grid-gap: 2rem;
 	margin-block-end: 2rem;
+}
+.comment {
+	grid-area: comment;
 }
 .footer {
 	display: grid;
@@ -289,12 +301,12 @@ if (window.history.replaceState) {
 	window.history.replaceState(null, null, window.location.href);
 }
 
-const $textarea = document.getElementById('content');
+const $textarea = document.getElementById('comment');
 if($textarea) {
 	function resizeArea($el) {
-		let heightLimit = 500;
+		let heightLimit = 400;
 		$el.style.height = '';
-		$el.style.height = Math.min($el.scrollHeight, heightLimit) + 'px';
+		$el.style.height = Math.min($el.scrollHeight, heightLimit) +2 + 'px';
 	}
 	resizeArea($textarea);
 	$textarea.addEventListener('input', function(e){
@@ -490,19 +502,20 @@ if(isset($_GET['feed'])) {
 <title><?= Config::$blogName ?></title>
 <?php if (!empty(Config::$blogDesc)): ?>
 <subtitle><?= Config::$blogDesc ?></subtitle>
-<author>
-	<name><?= L10n::$author ?></name>
-</author>
 <?php endif ?>
 <link href="<?= $blogUrl ?>" />
 <link href="<?= $feedUrl ?>" rel="self"/>
+<id><?= $feedUrl ?></id>
 <?php foreach($posts as $post): ?>
 <?php $id = postId($post['key']); ?>
 <entry>
-	<title><?= date(Config::$dateFormat, $post['value']) ?></title>
-	<link href="<?= $blogUrl . '?p=' . $id ?>" />
-	<content type="html"><![CDATA[<?= parse(getPost($id, 'content')) ?>]]></content>
-	<updated><?= date('Y-m-d\TH:i:sP', $post['value']) ?></updated>
+	<title><?= getPost($id, 'title') ?></title>
+	<link rel="alternate" type="text/html" href="<?= getPost($id, 'url') ?>" />
+	<link rel="related" type="text/html" href="<?= $blogUrl . '/?p=' . $id ?>" />
+<?php if(getPost($id, 'comment')): ?>
+	<content type="html"><![CDATA[<?= parse(getPost($id, 'comment')) ?>]]></content>
+<?php endif ?>
+	<published><?= date('Y-m-d\TH:i:sP', $post['value']) ?></published>
 	<id>urn:uuid:<?= $id ?></id>
 </entry>
 <?php endforeach ?>
@@ -537,7 +550,7 @@ if(isset($_GET['feed'])) {
 
 </head><body itemscope itemtype="https://schema.org/Blog">
 
-<header>
+<header class="header">
 	<div>
 		<h1 itemprop="name">
 		<?php if (!empty(Config::$emoji)): ?>
@@ -555,8 +568,7 @@ if(isset($_GET['feed'])) {
 	</div>
 
 	<form class="search" action="/" method="get" role="search">
-		<input type="search" name="s" aria-label="<?= L10n::$search ?>" required>
-		<button type="submit"><?= L10n::$search ?></button>
+		<input type="search" name="s" aria-label="<?= L10n::$search ?>" placeholder="<?= L10n::$search ?>" required>
 	</form>
 </header><main>
 <?php
@@ -652,7 +664,7 @@ if(isset($_POST['login'])) {
 if(isLoggedin()) {
 	// Submit posts
 	if(isset($_POST['submit'])) {
-		if(empty($_POST['content'])) {
+		if(empty($_POST['url']) || empty($_POST['title'])) {
 			error(L10n::$errorEmpty);
 		}
 
@@ -670,7 +682,9 @@ if(isLoggedin()) {
 			$post->date = getPost($id, 'date');
 		}
 
-		$post->content = $_POST['content'];
+		$post->url = $_POST['url'];
+		$post->title = $_POST['title'];
+		$post->comment = $_POST['comment'];
 		createPost($id, json_encode($post));
 		createIndex();
 	}
@@ -687,10 +701,23 @@ if(isLoggedin()) {
 
 	if ((!(isset($_GET['p'])) && !isSearching())): ?>
 		<form class="panel box" action="/" method="post">
-			<input type="hidden" name="id" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
-			<textarea id="content" name="content" placeholder="<?= L10n::$placeholder ?>" aria-label="<?= L10n::$content ?>" spellcheck="false" rows="1" autofocus required><?= (isEditing() ? getPost($_GET['edit'], 'content') : '') ?></textarea>
+			<div>
+				<label for="url">Link</label>
+				<input type="url" id="url" name="url" placeholder="https://example.com" required value="<?= (isEditing() ? getPost($_GET['edit'], 'url') : '') ?>">
+			</div>
 
-			<div class="box-meta row">
+			<div>
+				<label for="title">Title</label>
+				<input type="text" id="title" name="title" required value="<?= (isEditing() ? getPost($_GET['edit'], 'title') : '') ?>">
+			</div>
+
+			<div class="comment">
+				<label for ="comment"><?= L10n::$comment ?> <small class="meta">(Optional)</small></label>
+				<textarea id="comment" name="comment" spellcheck="false" rows="1"><?= (isEditing() ? getPost($_GET['edit'], 'comment') : '') ?></textarea>
+			</div>
+
+			<div class="row">
+				<input type="hidden" name="id" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
 				<button type="submit" id="submit" name="submit"><?= (isEditing() ? L10n::$save : L10n::$publish) ?></button>
 			</div>
 		</form>
@@ -714,10 +741,12 @@ $posts = getIndex();
 if(!empty($_GET['s'])) {
 	$s = explode(' ', $_GET['s']);
 	foreach($posts as $postKey => $postValue) {
-		$content = strtolower(parse(getPost(postId($postValue['key']), 'content')));
+		$url = strtolower(getPost(postId($postValue['key']), 'url'));
+		$title = strtolower(getPost(postId($postValue['key']), 'title'));
+		$comment = strtolower(parse(getPost(postId($postValue['key']), 'comment')));
 		$f = true;
 		for($i = 0; $i < sizeof($s); $i++) {
-			if(strpos($content, strtolower($s[$i])) === false) {
+			if((strpos($url, strtolower($s[$i])) === false) && (strpos($title, strtolower($s[$i])) === false) && strpos($comment, strtolower($s[$i])) === false) {
 				$f = false;
 				break;
 			}
@@ -758,12 +787,23 @@ if(!isEditing()) {
 		error(L10n::$errorNoResults);
 	}
 	foreach($posts as $post): ?>
-		<?php $id = postId($post['key']); ?>
-		<article class="post box" itemscope itemtype="https://schema.org/BlogPosting">
-			<div class="post-text text" itemprop="articleBody">
-				<?= parse(getPost($id, 'content')) ?>
-			</div>
-			<footer class="box-meta row">
+		<?php
+			$id = postId($post['key']);
+			$postUrl = 'https://' . $_SERVER['HTTP_HOST'] . '/?p=' . $id;
+		?>
+		<article class="post box" itemscope itemtype="https://schema.org/BlogPosting" itemid="<?= $postUrl ?>">
+			<header>
+				<hgroup>
+					<h2 itemprop="name"><a href="<?= getPost($id, 'url') ?>" external nofollow target="_blank" aria-describedby="<?= $id?>-url" itemprop="url"><?= getPost($id, 'title') ?></a></h2>
+					<p class="meta" id="<?= $id?>-url"><?= parse_url(getPost($id, 'url'), PHP_URL_HOST) ?></p>
+				</hgroup>
+			</header>
+			<?php if(getPost($id, 'comment')): ?>
+				<div class="text" itemprop="articleBody">
+					<?= parse(getPost($id, 'comment')) ?>
+				</div>
+			<?php endif ?>
+			<footer class="row meta">
 				<?php $time = "<span aria-hidden=\"true\">&#8984;</span> <time datetime=\"".date('Y-m-d H:i:s', getPost($id, 'date'))."\" itemprop=\"datePublished\" pubdate> ".date(Config::$dateFormat, getPost($id, 'date'))."</time>" ?>
 				<?php if (!isset($_GET['p'])): ?>
 					<a class="permalink" href="?p=<?= $id ?>" itemprop="url">
