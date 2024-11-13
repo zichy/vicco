@@ -836,7 +836,7 @@ if(!isEditing()) {
 		<article class="post box" itemscope itemtype="https://schema.org/BlogPosting" itemid="<?= $postUrl ?>">
 			<header>
 				<hgroup>
-					<h2 itemprop="name"><a href="<?= getPost($id, 'url') ?>" external nofollow target="_blank" aria-describedby="<?= $id?>-url" itemprop="url"><?= getPost($id, 'title') ?></a></h2>
+					<h2 itemprop="name"><a href="<?= getPost($id, 'url') ?>" rel="external nofollow" target="_blank" aria-describedby="<?= $id?>-url" itemprop="url"><?= getPost($id, 'title') ?></a></h2>
 					<p class="meta" id="<?= $id?>-url"><?= parse_url(getPost($id, 'url'), PHP_URL_HOST) ?></p>
 				</hgroup>
 			</header>
