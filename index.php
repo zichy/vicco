@@ -8,7 +8,7 @@
 class Config {
 	static $blogName = 'vicco';
 	static $blogDesc = 'Yet another microblog'; // optional
-	static $emoji = '🌱'; // optional
+	static $favicon = '🌱'; // optional
 	static $username = 'admin'; // non-public
 	static $passphrase = 'CHANGEME';
 	static $language = 'en'; // (ISO 639-1)
@@ -579,9 +579,6 @@ if(isset($_GET['feed'])) {
 <header class="header">
 	<div>
 		<h1 itemprop="name">
-		<?php if (!empty(Config::$emoji)): ?>
-			<span aria-hidden="true"><?= Config::$emoji ?></span>
-		<?php endif ?>
 		<?php if (!empty($_GET)): ?>
 			<a href="/"><?= Config::$blogName ?></a>
 		<?php else: ?>
