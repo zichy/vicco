@@ -35,7 +35,10 @@ class Color {
 
 class L10n {
 	static $search = 'Search';
+	static $link = 'Link';
+	static $title = 'Title';
 	static $comment = 'Comment';
+	static $optional = 'Optional';
 	static $publish = 'Publish';
 	static $save = 'Save';
 	static $logout = 'Logout';
@@ -741,17 +744,17 @@ if(isLoggedin()) {
 	if ((!(isset($_GET['p'])) && !isSearching())): ?>
 		<form class="panel box" action="/" method="post">
 			<div class="panel-link">
-				<label for="url">Link</label>
+				<label for="url"><?= L10n::$link ?></label>
 				<input type="url" id="url" name="url" placeholder="https://example.com" required value="<?= (isEditing() ? getPost($_GET['edit'], 'url') : '') ?>">
 			</div>
 
 			<div class="panel-title">
-				<label for="title">Title</label>
+				<label for="title"><?= L10n::$title ?></label>
 				<input type="text" id="title" name="title" required value="<?= (isEditing() ? getPost($_GET['edit'], 'title') : '') ?>">
 			</div>
 
 			<div class="panel-comment">
-				<label for="comment"><?= L10n::$comment ?> <small class="meta">(Optional)</small></label>
+				<label for="comment"><?= L10n::$comment ?> <small class="meta">(<?= L10n::$optional ?>)</small></label>
 				<textarea id="comment" name="comment" spellcheck="false" rows="1"><?= (isEditing() ? getPost($_GET['edit'], 'comment') : '') ?></textarea>
 			</div>
 
