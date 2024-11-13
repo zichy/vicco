@@ -5,13 +5,16 @@
 	SPDX-FileCopyrightText: Copyright (c) 2015–2024 lawl(†), zichy
 */
 
+class Acc {
+	static $username = 'admin'; // non-public
+	static $passphrase = 'CHANGEME';
+}
+
 class Config {
 	static $blogName = 'vicco';
 	static $blogDesc = 'Yet another microblog'; // optional
 	static $logoPath = ''; // optional
 	static $favicon = '🌱'; // optional
-	static $username = 'admin'; // non-public
-	static $passphrase = 'CHANGEME';
 	static $language = 'en'; // (ISO 639-1)
 	static $dateFormat = 'd M Y, H:i';
 	static $mastodonVerification = 'https://mastodon.example/@account'; //optional
@@ -686,7 +689,7 @@ if(isset($_GET['login'])) {
 	}
 }
 if(isset($_POST['login'])) {
-	if(hash_equals(Config::$username, $_POST['username']) && hash_equals(Config::$passphrase, $_POST['passphrase'])) {
+	if(hash_equals(Acc::$username, $_POST['username']) && hash_equals(Acc::$passphrase, $_POST['passphrase'])) {
 		$_SESSION['loggedin'] = true;
 		createCookie();
 		returnToMain();
