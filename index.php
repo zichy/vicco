@@ -135,20 +135,17 @@ h1 {
 	line-height: 1;
 	margin-block: 0;
 }
-h1 a:hover {
-	background-color: inherit;
-}
 h1 :is(a, img) {
 	display: block;
+}
+h1 a:hover {
+	background-color: inherit;
 }
 h2 {
 	font-size: 1.5em;
 }
 h2 a {
 	text-decoration: none;
-}
-h2 + p {
-	margin-block-start: 0;
 }
 label {
 	display: block;
@@ -158,8 +155,7 @@ label {
 	font-size: var(--size);
 }
 code {
-	background-color: var(--accent);
-	box-shadow: 0.25em 0 0 var(--accent), -0.25em 0 0 var(--accent);
+	background-color: var(--background);
 }
 form {
 	margin: 0;
