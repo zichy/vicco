@@ -8,6 +8,7 @@
 class Config {
 	static $blogName = 'vicco';
 	static $blogDesc = 'Yet another microblog'; // optional
+	static $logoPath = ''; // optional
 	static $favicon = '🌱'; // optional
 	static $username = 'admin'; // non-public
 	static $passphrase = 'CHANGEME';
@@ -129,6 +130,12 @@ h1 {
 	font-size: 1.25em;
 	line-height: 1;
 	margin-block: 0;
+}
+h1 a:hover {
+	background-color: inherit;
+}
+h1 :is(a, img) {
+	display: block;
 }
 h2 {
 	font-size: 1.5em;
@@ -578,11 +585,12 @@ if(isset($_GET['feed'])) {
 
 <header class="header">
 	<div>
+		<?php $title = empty(Config::$logoPath) ? Config::$blogName : '<img src="'.Config::$logoPath.'">'; ?>
 		<h1 itemprop="name">
 		<?php if (!empty($_GET)): ?>
-			<a href="/"><?= Config::$blogName ?></a>
+			<a href="/"><?= $title ?></a>
 		<?php else: ?>
-			<?= Config::$blogName ?>
+			<?= $title ?>
 		<?php endif ?>
 		</h1>
 	<?php if (!empty(Config::$blogDesc)): ?>
