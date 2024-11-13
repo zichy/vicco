@@ -495,7 +495,7 @@ function db() {
 }
 
 // Go to index
-function rmain() {
+function returnToMain() {
 	header('Location: /');
 	die();
 }
@@ -602,7 +602,7 @@ if(isset($_GET['feed'])) {
 // Footer template
 function footer($results = 0) { ?>
 	</main><footer class="footer">
-		<?php if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage) { ?>
+		<?php if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage): ?>
 			<nav class="row">
 				<?php if (@$_GET['skip'] > 0): ?>
 					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0) . '&amp;s=' . @urlencode($_GET['s']) ?>" class="button"><span aria-hidden="true">&larr;</span> <?= L10n::$newer ?></a>
@@ -611,7 +611,7 @@ function footer($results = 0) { ?>
 					<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']) . '&amp;s=' . @urlencode($_GET['s']) ?>" class="button"><?= L10n::$older ?> <span aria-hidden="true">&rarr;</span></a>
 				<?php endif ?>
 			</nav>
-		<?php } ?>
+		<?php endif ?>
 
 		<div class="acc">
 			<?php if(Config::$showLogin && !isset($_GET['login']) && !isLoggedin()): ?>
@@ -645,12 +645,12 @@ function error($text, $backLink = true, $linkUrl = '/') { ?>
 }
 
 // Cookie
-function set_cookie() {
+function createCookie() {
 	$identifier = bin2hex(random_bytes('64'));
 	setKVP(Sys::$dbPath, 'cookie', $identifier);
 	setcookie('vicco', $identifier, time()+(3600*24*30));
 }
-function delete_cookie() {
+function deleteCookie() {
 	deleteKVP(Sys::$dbPath, 'cookie');
 	setcookie('vicco', '', time()-(3600*24*30));
 }
@@ -658,7 +658,7 @@ function delete_cookie() {
 // Login
 if(isset($_GET['login'])) {
 	if(isLoggedin()) {
-		rmain();
+		returnToMain();
 	} else { ?>
 		<form class="box form" action="/" method="post">
 			<div>
@@ -681,8 +681,8 @@ if(isset($_GET['login'])) {
 if(isset($_POST['login'])) {
 	if(hash_equals(Config::$username, $_POST['username']) && hash_equals(Config::$passphrase, $_POST['passphrase'])) {
 		$_SESSION['loggedin'] = true;
-		set_cookie();
-		rmain();
+		createCookie();
+		returnToMain();
 	} else {
 		error(L10n::$errorLogin, true, 'javascript:history.back()');
 	}
@@ -756,8 +756,8 @@ if(isLoggedin()) {
 // Logout
 if(isset($_POST['logout'])) {
 	session_destroy();
-	delete_cookie();
-	rmain();
+	deleteCookie();
+	returnToMain();
 }
 
 // Posts
