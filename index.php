@@ -109,6 +109,11 @@ body {
 	margin: 4rem auto;
 	overflow-x: hidden;
 }
+@media (max-width: 768px) {
+	main {
+		margin-inline: -2rem;
+	}
+}
 a {
 	color: var(--interactive);
 }
@@ -249,8 +254,12 @@ textarea {
 }
 .box {
 	background-color: var(--box);
-	padding: 1.5rem 2rem;
-	border-radius: 0.5rem;
+	padding: 1.5rem 2.5rem;
+}
+@media (min-width: 769px) {
+	.box {
+		border-radius: 0.5rem;
+	}
 }
 .meta {
 	color: var(--meta);
@@ -270,15 +279,32 @@ hgroup p:after {
 	align-self: start;
 }
 .panel {
-	display: grid;
-	grid-template-areas: 
-		"link title"
-		"comment comment"
-		"submit submit";
-		grid-gap: 2rem;
 	margin-block-end: 2rem;
 }
-.comment {
+@media (max-width: 768px) {
+	.panel {
+		display: flex;
+		flex-direction: column;
+		row-gap: 2rem;
+	}
+}
+@media (min-width: 769px) {
+	.panel {
+		display: grid;
+		grid-template-areas:
+			"link title"
+			"comment comment"
+			"submit submit";
+		gap: 2rem;
+	}
+}
+.panel-link {
+	grid-area: link;
+}
+.panel-title {
+	grid-area: title;
+}
+.panel-comment {
 	grid-area: comment;
 }
 .footer {
@@ -701,18 +727,18 @@ if(isLoggedin()) {
 
 	if ((!(isset($_GET['p'])) && !isSearching())): ?>
 		<form class="panel box" action="/" method="post">
-			<div>
+			<div class="panel-link">
 				<label for="url">Link</label>
 				<input type="url" id="url" name="url" placeholder="https://example.com" required value="<?= (isEditing() ? getPost($_GET['edit'], 'url') : '') ?>">
 			</div>
 
-			<div>
+			<div class="panel-title">
 				<label for="title">Title</label>
 				<input type="text" id="title" name="title" required value="<?= (isEditing() ? getPost($_GET['edit'], 'title') : '') ?>">
 			</div>
 
-			<div class="comment">
-				<label for ="comment"><?= L10n::$comment ?> <small class="meta">(Optional)</small></label>
+			<div class="panel-comment">
+				<label for="comment"><?= L10n::$comment ?> <small class="meta">(Optional)</small></label>
 				<textarea id="comment" name="comment" spellcheck="false" rows="1"><?= (isEditing() ? getPost($_GET['edit'], 'comment') : '') ?></textarea>
 			</div>
 
