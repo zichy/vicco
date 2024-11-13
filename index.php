@@ -580,8 +580,8 @@ if(isset($_GET['feed'])) {
 	<link href="/?feed" type="application/atom+xml" title="<?= Config::$blogName ?> feed" rel="alternate">
 	<link rel="stylesheet" type="text/css" href="<?= Sys::$path.Sys::$css ?>" media="screen">
 
-	<?php if (!empty(Config::$emoji)): ?>
-		<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Ctext%20y=%221em%22%20font-size=%2285%22%3E<?= Config::$emoji ?>%3C/text%3E%3C/svg%3E">
+	<?php if (!empty(Config::$favicon)): ?>
+		<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Ctext%20y=%221em%22%20font-size=%2285%22%3E<?= Config::$favicon ?>%3C/text%3E%3C/svg%3E">
 	<?php endif ?>
 	<?php if (!empty(Config::$mastodonVerification)): ?>
 		<link rel="me" href="<?= Config::$mastodonVerification ?>">
