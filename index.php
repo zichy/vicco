@@ -531,6 +531,13 @@ function parse($t) {
 // Feed
 if(isset($_GET['feed'])) {
 	$posts = @array_slice(getIndex(), 0, Config::$postsFeed);
+	uasort($posts, function($a, $b) {
+		if($a['value'] == $b['value']) {
+			return 0;
+		} else {
+			return $b['value'] <=> $a['value'];
+		}
+	});
 	$blogUrl = 'https://' . $_SERVER['HTTP_HOST'];
 	$feedUrl = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	header('Content-type: application/atom+xml'); ?>
