@@ -1,6 +1,6 @@
 # vicco
 
-vicco is brutalist microblogging software contained in a single PHP file.
+vicco is brutalist linkblog software contained in a single PHP file.
 
 ## Features
 
@@ -53,7 +53,7 @@ You can, but the question is whether you should. (You shouldn’t.)
 I forked [this script](https://github.com/lawl/b.php) and improved it for the worse.
 
 **Uh… follow-up question: Is vicco secure?**  
-It should be secure enough to run a crappy blog.
+It should be secure enough to run a crappy linkblog.
 
 ## Testimonials
 
