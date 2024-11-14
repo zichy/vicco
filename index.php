@@ -62,8 +62,8 @@ class L10n {
 
 class Sys {
 	static $path = 'vicco/';
-	static $postsPath = 'vicco/posts/';
 	static $dbPath = 'db';
+	static $postsPath = 'posts';
 	static $css = 'style.css';
 	static $js = 'script.js';
 }
@@ -78,7 +78,7 @@ if(getKVP(Sys::$dbPath, 'firstuse') === false) {
 		}
 	}
 	createRecord(Sys::$dbPath);
-	mkdir(Sys::$postsPath);
+	createRecord(Sys::$postsPath);
 	createIndex();
 
 	setFile(null, Sys::$css, <<< 'EOD'
@@ -391,7 +391,7 @@ function setKVP($r, $k, $v) {
 }
 
 function createPost($id, $content) {
-	$file = Sys::$postsPath.$id.'.json';
+	$file = Sys::$path.'/'.Sys::$postsPath.'/'.$id.'.json';
 	file_put_contents($file, $content);
 	chmod($file, 0600);
 }
@@ -400,7 +400,7 @@ function getPost($id, $value = false) {
 	if (!str_ends_with($id, '.json')) {
 		$id = $id.'.json';
 	}
-	$file = Sys::$postsPath.$id;
+	$file = Sys::$path.'/'.Sys::$postsPath.'/'.$id;
 
 	if(file_exists($file)) {
 		if (!$value) {
@@ -419,12 +419,12 @@ function postId($id) {
 }
 
 function deletePost($id) {
-	$file = Sys::$postsPath.$id.'.json';
+	$file = Sys::$path.'/'.Sys::$postsPath.'/'.$id.'.json';
 	unlink($file);
 }
 
 function postExists($id) {
-	return file_exists(Sys::$postsPath.$id.'.json');
+	return file_exists(Sys::$path.'/'.Sys::$postsPath.'/'.$id.'.json');
 }
 
 function getKVP($r, $k) {
@@ -447,7 +447,7 @@ function sanitizeKey($k) {
 
 function createIndex() {
 	$d = array();
-	$h = opendir(Sys::$postsPath);
+	$h = opendir(Sys::$path.'/'.Sys::$postsPath);
 	for($i = 0; ($e = readdir($h)) !== false; $i++) {
 		if (str_ends_with($e, '.json')) {
 			$d[$i]['key'] = $e;
