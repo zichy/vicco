@@ -58,6 +58,7 @@ class L10n {
 	static $errorPostNonexistent = 'The post you wish to edit does not exist.';
 	static $errorNoResults = 'No posts were found.';
 	static $errorHacker = 'Nice try.';
+	static $errorPermissions = 'No write permissions to create the folder';
 }
 
 class Sys {
@@ -74,7 +75,7 @@ session_start();
 if(getKVP(Sys::$dbPath, 'firstuse') === false) {
 	if(!recordExists('')) {
 		if(!mkdir(Sys::$path)) {
-			die('No write permissions to create the folder ' . Sys::$path);
+			die(L10n::$errorPermissions.' '.Sys::$path);
 		}
 	}
 	createRecord(Sys::$dbPath);
