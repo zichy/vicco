@@ -145,7 +145,7 @@ h1 a:hover {
 	background-color: inherit;
 }
 h2 {
-	font-size: 1.5em;
+	font-size: 1.25em;
 }
 h2 a {
 	text-decoration: none;
@@ -287,6 +287,9 @@ hgroup p:after {
 	color: currentColor;
 	text-decoration: none;
 	align-self: start;
+}
+.admin {
+	align-items: start;
 }
 .panel {
 	margin-block-end: 2rem;
