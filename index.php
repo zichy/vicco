@@ -602,8 +602,8 @@ if(isset($_GET['feed'])) {
 
 <header class="header">
 	<div>
-		<?php $title = empty(Config::$logoPath) ? Config::$blogName : '<img src="'.Config::$logoPath.'" alt="'.Config::$blogName.'">'; ?>
-		<h1 itemprop="name">
+		<?php $title = empty(Config::$logoPath) ? Config::$blogName : '<img src="'.Config::$logoPath.'" alt="'.Config::$blogName.'" itemprop="image">'; ?>
+		<?= empty(Config::$logoPath) ? '<h1 itemprop="name">' : '<h1><meta itemprop="name" content="'.Config::$blogName.'">' ?>
 		<?php if (!empty($_GET)): ?>
 			<a href="/"><?= $title ?></a>
 		<?php else: ?>
