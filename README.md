@@ -7,7 +7,7 @@ vicco is brutalist linkblog software contained in a single PHP file.
 * Responsive layout
 * Web interface to publish, edit, and delete posts
 * Text formatting
-* Atom feed (somewhat broken)
+* Atom feed
 * No ActivityPub support
 
 ## Target audiences

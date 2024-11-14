@@ -538,6 +538,7 @@ if(isset($_GET['feed'])) {
 			return $b['value'] <=> $a['value'];
 		}
 	});
+	$lastUpdate = postId(reset($posts)['value']);
 	$blogUrl = 'https://' . $_SERVER['HTTP_HOST'];
 	$feedUrl = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	header('Content-type: application/atom+xml'); ?>
@@ -549,6 +550,10 @@ if(isset($_GET['feed'])) {
 <?php endif ?>
 <link href="<?= $blogUrl ?>" />
 <link href="<?= $feedUrl ?>" rel="self"/>
+<author>
+	<name><?= Config::$blogName ?></name>
+</author>
+<updated><?= date('Y-m-d\TH:i:sP', $lastUpdate) ?></updated>
 <id><?= $feedUrl ?></id>
 <?php foreach($posts as $post): ?>
 <?php $id = postId($post['key']); ?>
@@ -559,8 +564,8 @@ if(isset($_GET['feed'])) {
 <?php if(getPost($id, 'comment')): ?>
 	<content type="html"><![CDATA[<?= parse(getPost($id, 'comment')) ?>]]></content>
 <?php endif ?>
-	<published><?= date('Y-m-d\TH:i:sP', $post['value']) ?></published>
-	<id>urn:uuid:<?= $id ?></id>
+	<updated><?= date('Y-m-d\TH:i:sP', $post['value']) ?></updated>
+	<id><?= $blogUrl . '/?p=' . $id ?></id>
 </entry>
 <?php endforeach ?>
 </feed><?php die();
