@@ -59,6 +59,8 @@ class L10n {
 	static $errorNoResults = 'No posts were found.';
 	static $errorHacker = 'Nice try.';
 	static $errorPermissions = 'No write permissions to create the folder';
+	static $introTitle = 'Welcome to vicco!';
+	static $introComment = 'This is your new linkblog. Log in, have a look around and start posting!';
 }
 
 class Sys {
@@ -81,6 +83,17 @@ if(getKVP(Sys::$dbPath, 'firstuse') === false) {
 	createRecord(Sys::$dbPath);
 	createRecord(Sys::$postsPath);
 	createIndex();
+
+	if(!getIndex()) {
+		$post = new stdClass();
+		$id = uniqid();
+		$post->date = time();
+		$post->url = 'https://' . $_SERVER['HTTP_HOST'];
+		$post->title = L10n::$introTitle;
+		$post->comment = L10n::$introComment;
+		createPost($id, json_encode($post));
+		createIndex();
+	}
 
 	setFile(null, Sys::$css, <<< 'EOD'
 :root {
