@@ -131,6 +131,10 @@ body {
 	margin: 4rem auto;
 	overflow-x: hidden;
 }
+main {
+	display: grid;
+	gap: 2rem;
+}
 @media (max-width: 768px) {
 	main {
 		margin-inline: -2rem;
@@ -273,9 +277,6 @@ textarea {
 	flex-direction: column;
 	row-gap: 1rem;
 }
-.post:not(:last-child) {
-	margin-block-end: 2rem;
-}
 .box {
 	background-color: var(--box);
 	padding: 1.5rem 2.5rem;
@@ -304,9 +305,6 @@ hgroup p:after {
 }
 .admin {
 	align-items: start;
-}
-.panel {
-	margin-block-end: 2rem;
 }
 @media (max-width: 768px) {
 	.panel {
