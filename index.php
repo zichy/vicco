@@ -441,20 +441,6 @@ function recordExists($p) {
 	return file_exists(Sys::$path.$p) && is_dir(Sys::$path.$p);
 }
 
-function record_delete($r) {
-	$r = sanitizeKey($r);
-	if(recordExists($r)) {
-		$h = opendir(Sys::$path.$r);
-		for($i = 0; ($e = readdir($h)) !== false; $i++) {
-			if ($e != '.' && $e != '..' ) {
-				unlink(Sys::$path . $r . '/' . $e);
-			}
-		}
-		closedir($h);
-		rmdir(Sys::$path.$r);
-	}
-}
-
 function sanitizeKey($k) {
 	return preg_replace('/[^A-Za-z0-9_]/', '', $k);
 }
