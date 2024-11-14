@@ -12,7 +12,7 @@ class Acc {
 
 class Config {
 	static $blogName = 'vicco';
-	static $blogDesc = 'Yet another microblog'; // optional
+	static $blogDesc = 'Yet another linkblog'; // optional
 	static $logoPath = ''; // optional
 	static $favicon = '🌱'; // optional
 	static $language = 'en'; // (ISO 639-1)
