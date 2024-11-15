@@ -479,7 +479,7 @@ function getIndex() {
 
 // Status
 function isLoggedin() {
-	if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === db('cookie')) {
+	if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === getKVP(Sys::$dbPath, 'cookie')) {
 		return true;
 	}
 }
@@ -492,17 +492,6 @@ function isSearching() {
 	if (isset($_GET['s'])) {
 		return true;
 	}
-}
-
-// Check database
-function db() {
-	$f = func_get_args();
-	$n = sizeof($f) - 1;
-	$t = getKVP(Sys::$dbPath, $f[0]);
-	for($i = 1; $i < $n; $i += 2) {
-		$t = str_replace('{{' . $f[$i] . '}}', $f[$i + 1], $t);
-	}
-	return $t;
 }
 
 // Go to index
