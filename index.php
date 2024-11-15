@@ -387,7 +387,7 @@ EOD
 function createRecord($r) {
 	$r = sanitizeKey($r);
 	if(!recordExists($r)) {
-		mkdir(Sys::$path.$r);
+		mkdir(Sys::$path.'/'.$r);
 	}
 	return $r;
 }
