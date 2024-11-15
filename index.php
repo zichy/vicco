@@ -64,7 +64,7 @@ class L10n {
 }
 
 class Sys {
-	static $path = 'vicco/';
+	static $path = 'vicco';
 	static $dbPath = 'db';
 	static $postsPath = 'posts';
 	static $css = 'style.css';
@@ -88,7 +88,7 @@ if(getKVP(Sys::$dbPath, 'firstuse') === false) {
 		$post = new stdClass();
 		$id = uniqid();
 		$post->date = time();
-		$post->url = 'https://' . $_SERVER['HTTP_HOST'];
+		$post->url = 'https://'.$_SERVER['HTTP_HOST'];
 		$post->title = L10n::$introTitle;
 		$post->comment = L10n::$introComment;
 		createPost($id, json_encode($post));
@@ -393,11 +393,11 @@ function createRecord($r) {
 }
 
 function setFile($r, $k, $v) {
-	file_put_contents(Sys::$path . $r . '/' . $k, $v);
+	file_put_contents(Sys::$path.'/'.$r.'/'.$k,$v);
 }
 
 function setKVP($r, $k, $v) {
-	$f = Sys::$path.sanitizeKey($r) . '/' . $k;
+	$f = Sys::$path.'/'.sanitizeKey($r).'/'.$k;
 	file_put_contents($f, $v);
 	chmod($f, 0600);
 }
@@ -440,17 +440,17 @@ function postExists($id) {
 }
 
 function getKVP($r, $k) {
-	$p = Sys::$path.sanitizeKey($r) . '/' . $k;
+	$p = Sys::$path.'/'.sanitizeKey($r).'/'.$k;
 	return file_exists($p) ? file_get_contents($p) : false;
 }
 
 function deleteKVP($r, $kvp) {
-	unlink(Sys::$path.sanitizeKey($r) . '/' . sanitizeKey($kvp));
+	unlink(Sys::$path.'/'.sanitizeKey($r).'/'.sanitizeKey($kvp));
 }
 
 function recordExists($p) {
 	$p = sanitizeKey($p);
-	return file_exists(Sys::$path.$p) && is_dir(Sys::$path.$p);
+	return file_exists(Sys::$path.'/'.$p) && is_dir(Sys::$path.'/'.$p);
 }
 
 function sanitizeKey($k) {
@@ -520,7 +520,7 @@ function parse($t) {
 	$t = preg_replace('/\@(.*?)\@/', '<code>\1</code>', $t);
 	$t = preg_replace('/\[([^\[]+)\]\(([^\)]+)\)/', '<a href=\'\2\' rel=\'external nofollow\' target=\'_blank\'>\1</a>', $t);
 	$t = preg_replace('/\[(.*?)\]/', '<a href=\'\1\' rel=\'external nofollow\' target=\'_blank\'>\1</a>', $t);
-	$t = '<p>' . $t . '</p>';
+	$t = '<p>'.$t.'</p>';
 	$t = str_replace("\r\n\r\n", "</p><p>", $t);
 	$t = str_replace("\n\n", "</p><p>", $t);
 	$t = str_replace("\r\n", "<br>", $t);
@@ -539,8 +539,8 @@ if(isset($_GET['feed'])) {
 		}
 	});
 	$lastUpdate = postId(reset($posts)['value']);
-	$blogUrl = 'https://' . $_SERVER['HTTP_HOST'];
-	$feedUrl = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	$blogUrl = 'https://'.$_SERVER['HTTP_HOST'];
+	$feedUrl = 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 	header('Content-type: application/atom+xml'); ?>
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
@@ -560,12 +560,12 @@ if(isset($_GET['feed'])) {
 <entry>
 	<title><?= getPost($id, 'title') ?></title>
 	<link rel="alternate" type="text/html" href="<?= getPost($id, 'url') ?>" />
-	<link rel="related" type="text/html" href="<?= $blogUrl . '/?p=' . $id ?>" />
+	<link rel="related" type="text/html" href="<?= $blogUrl.'/?p='.$id ?>" />
 <?php if(getPost($id, 'comment')): ?>
 	<content type="html"><![CDATA[<?= parse(getPost($id, 'comment')) ?>]]></content>
 <?php endif ?>
 	<updated><?= date('Y-m-d\TH:i:sP', $post['value']) ?></updated>
-	<id><?= $blogUrl . '/?p=' . $id ?></id>
+	<id><?= $blogUrl.'/?p='.$id ?></id>
 </entry>
 <?php endforeach ?>
 </feed><?php die();
@@ -587,7 +587,7 @@ if(isset($_GET['feed'])) {
 	<title><?= Config::$blogName ?></title>
 
 	<link href="/?feed" type="application/atom+xml" title="<?= Config::$blogName ?> feed" rel="alternate">
-	<link rel="stylesheet" type="text/css" href="<?= Sys::$path.Sys::$css ?>" media="screen">
+	<link rel="stylesheet" type="text/css" href="<?= Sys::$path.'/'.Sys::$css ?>" media="screen">
 
 	<?php if (!empty(Config::$favicon)): ?>
 		<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Ctext%20y=%221em%22%20font-size=%2285%22%3E<?= Config::$favicon ?>%3C/text%3E%3C/svg%3E">
@@ -627,10 +627,10 @@ function footer($results = 0) { ?>
 		<?php if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage): ?>
 			<nav class="row">
 				<?php if (@$_GET['skip'] > 0): ?>
-					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0) . '&amp;s=' . @urlencode($_GET['s']) ?>" class="button"><span aria-hidden="true">&larr;</span> <?= L10n::$newer ?></a>
+					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><span aria-hidden="true">&larr;</span> <?= L10n::$newer ?></a>
 				<?php endif ?>
 				<?php if (@$_GET['skip'] + Config::$postsPerPage < $results): ?>
-					<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']) . '&amp;s=' . @urlencode($_GET['s']) ?>" class="button"><?= L10n::$older ?> <span aria-hidden="true">&rarr;</span></a>
+					<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><?= L10n::$older ?> <span aria-hidden="true">&rarr;</span></a>
 				<?php endif ?>
 			</nav>
 		<?php endif ?>
@@ -647,7 +647,7 @@ function footer($results = 0) { ?>
 	</footer>
 
 	<?php if (isLoggedin()): ?>
-		<script src="<?= Sys::$path.Sys::$js ?>"></script>
+		<script src="<?= Sys::$path.'/'.Sys::$js ?>"></script>
 	<?php endif ?>
 	</body></html>
 <?php }
@@ -837,7 +837,7 @@ if(!isEditing()) {
 	foreach($posts as $post): ?>
 		<?php
 			$id = postId($post['key']);
-			$postUrl = 'https://' . $_SERVER['HTTP_HOST'] . '/?p=' . $id;
+			$postUrl = 'https://'.$_SERVER['HTTP_HOST'].'/?p='.$id;
 		?>
 		<article class="post box" itemscope itemtype="https://schema.org/BlogPosting" itemid="<?= $postUrl ?>">
 			<header>
