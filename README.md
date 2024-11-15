@@ -46,6 +46,9 @@ There is some [Markdown](https://daringfireball.net/projects/markdown/)-inspired
 **Are there any dependencies? Should I use Composer?**  
 There are no dependencies. This is literally _one_ PHP file.
 
+**One single file? How does this work?**  
+Well, _actually_ several files are created in the folder `/vicco/`, which serves as some kind of rudimentary flat-file database. All posts are stored in JSON.
+
 **Can I rename `index.php`?**  
 You can, but the question is whether you should. (You shouldn’t.)
 
