@@ -60,7 +60,7 @@ class L10n {
 	static $errorHacker = 'Nice try.';
 	static $errorPermissions = 'No write permissions to create the folder';
 	static $introTitle = 'Welcome to vicco!';
-	static $introComment = 'This is your new linkblog. Log in, have a look around and start posting!';
+	static $introComment = 'This is your new linkblog. Log in, have a look around and start posting.';
 }
 
 class Sys {
