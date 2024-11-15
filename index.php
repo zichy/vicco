@@ -506,7 +506,7 @@ function db() {
 }
 
 // Go to index
-function returnToMain() {
+function returnHome() {
 	header('Location: /');
 	die();
 }
@@ -680,7 +680,7 @@ function deleteCookie() {
 // Login
 if(isset($_GET['login'])) {
 	if(isLoggedin()) {
-		returnToMain();
+		returnHome();
 	} else { ?>
 		<form class="box form" action="/" method="post">
 			<div>
@@ -704,7 +704,7 @@ if(isset($_POST['login'])) {
 	if(hash_equals(Acc::$username, $_POST['username']) && hash_equals(Acc::$passphrase, $_POST['passphrase'])) {
 		$_SESSION['loggedin'] = true;
 		createCookie();
-		returnToMain();
+		returnHome();
 	} else {
 		error(L10n::$errorLogin, true, 'javascript:history.back()');
 	}
@@ -779,7 +779,7 @@ if(isLoggedin()) {
 if(isset($_POST['logout'])) {
 	session_destroy();
 	deleteCookie();
-	returnToMain();
+	returnHome();
 }
 
 // Posts
