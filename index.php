@@ -74,7 +74,7 @@ class Sys {
 session_start();
 
 // Installation
-if(getKVP(Sys::$dbPath, 'firstuse') === false) {
+if(getKVP(Sys::$dbPath, 'installed') === false) {
 	if(!recordExists('')) {
 		if(!mkdir(Sys::$path)) {
 			die(L10n::$errorPermissions.' '.Sys::$path);
@@ -380,7 +380,7 @@ if($adminForms) {
 	});
 }
 EOD
-	); setKVP(Sys::$dbPath, 'firstuse', 1);
+	); setKVP(Sys::$dbPath, 'installed', 1);
 }
 
 // Database
