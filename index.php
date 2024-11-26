@@ -86,7 +86,7 @@ if(getKVP(Sys::$dbPath, 'firstuse') === false) {
 
 	if(!getIndex()) {
 		$post = new stdClass();
-		$id = uniqid();
+		$id = createID('6');
 		$post->date = time();
 		$post->url = 'https://'.$_SERVER['HTTP_HOST'];
 		$post->title = L10n::$introTitle;
@@ -477,6 +477,10 @@ function getIndex() {
 	return unserialize(getKVP(Sys::$dbPath, 'index'));
 }
 
+function createID($length) {
+	return bin2hex(random_bytes($length));
+}
+
 // Status
 function isLoggedin() {
 	if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === getKVP(Sys::$dbPath, 'cookie')) {
@@ -657,7 +661,7 @@ function error($text, $backLink = true, $linkUrl = '/') { ?>
 
 // Cookie
 function createCookie() {
-	$identifier = bin2hex(random_bytes('64'));
+	$identifier = createID('64');
 	setKVP(Sys::$dbPath, 'cookie', $identifier);
 	setcookie('vicco', $identifier, time()+(3600*24*30));
 }
@@ -709,7 +713,7 @@ if(isLoggedin()) {
 		$id = 0;
 
 		if(empty($_POST['id'])) {
-			$id = uniqid();
+			$id = createID('6');
 			$post->date = time();
 		} else {
 			if(!postExists($_POST['id'])) {
