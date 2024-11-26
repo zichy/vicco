@@ -275,11 +275,11 @@ textarea {
 .post {
 	display: flex;
 	flex-direction: column;
-	row-gap: 1rem;
+	row-gap: 1.5rem;
 }
 .box {
 	background-color: var(--box);
-	padding: 1.5rem 2.5rem;
+	padding: 2rem 2.5rem;
 }
 @media (min-width: 769px) {
 	.box {
