@@ -84,6 +84,7 @@ if(getKVP(Sys::$dbPath, 'firstuse') === false) {
 	createRecord(Sys::$postsPath);
 	createIndex();
 
+	// Intro post
 	if(!getIndex()) {
 		$post = new stdClass();
 		$id = createID('6');
@@ -735,10 +736,12 @@ if(isLoggedin()) {
 		createIndex();
 	}
 
+	// Invalid post ID
 	if (isEditing() && !postExists($_GET['edit'])) {
 		error(L10n::$errorPostNonexistent);
 	}
 
+	// Post form
 	if ((!(isset($_GET['p'])) && !isSearching())): ?>
 		<form class="panel box" action="/" method="post">
 			<div class="panel-link">
