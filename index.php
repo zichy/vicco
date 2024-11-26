@@ -92,7 +92,6 @@ if(getKVP(Sys::$dbPath, 'firstuse') === false) {
 		$post->title = L10n::$introTitle;
 		$post->comment = L10n::$introComment;
 		createPost($id, json_encode($post));
-		createIndex();
 	}
 
 	setFile(null, Sys::$css, <<< 'EOD'
@@ -406,6 +405,7 @@ function createPost($id, $content) {
 	$file = Sys::$path.'/'.Sys::$postsPath.'/'.$id.'.json';
 	file_put_contents($file, $content);
 	chmod($file, 0600);
+	createIndex();
 }
 
 function getPost($id, $value = false) {
@@ -723,7 +723,6 @@ if(isLoggedin()) {
 		$post->title = $_POST['title'];
 		$post->comment = $_POST['comment'];
 		createPost($id, json_encode($post));
-		createIndex();
 	}
 
 	// Delete posts
