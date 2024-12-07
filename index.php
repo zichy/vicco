@@ -92,7 +92,7 @@ if(getKVP(Sys::$dbPath, 'installed') === false) {
 		$post->url = 'https://'.$_SERVER['HTTP_HOST'];
 		$post->title = L10n::$introTitle;
 		$post->comment = L10n::$introComment;
-		createPost($id, json_encode($post));
+		createPost($id, $post);
 	}
 
 	setFile(null, Sys::$css, <<< 'EOD'
@@ -404,7 +404,7 @@ function setKVP($r, $k, $v) {
 
 function createPost($id, $content) {
 	$file = Sys::$path.'/'.Sys::$postsPath.'/'.$id.'.json';
-	file_put_contents($file, $content);
+	file_put_contents($file, json_encode($content));
 	chmod($file, 0600);
 	createIndex();
 }
@@ -727,7 +727,7 @@ if(isLoggedin()) {
 		$post->url = $_POST['url'];
 		$post->title = $_POST['title'];
 		$post->comment = $_POST['comment'];
-		createPost($id, json_encode($post));
+		createPost($id, $post);
 	}
 
 	// Delete posts
