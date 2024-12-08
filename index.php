@@ -383,7 +383,7 @@ if($adminForms) {
 	});
 }
 EOD
-	); setEntry('installed', 1);
+	); setEntry('installed', true);
 }
 
 // Database
