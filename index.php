@@ -640,37 +640,6 @@ if(isset($_GET['feed'])) {
 </header><main>
 <?php
 
-// Footer template
-function footer($results = 0) { ?>
-	</main><footer class="footer">
-		<?php if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage): ?>
-			<nav class="row">
-				<?php if (@$_GET['skip'] > 0): ?>
-					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><span aria-hidden="true">&larr;</span> <?= L10n::$newer ?></a>
-				<?php endif ?>
-				<?php if (@$_GET['skip'] + Config::$postsPerPage < $results): ?>
-					<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><?= L10n::$older ?> <span aria-hidden="true">&rarr;</span></a>
-				<?php endif ?>
-			</nav>
-		<?php endif ?>
-
-		<div class="acc">
-			<?php if(Config::$showLogin && !isset($_GET['login']) && !isLoggedin()): ?>
-				<a class="button" href="?login">Login</a>
-			<?php elseif(isLoggedin()): ?>
-				<form action="/" method="post">
-					<button type="submit" name="logout"><?= L10n::$logout ?></button>
-				</form>
-			<?php endif ?>
-		</div>
-	</footer>
-
-	<?php if (isLoggedin()): ?>
-		<script src="<?= Sys::$folder.Sys::$js ?>"></script>
-	<?php endif ?>
-	</body></html>
-<?php }
-
 // Error template
 function error($text, $backLink = true, $linkUrl = '/') { ?>
 	<section class="box text">
@@ -882,5 +851,36 @@ if(!isEditing()) {
 
 // Footer
 footer($results);
+
+// Footer template
+function footer($results = 0) { ?>
+	</main><footer class="footer">
+		<?php if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage): ?>
+			<nav class="row">
+				<?php if (@$_GET['skip'] > 0): ?>
+					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><span aria-hidden="true">&larr;</span> <?= L10n::$newer ?></a>
+				<?php endif ?>
+				<?php if (@$_GET['skip'] + Config::$postsPerPage < $results): ?>
+					<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><?= L10n::$older ?> <span aria-hidden="true">&rarr;</span></a>
+				<?php endif ?>
+			</nav>
+		<?php endif ?>
+
+		<div class="acc">
+			<?php if(Config::$showLogin && !isset($_GET['login']) && !isLoggedin()): ?>
+				<a class="button" href="?login">Login</a>
+			<?php elseif(isLoggedin()): ?>
+				<form action="/" method="post">
+					<button type="submit" name="logout"><?= L10n::$logout ?></button>
+				</form>
+			<?php endif ?>
+		</div>
+	</footer>
+
+	<?php if (isLoggedin()): ?>
+		<script src="<?= Sys::$folder.Sys::$js ?>"></script>
+	<?php endif ?>
+	</body></html>
+<?php }
 
 ?>
