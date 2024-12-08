@@ -228,6 +228,7 @@ textarea {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	width: fit-content;
 	padding: 0.5rem 1rem;
 	border: 0;
 	border-radius: 0.5rem;
@@ -757,6 +758,8 @@ if(isLoggedin()) {
 	// Post form
 	if ((!(isset($_GET['p'])) && !isSearching())): ?>
 		<form class="panel box" action="/" method="post">
+			<input type="hidden" name="id" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
+
 			<div class="panel-link">
 				<label for="url"><?= L10n::$link ?></label>
 				<input type="url" id="url" name="url" placeholder="https://example.com" required value="<?= (isEditing() ? getPost($_GET['edit'], 'url') : '') ?>">
@@ -772,10 +775,7 @@ if(isLoggedin()) {
 				<textarea id="comment" name="comment" spellcheck="false" rows="1"><?= (isEditing() ? getPost($_GET['edit'], 'comment') : '') ?></textarea>
 			</div>
 
-			<div class="row">
-				<input type="hidden" name="id" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
-				<button type="submit" id="submit" name="submit"><?= (isEditing() ? L10n::$save : L10n::$publish) ?></button>
-			</div>
+			<button type="submit" id="submit" name="submit"><?= (isEditing() ? L10n::$save : L10n::$publish) ?></button>
 		</form>
 	<?php endif;
 
