@@ -64,24 +64,26 @@ class L10n {
 }
 
 class Sys {
-	static $path = 'vicco';
-	static $dbPath = 'db';
-	static $postsPath = 'posts';
+	static $path = 'vicco/';
+	static $dbFolder = 'db';
+	static $postsFolder = 'posts/';
 	static $css = 'style.css';
 	static $js = 'script.js';
 }
 
+$postsPath = Sys::$path.Sys::$postsFolder;
+
 session_start();
 
 // Installation
-if(getKVP(Sys::$dbPath, 'installed') === false) {
+if(getKVP(Sys::$dbFolder, 'installed') === false) {
 	if(!recordExists('')) {
 		if(!mkdir(Sys::$path)) {
 			die(L10n::$errorPermissions.' '.Sys::$path);
 		}
 	}
-	createRecord(Sys::$dbPath);
-	createRecord(Sys::$postsPath);
+	createRecord(Sys::$dbFolder);
+	createRecord(Sys::$postsFolder);
 	createIndex();
 
 	// Intro post
@@ -380,40 +382,42 @@ if($adminForms) {
 	});
 }
 EOD
-	); setKVP(Sys::$dbPath, 'installed', 1);
+	); setKVP(Sys::$dbFolder, 'installed', 1);
 }
 
 // Database
 function createRecord($r) {
 	$r = sanitizeKey($r);
 	if(!recordExists($r)) {
-		mkdir(Sys::$path.'/'.$r);
+		mkdir(Sys::$path.$r);
 	}
 	return $r;
 }
 
 function setFile($r, $k, $v) {
-	file_put_contents(Sys::$path.'/'.$r.'/'.$k,$v);
+	file_put_contents(Sys::$path.$r.'/'.$k,$v);
 }
 
 function setKVP($r, $k, $v) {
-	$f = Sys::$path.'/'.sanitizeKey($r).'/'.$k;
+	$f = Sys::$path.sanitizeKey($r).'/'.$k;
 	file_put_contents($f, $v);
 	chmod($f, 0600);
 }
 
 function createPost($id, $content) {
-	$file = Sys::$path.'/'.Sys::$postsPath.'/'.$id.'.json';
+	global $postsPath;
+	$file = $postsPath.$id.'.json';
 	file_put_contents($file, json_encode($content));
 	chmod($file, 0600);
 	createIndex();
 }
 
 function getPost($id, $value = false) {
+	global $postsPath;
 	if (!str_ends_with($id, '.json')) {
 		$id = $id.'.json';
 	}
-	$file = Sys::$path.'/'.Sys::$postsPath.'/'.$id;
+	$file = $postsPath.$id;
 
 	if(file_exists($file)) {
 		if (!$value) {
@@ -432,26 +436,28 @@ function postId($id) {
 }
 
 function deletePost($id) {
-	$file = Sys::$path.'/'.Sys::$postsPath.'/'.$id.'.json';
+	global $postsPath;
+	$file = $postsPath.$id.'.json';
 	unlink($file);
 }
 
 function postExists($id) {
-	return file_exists(Sys::$path.'/'.Sys::$postsPath.'/'.$id.'.json');
+	global $postsPath;
+	return file_exists($postsPath.$id.'.json');
 }
 
 function getKVP($r, $k) {
-	$p = Sys::$path.'/'.sanitizeKey($r).'/'.$k;
+	$p = Sys::$path.sanitizeKey($r).'/'.$k;
 	return file_exists($p) ? file_get_contents($p) : false;
 }
 
 function deleteKVP($r, $kvp) {
-	unlink(Sys::$path.'/'.sanitizeKey($r).'/'.sanitizeKey($kvp));
+	unlink(Sys::$path.sanitizeKey($r).'/'.sanitizeKey($kvp));
 }
 
 function recordExists($p) {
 	$p = sanitizeKey($p);
-	return file_exists(Sys::$path.'/'.$p) && is_dir(Sys::$path.'/'.$p);
+	return file_exists(Sys::$path.$p) && is_dir(Sys::$path.$p);
 }
 
 function sanitizeKey($k) {
@@ -459,8 +465,9 @@ function sanitizeKey($k) {
 }
 
 function createIndex() {
+	global $postsPath;
 	$d = array();
-	$h = opendir(Sys::$path.'/'.Sys::$postsPath);
+	$h = opendir($postsPath);
 	for($i = 0; ($e = readdir($h)) !== false; $i++) {
 		if (str_ends_with($e, '.json')) {
 			$d[$i]['key'] = $e;
@@ -471,11 +478,11 @@ function createIndex() {
 		}
 	}
 	closedir($h);
-	setKVP(Sys::$dbPath, 'index', serialize($d));
+	setKVP(Sys::$dbFolder, 'index', serialize($d));
 }
 
 function getIndex() {
-	return unserialize(getKVP(Sys::$dbPath, 'index'));
+	return unserialize(getKVP(Sys::$dbFolder, 'index'));
 }
 
 function createID($length) {
@@ -484,7 +491,7 @@ function createID($length) {
 
 // Status
 function isLoggedin() {
-	if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === getKVP(Sys::$dbPath, 'cookie')) {
+	if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === getKVP(Sys::$dbFolder, 'cookie')) {
 		return true;
 	}
 }
@@ -581,7 +588,7 @@ if(isset($_GET['feed'])) {
 	<title><?= Config::$blogName ?></title>
 
 	<link href="/?feed" type="application/atom+xml" title="<?= Config::$blogName ?> feed" rel="alternate">
-	<link rel="stylesheet" type="text/css" href="<?= Sys::$path.'/'.Sys::$css ?>" media="screen">
+	<link rel="stylesheet" type="text/css" href="<?= Sys::$path.Sys::$css ?>" media="screen">
 
 	<?php if (!empty(Config::$favicon)): ?>
 		<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Ctext%20y=%221em%22%20font-size=%2285%22%3E<?= Config::$favicon ?>%3C/text%3E%3C/svg%3E">
@@ -641,7 +648,7 @@ function footer($results = 0) { ?>
 	</footer>
 
 	<?php if (isLoggedin()): ?>
-		<script src="<?= Sys::$path.'/'.Sys::$js ?>"></script>
+		<script src="<?= Sys::$path.Sys::$js ?>"></script>
 	<?php endif ?>
 	</body></html>
 <?php }
@@ -663,11 +670,11 @@ function error($text, $backLink = true, $linkUrl = '/') { ?>
 // Cookie
 function createCookie() {
 	$identifier = createID('64');
-	setKVP(Sys::$dbPath, 'cookie', $identifier);
+	setKVP(Sys::$dbFolder, 'cookie', $identifier);
 	setcookie('vicco', $identifier, time()+(3600*24*30));
 }
 function deleteCookie() {
-	deleteKVP(Sys::$dbPath, 'cookie');
+	deleteKVP(Sys::$dbFolder, 'cookie');
 	setcookie('vicco', '', time()-(3600*24*30));
 }
 
