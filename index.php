@@ -492,17 +492,31 @@ function getID($length) {
 	return bin2hex(random_bytes($length));
 }
 
+// Cookie
+function createCookie() {
+	$identifier = getID('64');
+	setEntry('cookie', $identifier);
+	setcookie('vicco', $identifier, time()+(3600*24*30));
+}
+
+function deleteCookie() {
+	deleteEntry('cookie');
+	setcookie('vicco', '', time()-(3600*24*30));
+}
+
 // Status
 function isLoggedin() {
 	if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === getEntry('cookie')) {
 		return true;
 	}
 }
+
 function isEditing() {
 	if (isset($_GET['edit'])) {
 		return true;
 	}
 }
+
 function isSearching() {
 	if (isset($_GET['s'])) {
 		return true;
@@ -668,17 +682,6 @@ function error($text, $backLink = true, $linkUrl = '/') { ?>
 <?php
 	footer();
 	die();
-}
-
-// Cookie
-function createCookie() {
-	$identifier = getID('64');
-	setEntry('cookie', $identifier);
-	setcookie('vicco', $identifier, time()+(3600*24*30));
-}
-function deleteCookie() {
-	deleteEntry('cookie');
-	setcookie('vicco', '', time()-(3600*24*30));
 }
 
 // Login
