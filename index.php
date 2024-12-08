@@ -65,18 +65,19 @@ class L10n {
 
 class Sys {
 	static $path = 'vicco/';
-	static $dbFolder = 'db';
+	static $dbFolder = 'db/';
 	static $postsFolder = 'posts/';
 	static $css = 'style.css';
 	static $js = 'script.js';
 }
 
+$dbPath = Sys::$path.Sys::$dbFolder;
 $postsPath = Sys::$path.Sys::$postsFolder;
 
 session_start();
 
 // Installation
-if(getKVP(Sys::$dbFolder, 'installed') === false) {
+if(getEntry('installed') === false) {
 	if(!recordExists('')) {
 		if(!mkdir(Sys::$path)) {
 			die(L10n::$errorPermissions.Sys::$path);
@@ -84,17 +85,17 @@ if(getKVP(Sys::$dbFolder, 'installed') === false) {
 	}
 	createRecord(Sys::$dbFolder);
 	createRecord(Sys::$postsFolder);
-	createIndex();
+	setIndex();
 
 	// Intro post
 	if(!getIndex()) {
 		$post = new stdClass();
-		$id = createID('6');
+		$id = getID('6');
 		$post->date = time();
 		$post->url = 'https://'.$_SERVER['HTTP_HOST'];
 		$post->title = L10n::$introTitle;
 		$post->comment = L10n::$introComment;
-		createPost($id, $post);
+		setPost($id, $post);
 	}
 
 	setFile(Sys::$css, <<< 'EOD'
@@ -382,7 +383,7 @@ if($adminForms) {
 	});
 }
 EOD
-	); setKVP(Sys::$dbFolder, 'installed', 1);
+	); setEntry('installed', 1);
 }
 
 // Database
@@ -398,18 +399,12 @@ function setFile($name, $content) {
 	file_put_contents(Sys::$path.$name, $content);
 }
 
-function setKVP($r, $k, $v) {
-	$f = Sys::$path.sanitizeKey($r).'/'.$k;
-	file_put_contents($f, $v);
-	chmod($f, 0600);
-}
-
-function createPost($id, $content) {
+function setPost($id, $content) {
 	global $postsPath;
 	$file = $postsPath.$id.'.json';
 	file_put_contents($file, json_encode($content));
 	chmod($file, 0600);
-	createIndex();
+	setIndex();
 }
 
 function getPost($id, $value = false) {
@@ -428,7 +423,7 @@ function getPost($id, $value = false) {
 	}
 }
 
-function postId($id) {
+function getPostId($id) {
 	if (str_ends_with($id, '.json')) {
 		$id = substr($id, 0, -5);
 	}
@@ -446,13 +441,22 @@ function postExists($id) {
 	return file_exists($postsPath.$id.'.json');
 }
 
-function getKVP($r, $k) {
-	$p = Sys::$path.sanitizeKey($r).'/'.$k;
-	return file_exists($p) ? file_get_contents($p) : false;
+function setEntry($entry, $content) {
+	global $dbPath;
+	$file = $dbPath.$entry;
+	file_put_contents($file, $content);
+	chmod($file, 0600);
 }
 
-function deleteKVP($r, $kvp) {
-	unlink(Sys::$path.sanitizeKey($r).'/'.sanitizeKey($kvp));
+function getEntry($entry) {
+	global $dbPath;
+	$file = $dbPath.$entry;
+	return file_exists($file) ? file_get_contents($file) : false;
+}
+
+function deleteEntry($entry) {
+	global $dbPath;
+	unlink($dbPath.$entry);
 }
 
 function recordExists($p) {
@@ -464,34 +468,34 @@ function sanitizeKey($k) {
 	return preg_replace('/[^A-Za-z0-9_]/', '', $k);
 }
 
-function createIndex() {
+function setIndex() {
 	global $postsPath;
 	$d = array();
 	$h = opendir($postsPath);
 	for($i = 0; ($e = readdir($h)) !== false; $i++) {
 		if (str_ends_with($e, '.json')) {
 			$d[$i]['key'] = $e;
-			$d[$i]['value'] = getPost(postId($e), 'date');
+			$d[$i]['value'] = getPost(getPostId($e), 'date');
 			if($d[$i]['value'] === false) {
 				array_pop($d);
 			}
 		}
 	}
 	closedir($h);
-	setKVP(Sys::$dbFolder, 'index', serialize($d));
+	setEntry('index', serialize($d));
 }
 
 function getIndex() {
-	return unserialize(getKVP(Sys::$dbFolder, 'index'));
+	return unserialize(getEntry('index'));
 }
 
-function createID($length) {
+function getID($length) {
 	return bin2hex(random_bytes($length));
 }
 
 // Status
 function isLoggedin() {
-	if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === getKVP(Sys::$dbFolder, 'cookie')) {
+	if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === getEntry('cookie')) {
 		return true;
 	}
 }
@@ -539,7 +543,7 @@ if(isset($_GET['feed'])) {
 			return $b['value'] <=> $a['value'];
 		}
 	});
-	$lastUpdate = postId(reset($posts)['value']);
+	$lastUpdate = getPostId(reset($posts)['value']);
 	$blogUrl = 'https://'.$_SERVER['HTTP_HOST'];
 	$feedUrl = 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 	header('Content-type: application/atom+xml'); ?>
@@ -557,7 +561,7 @@ if(isset($_GET['feed'])) {
 <updated><?= date('Y-m-d\TH:i:sP', $lastUpdate) ?></updated>
 <id><?= $feedUrl ?></id>
 <?php foreach($posts as $post): ?>
-<?php $id = postId($post['key']); ?>
+<?php $id = getPostId($post['key']); ?>
 <entry>
 	<title><?= getPost($id, 'title') ?></title>
 	<link rel="alternate" type="text/html" href="<?= getPost($id, 'url') ?>" />
@@ -669,12 +673,12 @@ function error($text, $backLink = true, $linkUrl = '/') { ?>
 
 // Cookie
 function createCookie() {
-	$identifier = createID('64');
-	setKVP(Sys::$dbFolder, 'cookie', $identifier);
+	$identifier = getID('64');
+	setEntry('cookie', $identifier);
 	setcookie('vicco', $identifier, time()+(3600*24*30));
 }
 function deleteCookie() {
-	deleteKVP(Sys::$dbFolder, 'cookie');
+	deleteEntry('cookie');
 	setcookie('vicco', '', time()-(3600*24*30));
 }
 
@@ -721,7 +725,7 @@ if(isLoggedin()) {
 		$id = 0;
 
 		if(empty($_POST['id'])) {
-			$id = createID('6');
+			$id = getID('6');
 			$post->date = time();
 		} else {
 			if(!postExists($_POST['id'])) {
@@ -734,13 +738,13 @@ if(isLoggedin()) {
 		$post->url = $_POST['url'];
 		$post->title = $_POST['title'];
 		$post->comment = $_POST['comment'];
-		createPost($id, $post);
+		setPost($id, $post);
 	}
 
 	// Delete posts
 	if(isset($_POST['delete'])) {
 		deletePost($_POST['id']);
-		createIndex();
+		setIndex();
 	}
 
 	// Invalid post ID
@@ -791,9 +795,9 @@ $posts = getIndex();
 if(!empty($_GET['s'])) {
 	$s = explode(' ', $_GET['s']);
 	foreach($posts as $postKey => $postValue) {
-		$url = strtolower(getPost(postId($postValue['key']), 'url'));
-		$title = strtolower(getPost(postId($postValue['key']), 'title'));
-		$comment = strtolower(parse(getPost(postId($postValue['key']), 'comment')));
+		$url = strtolower(getPost(getPostId($postValue['key']), 'url'));
+		$title = strtolower(getPost(getPostId($postValue['key']), 'title'));
+		$comment = strtolower(parse(getPost(getPostId($postValue['key']), 'comment')));
 		$f = true;
 		for($i = 0; $i < sizeof($s); $i++) {
 			if((strpos($url, strtolower($s[$i])) === false) && (strpos($title, strtolower($s[$i])) === false) && strpos($comment, strtolower($s[$i])) === false) {
@@ -838,7 +842,7 @@ if(!isEditing()) {
 	}
 	foreach($posts as $post): ?>
 		<?php
-			$id = postId($post['key']);
+			$id = getPostId($post['key']);
 			$postUrl = 'https://'.$_SERVER['HTTP_HOST'].'/?p='.$id;
 		?>
 		<article class="post box" itemscope itemtype="https://schema.org/BlogPosting" itemid="<?= $postUrl ?>">
