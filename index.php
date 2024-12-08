@@ -78,7 +78,7 @@ session_start();
 
 // Installation
 if(getEntry('installed') === false) {
-	if(!recordExists('')) {
+	if(!folderExists('')) {
 		if(!mkdir(Sys::$path)) {
 			die(L10n::$errorPermissions.Sys::$path);
 		}
@@ -389,7 +389,7 @@ EOD
 // Database
 function createFolder($folder) {
 	$folder = sanitizeKey($folder);
-	if(!recordExists($folder)) {
+	if(!folderExists($folder)) {
 		mkdir(Sys::$path.$folder);
 	}
 }
@@ -458,9 +458,9 @@ function deleteEntry($entry) {
 	unlink($dbPath.$entry);
 }
 
-function recordExists($p) {
-	$p = sanitizeKey($p);
-	return file_exists(Sys::$path.$p) && is_dir(Sys::$path.$p);
+function folderExists($folder) {
+	$folder = sanitizeKey($folder);
+	return file_exists(Sys::$path.$folder) && is_dir(Sys::$path.$folder);
 }
 
 function sanitizeKey($k) {
