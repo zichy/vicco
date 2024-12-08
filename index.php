@@ -64,23 +64,23 @@ class L10n {
 }
 
 class Sys {
-	static $path = 'vicco/';
+	static $folder = 'vicco/';
 	static $dbFolder = 'db/';
 	static $postsFolder = 'posts/';
 	static $css = 'style.css';
 	static $js = 'script.js';
 }
 
-$dbPath = Sys::$path.Sys::$dbFolder;
-$postsPath = Sys::$path.Sys::$postsFolder;
+$dbPath = Sys::$folder.Sys::$dbFolder;
+$postsPath = Sys::$folder.Sys::$postsFolder;
 
 session_start();
 
 // Installation
 if(getEntry('installed') === false) {
 	if(!folderExists('')) {
-		if(!mkdir(Sys::$path)) {
-			die(L10n::$errorPermissions.Sys::$path);
+		if(!mkdir(Sys::$folder)) {
+			die(L10n::$errorPermissions.Sys::$folder);
 		}
 	}
 	createFolder(Sys::$dbFolder);
@@ -390,12 +390,12 @@ EOD
 function createFolder($folder) {
 	$folder = sanitizeKey($folder);
 	if(!folderExists($folder)) {
-		mkdir(Sys::$path.$folder);
+		mkdir(Sys::$folder.$folder);
 	}
 }
 
 function setFile($name, $content) {
-	file_put_contents(Sys::$path.$name, $content);
+	file_put_contents(Sys::$folder.$name, $content);
 }
 
 function setPost($id, $content) {
@@ -460,7 +460,7 @@ function deleteEntry($entry) {
 
 function folderExists($folder) {
 	$folder = sanitizeKey($folder);
-	return file_exists(Sys::$path.$folder) && is_dir(Sys::$path.$folder);
+	return file_exists(Sys::$folder.$folder) && is_dir(Sys::$folder.$folder);
 }
 
 function sanitizeKey($text) {
@@ -605,7 +605,7 @@ if(isset($_GET['feed'])) {
 	<title><?= Config::$blogName ?></title>
 
 	<link href="/?feed" type="application/atom+xml" title="<?= Config::$blogName ?> feed" rel="alternate">
-	<link rel="stylesheet" type="text/css" href="<?= Sys::$path.Sys::$css ?>" media="screen">
+	<link rel="stylesheet" type="text/css" href="<?= Sys::$folder.Sys::$css ?>" media="screen">
 
 	<?php if (!empty(Config::$favicon)): ?>
 		<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Ctext%20y=%221em%22%20font-size=%2285%22%3E<?= Config::$favicon ?>%3C/text%3E%3C/svg%3E">
@@ -665,7 +665,7 @@ function footer($results = 0) { ?>
 	</footer>
 
 	<?php if (isLoggedin()): ?>
-		<script src="<?= Sys::$path.Sys::$js ?>"></script>
+		<script src="<?= Sys::$folder.Sys::$js ?>"></script>
 	<?php endif ?>
 	</body></html>
 <?php }
