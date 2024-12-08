@@ -58,7 +58,7 @@ class L10n {
 	static $errorPostNonexistent = 'The post you wish to edit does not exist.';
 	static $errorNoResults = 'No posts were found.';
 	static $errorHacker = 'Nice try.';
-	static $errorPermissions = 'No write permissions to create the folder';
+	static $errorPermissions = 'No write permissions to create the folder ';
 	static $introTitle = 'Welcome to vicco!';
 	static $introComment = 'This is your new linkblog. Log in, have a look around and start posting.';
 }
@@ -79,7 +79,7 @@ session_start();
 if(getKVP(Sys::$dbFolder, 'installed') === false) {
 	if(!recordExists('')) {
 		if(!mkdir(Sys::$path)) {
-			die(L10n::$errorPermissions.' '.Sys::$path);
+			die(L10n::$errorPermissions.Sys::$path);
 		}
 	}
 	createRecord(Sys::$dbFolder);
