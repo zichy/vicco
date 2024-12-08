@@ -83,8 +83,8 @@ if(getEntry('installed') === false) {
 			die(L10n::$errorPermissions.Sys::$path);
 		}
 	}
-	createRecord(Sys::$dbFolder);
-	createRecord(Sys::$postsFolder);
+	createFolder(Sys::$dbFolder);
+	createFolder(Sys::$postsFolder);
 	setIndex();
 
 	// Intro post
@@ -387,12 +387,11 @@ EOD
 }
 
 // Database
-function createRecord($r) {
-	$r = sanitizeKey($r);
-	if(!recordExists($r)) {
-		mkdir(Sys::$path.$r);
+function createFolder($folder) {
+	$folder = sanitizeKey($folder);
+	if(!recordExists($folder)) {
+		mkdir(Sys::$path.$folder);
 	}
-	return $r;
 }
 
 function setFile($name, $content) {
