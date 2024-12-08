@@ -97,7 +97,7 @@ if(getKVP(Sys::$dbFolder, 'installed') === false) {
 		createPost($id, $post);
 	}
 
-	setFile(null, Sys::$css, <<< 'EOD'
+	setFile(Sys::$css, <<< 'EOD'
 :root {
 	--sans: system-ui, sans-serif;
 	--mono: ui-monospace, monospace;
@@ -349,7 +349,7 @@ nav {
 }
 EOD
 	);
-	setFile(null, Sys::$js, <<< 'EOD'
+	setFile(Sys::$js, <<< 'EOD'
 if (window.history.replaceState) {
 	window.history.replaceState(null, null, window.location.href);
 }
@@ -394,8 +394,8 @@ function createRecord($r) {
 	return $r;
 }
 
-function setFile($r, $k, $v) {
-	file_put_contents(Sys::$path.$r.'/'.$k,$v);
+function setFile($name, $content) {
+	file_put_contents(Sys::$path.$name, $content);
 }
 
 function setKVP($r, $k, $v) {
