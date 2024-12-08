@@ -463,8 +463,8 @@ function folderExists($folder) {
 	return file_exists(Sys::$path.$folder) && is_dir(Sys::$path.$folder);
 }
 
-function sanitizeKey($k) {
-	return preg_replace('/[^A-Za-z0-9_]/', '', $k);
+function sanitizeKey($text) {
+	return preg_replace('/[^A-Za-z0-9_]/', '', $text);
 }
 
 function setIndex() {
