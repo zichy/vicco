@@ -78,6 +78,8 @@ session_start();
 
 // Installation
 if(getEntry('installed') === false) {
+
+	// Create folders
 	if(!folderExists('')) {
 		if(!mkdir(Sys::$folder)) {
 			die(L10n::$errorPermissions.Sys::$folder);
@@ -98,6 +100,7 @@ if(getEntry('installed') === false) {
 		setPost($id, $post);
 	}
 
+	// Create assets
 	setFile(Sys::$css, <<< 'EOD'
 :root {
 	--sans: system-ui, sans-serif;
