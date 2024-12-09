@@ -640,7 +640,7 @@ if(isset($_GET['feed'])) {
 </header><main>
 <?php
 
-// Error template
+// Error
 function error($text, $backLink = true, $linkUrl = '/') { ?>
 	<section class="box text">
 		<h2><?= L10n::$error ?></h2>
@@ -687,7 +687,7 @@ if(isset($_POST['login'])) {
 	}
 }
 if(isLoggedin()) {
-	// Submit posts
+	// Submit post
 	if(isset($_POST['submit'])) {
 		if(empty($_POST['url']) || empty($_POST['title'])) {
 			error(L10n::$errorEmpty);
@@ -713,7 +713,7 @@ if(isLoggedin()) {
 		setPost($id, $post);
 	}
 
-	// Delete posts
+	// Delete post
 	if(isset($_POST['delete'])) {
 		deletePost($_POST['id']);
 		setIndex();
@@ -852,7 +852,6 @@ if(!isEditing()) {
 // Footer
 footer($results);
 
-// Footer template
 function footer($results = 0) { ?>
 	</main><footer class="footer">
 		<?php if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage): ?>
