@@ -197,6 +197,8 @@ form {
 	color: var(--text);
 	font-family: var(--mono);
 	font-size: var(--size);
+	display: block;
+	width: 100%;
 	border: var(--border);
 	border-radius: 0.5rem;
 }
@@ -206,15 +208,13 @@ form {
 	outline-offset: 0;
 }
 input {
-	width: 100%;
 	height: 3.5rem;
 	padding-inline: 1rem;
 }
 textarea {
 	line-height: var(--line);
-	display: block;
-	width: 100%;
-	padding: 1rem;
+	min-height: 3.5rem;
+	padding: 0.45rem 1rem;
 	resize: none;
 }
 :is(button, .button) {
