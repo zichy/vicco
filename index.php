@@ -226,6 +226,7 @@ textarea {
 	text-decoration: none;
 	line-height: 1;
 	display: inline-flex;
+	column-gap: 0.5rem;
 	align-items: center;
 	justify-content: center;
 	width: fit-content;
