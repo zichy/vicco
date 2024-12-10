@@ -344,9 +344,17 @@ hgroup p:after {
 .footer {
 	display: grid;
 	grid-template-columns: 1fr auto;
-	grid-template-areas: 'nav acc';
+	grid-template-areas:
+		'nav acc'
+		'meta meta';
 	grid-column-gap: 4rem;
 	padding-block-start: 2rem;
+}
+.footer .meta {
+	font-size: 0.85em;
+	text-align: center;
+	grid-area: meta;
+	margin-block-end: 0;
 }
 nav {
 	grid-area: nav;
@@ -880,6 +888,14 @@ function footer($results = 0) { ?>
 				</form>
 			<?php endif ?>
 		</div>
+
+		<?php if(isLoggedin()):
+			$loadTime = number_format(rtrim(sprintf('%.20f', (microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'])), '0'), 6, '.', ',');
+			if (strpos(($loadTime.'0'), '0') != 0) {
+			  $loadTime = number_format($loadTime, 2, '.', ',');
+			} ?>
+			<p class="meta"><?= $loadTime ?> s / <?= intval(memory_get_usage() / 1024) ?> KB
+		<?php endif ?>
 	</footer>
 
 	<?php if (isLoggedin()): ?>
