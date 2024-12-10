@@ -229,9 +229,10 @@ textarea {
 	text-decoration: none;
 	line-height: 1;
 	display: inline-flex;
-	column-gap: 0.5rem;
+	align-self: start;
 	align-items: center;
 	justify-content: center;
+	column-gap: 0.5rem;
 	width: fit-content;
 	padding: 0.5rem 1rem;
 	border: 0;
