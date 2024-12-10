@@ -326,9 +326,9 @@ hgroup p:after {
 	.panel {
 		display: grid;
 		grid-template-areas:
-			"link title"
-			"comment comment"
-			"submit submit";
+			'link title'
+			'comment comment'
+			'submit submit';
 		gap: 2rem;
 	}
 }
