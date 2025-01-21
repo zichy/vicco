@@ -27,6 +27,8 @@ vicco is brutalist linkblog software contained in a single PHP file.
 3. Open the site in your browser.
 4. It should work.
 
+You can use your credentials at `/?login`.
+
 ## Text formatting
 
 There is some [Markdown](https://daringfireball.net/projects/markdown/)-inspired formatting. No block elements, though.
@@ -35,7 +37,7 @@ There is some [Markdown](https://daringfireball.net/projects/markdown/)-inspired
 | ---                            | ---                          |
 | `**strong**` / `__strong__`    | __strong__                   |
 | `*italic*` / `_italic_`        | _italic_                     |
-| `~delete~`                     | ~~delete~~                   |
+| `~strikethrough~`              | ~~strikethrough~~            |
 | `:"quote":`                    | <q>quote</q>                 |
 | `@code@`                       | `code`                       |
 | `[https://example.org]`        | https://example.org          |
@@ -52,21 +54,21 @@ Well, _actually_ several files are created in the folder `/vicco/`, which serves
 **Can I rename `index.php`?**  
 You can, but the question is whether you should. (You shouldn’t.)
 
-**How did this software come to be?**  
-I forked [this script](https://github.com/lawl/b.php) and improved it for the worse.
+**How did vicco come to be?**  
+I forked [this now ten-year-old script](https://github.com/lawl/b.php) and created a nearly complete rewrite.
 
-**Uh… follow-up question: Is vicco secure?**  
-It should be secure enough to run a crappy linkblog.
+**Is vicco secure?**  
+I don’t know. It should be secure enough to run a crappy linkblog.
 
 ## Testimonials
-
-Send me a PR if you want to add yours!
 
 > I’m a huge fan of your blog, but I get the creeps from the PHP code.  
 — [sternenseemann](https://github.com/sternenseemann)
 
 > cute readme  
 — [riotbib](https://github.com/riotbib)
+
+(Send me a PR if you want to add yours!)
 
 ## License
 
