@@ -936,8 +936,8 @@ function footer($results = 0) { ?>
 			if (strpos(($loadTime.'0'), '0') != 0) {
 			  $loadTime = number_format($loadTime, 2, '.', ',');
 			} ?>
-			<p class="meta"><?= $loadTime ?> s / <?= intval(memory_get_usage() / 1024) ?> KB <br>Powered by <a href="https://github.com/zichy/vicco">vicco</a>
-		<?php elseif(Info::$title && Info::$content): ?>
+			<p class="meta"><a href="https://github.com/zichy/vicco">vicco</a> / <?= $loadTime ?> s / <?= intval(memory_get_usage() / 1024) ?> KB
+		<?php elseif (Info::$title && Info::$content): ?>
 			<p class="meta"><button popovertarget="info" popovertargetaction="show"><?= Info::$title ?></button>
 			<div id="info" class="box" popover><div class="text"><?= parse(Info::$content) ?></div></div>	
 		<?php endif ?>
