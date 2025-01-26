@@ -112,7 +112,7 @@ if(getEntry('installed') === false) {
 	// Create assets
 	setFile(Sys::$css, <<< 'EOD'
 :root {
-	--sans: system-ui, sans-serif;
+	--sans: ui-sans-serif, sans-serif;
 	--mono: ui-monospace, monospace;
 	--size: 1.6rem;
 	--line: 1.5;
