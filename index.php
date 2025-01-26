@@ -197,6 +197,7 @@ h1 a:hover {
 	background-color: inherit;
 }
 h2 {
+	color: var(--interactive);
 	font-size: 1.25em;
 }
 h2 a {
@@ -695,12 +696,14 @@ if(isset($_GET['feed'])) {
 
 // Error
 function error($text, $backLink = true, $linkUrl = '/') { ?>
-	<section class="box text">
+	<section class="box">
 		<h2><?= L10n::$error ?></h2>
-		<p><?= $text ?>
-		<?php if($backLink): ?>
-			<p><a class="button" href="<?= $linkUrl ?>"><?= L10n::$back ?></a>
-		<?php endif ?>
+		<div class="text">
+			<p><?= $text ?>
+			<?php if($backLink): ?>
+				<p><a class="button" href="<?= $linkUrl ?>"><?= L10n::$back ?></a>
+			<?php endif ?>
+		</div>
 	</section>
 <?php
 	footer();
