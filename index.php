@@ -631,7 +631,9 @@ if(isset($_GET['feed'])) {
 <?php $id = getPostId($post['key']); ?>
 <entry>
 	<title><?= getPost($id, 'title') ?></title>
+<?php if(getPost($id, 'url')): ?>
 	<link rel="alternate" type="text/html" href="<?= getPost($id, 'url') ?>" />
+<?php endif ?>
 	<link rel="related" type="text/html" href="<?= $blogUrl.'/?p='.$id ?>" />
 	<content type="html"><![CDATA[<?= parse(getPost($id, 'comment')) ?>]]></content>
 	<updated><?= date($dateFormat, $post['value']) ?></updated>
