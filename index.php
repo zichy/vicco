@@ -87,11 +87,11 @@ $postsPath = Sys::$folder.Sys::$postsFolder;
 session_start();
 
 // Installation
-if(getEntry('installed') === false) {
+if (getEntry('installed') === false) {
 
 	// Create folders
-	if(!folderExists('')) {
-		if(!mkdir(Sys::$folder)) {
+	if (!folderExists('')) {
+		if (!mkdir(Sys::$folder)) {
 			die(L10n::$errorPermissions.Sys::$folder);
 		}
 	}
@@ -100,7 +100,7 @@ if(getEntry('installed') === false) {
 	setIndex();
 
 	// Intro post
-	if(!getIndex()) {
+	if (!getIndex()) {
 		$post = new stdClass();
 		$id = getID('6');
 		$post->date = time();
@@ -420,11 +420,11 @@ if($textarea) {
 }
 
 const $adminForms = document.querySelectorAll('.admin');
-if($adminForms) {
+if ($adminForms) {
 	$adminForms.forEach(($form) => {
 		const warning = $form.dataset.warning;
 		$form.addEventListener('submit', (e) => {
-			if(confirm(warning)) {
+			if (confirm(warning)) {
 				$form.submit();
 			} else {
 				e.preventDefault();
@@ -439,7 +439,7 @@ EOD
 // Database
 function createFolder($folder) {
 	$folder = sanitizeKey($folder);
-	if(!folderExists($folder)) {
+	if (!folderExists($folder)) {
 		mkdir(Sys::$folder.$folder);
 	}
 }
@@ -463,7 +463,7 @@ function getPost($id, $value = false) {
 	}
 	$file = $postsPath.$id;
 
-	if(file_exists($file)) {
+	if (file_exists($file)) {
 		if (!$value) {
 			return file_get_contents($file);
 		} else {
@@ -525,7 +525,7 @@ function setIndex() {
 		if (str_ends_with($e, '.json')) {
 			$d[$i]['key'] = $e;
 			$d[$i]['value'] = getPost(getPostId($e), 'date');
-			if($d[$i]['value'] === false) {
+			if ($d[$i]['value'] === false) {
 				array_pop($d);
 			}
 		}
@@ -556,7 +556,7 @@ function deleteCookie() {
 
 // Status
 function isLoggedin() {
-	if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === getEntry('cookie')) {
+	if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_COOKIE['vicco']) && $_COOKIE['vicco'] === getEntry('cookie')) {
 		return true;
 	}
 }
@@ -597,10 +597,10 @@ function parse($t) {
 }
 
 // Feed
-if(isset($_GET['feed'])) {
+if (isset($_GET['feed'])) {
 	$posts = @array_slice(getIndex(), 0, Config::$postsFeed);
 	uasort($posts, function($a, $b) {
-		if($a['value'] == $b['value']) {
+		if ($a['value'] == $b['value']) {
 			return 0;
 		} else {
 			return $b['value'] <=> $a['value'];
@@ -628,7 +628,7 @@ if(isset($_GET['feed'])) {
 <?php $id = getPostId($post['key']); ?>
 <entry>
 	<title><?= getPost($id, 'title') ?></title>
-<?php if(getPost($id, 'url')): ?>
+<?php if (getPost($id, 'url')): ?>
 	<link rel="alternate" type="text/html" href="<?= getPost($id, 'url') ?>" />
 <?php endif ?>
 	<link rel="related" type="text/html" href="<?= $blogUrl.'/?p='.$id ?>" />
@@ -696,7 +696,7 @@ function error($text, $backLink = true, $linkUrl = '/') { ?>
 		<h2><?= L10n::$error ?></h2>
 		<div class="text">
 			<p><?= $text ?>
-			<?php if($backLink): ?>
+			<?php if ($backLink): ?>
 				<p><a class="button" href="<?= $linkUrl ?>"><?= L10n::$back ?></a>
 			<?php endif ?>
 		</div>
@@ -729,8 +729,8 @@ if(isset($_GET['login'])) {
 		die();
 	}
 }
-if(isset($_POST['login'])) {
-	if(hash_equals(Acc::$username, $_POST['username']) && hash_equals(Acc::$passphrase, $_POST['passphrase'])) {
+if (isset($_POST['login'])) {
+	if (hash_equals(Acc::$username, $_POST['username']) && hash_equals(Acc::$passphrase, $_POST['passphrase'])) {
 		$_SESSION['loggedin'] = true;
 		createCookie();
 		returnHome();
@@ -738,21 +738,21 @@ if(isset($_POST['login'])) {
 		error(L10n::$errorLogin, true, 'javascript:history.back()');
 	}
 }
-if(isLoggedin()) {
+if (isLoggedin()) {
 	// Submit post
-	if(isset($_POST['submit'])) {
-		if(empty($_POST['title']) || empty($_POST['comment'])) {
+	if (isset($_POST['submit'])) {
+		if (empty($_POST['title']) || empty($_POST['comment'])) {
 			error(L10n::$errorEmpty);
 		}
 
 		$post = new stdClass();
 		$id = 0;
 
-		if(empty($_POST['id'])) {
+		if (empty($_POST['id'])) {
 			$id = getID('6');
 			$post->date = time();
 		} else {
-			if(!postExists($_POST['id'])) {
+			if (!postExists($_POST['id'])) {
 				error(L10n::$errorPostExists);
 			}
 			$id = $_POST['id'];
@@ -766,7 +766,7 @@ if(isLoggedin()) {
 	}
 
 	// Delete post
-	if(isset($_POST['delete'])) {
+	if (isset($_POST['delete'])) {
 		deletePost($_POST['id']);
 		setIndex();
 	}
@@ -800,12 +800,12 @@ if(isLoggedin()) {
 		</form>
 	<?php endif;
 
-} elseif(isset($_POST['submit']) || isset($_POST['delete']) || isEditing()) {
+} elseif (isset($_POST['submit']) || isset($_POST['delete']) || isEditing()) {
 	error(L10n::$errorHacker);
 }
 
 // Logout
-if(isset($_POST['logout'])) {
+if (isset($_POST['logout'])) {
 	session_destroy();
 	deleteCookie();
 	returnHome();
@@ -815,7 +815,7 @@ if(isset($_POST['logout'])) {
 $posts = getIndex();
 
 // Search
-if(!empty($_GET['s'])) {
+if (!empty($_GET['s'])) {
 	$s = explode(' ', $_GET['s']);
 	foreach($posts as $postKey => $postValue) {
 		$url = strtolower(getPost(getPostId($postValue['key']), 'url'));
@@ -823,24 +823,24 @@ if(!empty($_GET['s'])) {
 		$comment = strtolower(parse(getPost(getPostId($postValue['key']), 'comment')));
 		$f = true;
 		for($i = 0; $i < sizeof($s); $i++) {
-			if((strpos($url, strtolower($s[$i])) === false) && (strpos($title, strtolower($s[$i])) === false) && strpos($comment, strtolower($s[$i])) === false) {
+			if ((strpos($url, strtolower($s[$i])) === false) && (strpos($title, strtolower($s[$i])) === false) && strpos($comment, strtolower($s[$i])) === false) {
 				$f = false;
 				break;
 			}
 		}
-		if(!$f) {
+		if (!$f) {
 			unset($posts[$postKey]);
 		}
 	}
 }
 $results = sizeof($posts);
-if(($results == 0) && isSearching()) {
+if (($results == 0) && isSearching()) {
 	error(L10n::$errorNoResults);
 }
 
 // Sorting
 uasort($posts, function($a, $b) {
-	if($a['value'] == $b['value']) {
+	if ($a['value'] == $b['value']) {
 		return 0;
 	} else {
 		return $b['value'] <=> $a['value'];
@@ -854,7 +854,7 @@ if(isset($_GET['p']) && postExists($_GET['p'])) {
 $posts = @array_slice($posts, $_GET['skip'], Config::$postsPerPage);
 
 // No posts exist
-if(!$posts && !isLoggedin()) {
+if (!$posts && !isLoggedin()) {
 	error(L10n::$errorNoResults, false);
 }
 
@@ -922,16 +922,16 @@ function footer($results = 0) { ?>
 		<?php endif ?>
 
 		<div class="acc">
-			<?php if(Config::$showLogin && !isset($_GET['login']) && !isLoggedin()): ?>
+			<?php if (Config::$showLogin && !isset($_GET['login']) && !isLoggedin()): ?>
 				<a class="button" href="?login">Login</a>
-			<?php elseif(isLoggedin()): ?>
+			<?php elseif (isLoggedin()): ?>
 				<form action="/" method="post">
 					<button type="submit" name="logout"><?= L10n::$logout ?></button>
 				</form>
 			<?php endif ?>
 		</div>
 
-		<?php if(isLoggedin()):
+		<?php if (isLoggedin()):
 			$loadTime = number_format(rtrim(sprintf('%.20f', (microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'])), '0'), 6, '.', ',');
 			if (strpos(($loadTime.'0'), '0') != 0) {
 			  $loadTime = number_format($loadTime, 2, '.', ',');
