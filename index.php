@@ -17,10 +17,10 @@ class Config {
 	static $favicon = '🌱'; // optional
 	static $language = 'en'; // (ISO 639-1)
 	static $dateFormat = 'd M Y, H:i';
-	static $mastodonVerification = ''; // https://mastodon.example/@account
-	static $fediverseCreator = ''; // @account@mastodon.example
 	static $postsPerPage = 10;
 	static $postsFeed = 20;
+	static $mastodonVerification = ''; // https://mastodon.example/@account
+	static $fediverseCreator = ''; // @account@mastodon.example
 	static $showLogin = true;
 }
 
