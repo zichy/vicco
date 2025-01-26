@@ -396,7 +396,7 @@ if (window.history.replaceState) {
 }
 
 const $textarea = document.getElementById('comment');
-if($textarea) {
+if ($textarea) {
 	function resizeArea($el) {
 		let heightLimit = 400;
 		$el.style.height = '';
@@ -551,6 +551,12 @@ function isLoggedin() {
 	}
 }
 
+function isDetail() {
+	if (isset($_GET['p'])) {
+		return true;
+	}
+}
+
 function isEditing() {
 	if (isset($_GET['edit'])) {
 		return true;
@@ -639,7 +645,7 @@ if (isset($_GET['feed'])) {
 	<?php if (!empty(Config::$blogDesc)): ?>
 		<meta name="description" content="<?= Config::$blogDesc ?>">
 	<?php endif ?>
-	<?php if(!empty(Config::$fediverseCreator) && isset($_GET['p']) && postExists($_GET['p'])): ?>
+	<?php if (!empty(Config::$fediverseCreator) && isDetail() && postExists($_GET['p'])): ?>
 		<meta name="fediverse:creator" content="<?= Config::$fediverseCreator ?>">
 	<?php endif ?>
 
@@ -697,8 +703,8 @@ function error($text, $backLink = true, $linkUrl = '/') { ?>
 }
 
 // Login
-if(isset($_GET['login'])) {
-	if(isLoggedin()) {
+if (isset($_GET['login'])) {
+	if (isLoggedin()) {
 		returnHome();
 	} else { ?>
 		<form class="box form" action="/" method="post">
@@ -767,7 +773,7 @@ if (isLoggedin()) {
 	}
 
 	// Post form
-	if ((!(isset($_GET['p'])) && !isSearching())): ?>
+	if ((!(isDetail()) && !isSearching())): ?>
 		<form class="panel box" action="/" method="post">
 			<input type="hidden" name="id" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
 
@@ -838,7 +844,7 @@ uasort($posts, function($a, $b) {
 });
 
 // Get posts
-if(isset($_GET['p']) && postExists($_GET['p'])) {
+if (isDetail() && postExists($_GET['p'])) {
 	$posts = array(array('value' => json_decode(getPost($_GET['p']))->date, 'key' => $_GET['p']));
 }
 $posts = @array_slice($posts, $_GET['skip'], Config::$postsPerPage);
@@ -849,8 +855,8 @@ if (!$posts && !isLoggedin()) {
 }
 
 // Posts
-if(!isEditing()) {
-	if(isset($_GET['p']) && empty($_GET['p'])) {
+if (!isEditing()) {
+	if (isDetail() && empty($_GET['p'])) {
 		error(L10n::$errorNoResults);
 	}
 	foreach($posts as $post): ?>
@@ -864,20 +870,24 @@ if(!isEditing()) {
 		?>
 		<article class="post box" itemscope itemtype="https://schema.org/BlogPosting" itemid="<?= $postUrl ?>">
 			<header class="post-header">
-				<?php if($url): ?>
-					<a href="?p=<?= $id ?>" class="permalink" title="<?= L10n::$permalink ?>" itemprop="url"><span aria-hidden="true">&#8984;</span></a>
+				<?php if ($url): ?>
+					<?php if (!isDetail()): ?>
+						<a href="?p=<?= $id ?>" class="permalink" title="<?= L10n::$permalink ?>" itemprop="url"><span aria-hidden="true">&#8984;</span></a>
+					<?php endif ?>
 					<hgroup>
 						<h2 itemprop="name"><a href="<?= $url ?>" rel="external nofollow" target="_blank" aria-describedby="<?= $id?>-url" itemprop="url"><?= $title ?></a></h2>
 						<p class="meta" id="<?= $id?>-url"><?= parse_url($url, PHP_URL_HOST) ?></p>
 					</hgroup>
-				<?php else: ?>
+				<?php elseif(!isDetail()): ?>
 					<h2 itemprop="name"><a href="?p=<?= $id ?>" itemprop="url"><?= $title ?></a></h2>
+				<?php else: ?>
+					<h2 itemprop="name"><?= $title ?></h2>
 				<?php endif ?>
 				<p class="meta">
 					<time datetime="<?= date('Y-m-d H:i:s', $date) ?>" itemprop="datePublished" pubdate><?= date(Config::$dateFormat, $date) ?></time>
 				</p>
 			</header>
-			<?php if($comment): ?>
+			<?php if ($comment): ?>
 				<div class="text" itemprop="articleBody">
 					<?= parse($comment) ?>
 				</div>
@@ -900,7 +910,7 @@ footer($results);
 
 function footer($results = 0) { ?>
 	</main><footer class="footer">
-		<?php if(!isset($_GET['p']) && !isEditing() && $results >= Config::$postsPerPage): ?>
+		<?php if (!isDetail() && !isEditing() && $results >= Config::$postsPerPage): ?>
 			<nav class="row">
 				<?php if (@$_GET['skip'] > 0): ?>
 					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><span aria-hidden="true">&larr;</span> <?= L10n::$newer ?></a>
