@@ -151,6 +151,7 @@ body:has(:popover-open) {
 	overflow: hidden;
 }
 [popover] {
+	display: none !important;
 	width: 500px;
 	max-width: 100%;
 	max-height: 100vh;
@@ -161,6 +162,9 @@ body:has(:popover-open) {
 	margin: 0;
 	border: 0;
 	border-radius: 1rem;
+}
+[popover]:popover-open {
+	display: block !important;
 }
 [popover]::backdrop {
 	background: rgb(0 0 0 / 75%);
