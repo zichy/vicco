@@ -186,25 +186,19 @@ a:is(:hover, :focus-visible) {
 	background-color: var(--accent);
 }
 :is(h1, h2) {
+	color: var(--interactive);
+	font-size: 1.25em;
 	line-height: 1.2;
 	margin: 0;
 }
 h1 {
-	font-size: 1.25em;
 	line-height: 1;
 	margin-block: 0;
 }
-h1 :is(a, img) {
+h1 img {
 	display: block;
 }
-h1 a:hover {
-	background-color: inherit;
-}
-h2 {
-	color: var(--interactive);
-	font-size: 1.25em;
-}
-h2 a {
+:is(h1, h2) a {
 	text-decoration: none;
 }
 label {
@@ -302,10 +296,6 @@ textarea {
 		justify-content: space-between;
 		align-items: flex-end;
 	}
-}
-.header a {
-	color: currentColor;
-	text-decoration: none;
 }
 .header p {
 	color: var(--meta);
