@@ -262,8 +262,8 @@ textarea {
 	justify-content: center;
 	column-gap: 0.5rem;
 	width: fit-content;
-	padding: 0.5rem 1rem;
-	border: 0;
+	padding: 0.75rem 1.25rem;
+	border: 1px solid var(--interactive);
 	border-radius: 0.5rem;
 	cursor: pointer;
 	touch-action: manipulation;
@@ -271,8 +271,11 @@ textarea {
 	-webkit-user-select: none;
 }
 :is(button, .button):is(:hover, :focus-visible) {
-	background-color: var(--interactive);
-	color: var(--box);
+	background-color: var(--accent);
+	color: var(--interactive);
+}
+.meta {
+	color: var(--meta);
 }
 .row {
 	display: flex;
