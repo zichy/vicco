@@ -14,7 +14,7 @@ class Config {
 	static $blogName = 'vicco';
 	static $blogDesc = 'Yet another linkblog'; // optional
 	static $logoPath = ''; // optional
-	static $favicon = '🌱'; // optional
+	static $favicon = '🌱'; // Emoji, optional
 	static $language = 'en'; // (ISO 639-1)
 	static $dateFormat = 'd M Y, H:i';
 	static $postsPerPage = 10;
