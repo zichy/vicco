@@ -1,11 +1,12 @@
 # vicco
 
-vicco is brutalist linkblog software contained in a single PHP file.
+vicco is brutalist blog software contained in a single PHP file.
 
 ## Features
 
 * Responsive layout
 * Web interface to publish, edit, and delete posts
+* Can be used as linklog
 * Text formatting
 * Atom feed
 * No ActivityPub support
@@ -58,7 +59,7 @@ You can, but the question is whether you should. (You shouldn’t.)
 I forked [this now ten-year-old script](https://github.com/lawl/b.php) and created a nearly complete rewrite.
 
 **Is vicco secure?**  
-I don’t know. It should be secure enough to run a crappy linkblog.
+I don’t know. It should be secure enough to run a crappy blog.
 
 ## Testimonials
 

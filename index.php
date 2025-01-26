@@ -51,6 +51,7 @@ class L10n {
 	static $publish = 'Publish';
 	static $save = 'Save';
 	static $logout = 'Logout';
+	static $permalink = 'Permalink';
 	static $edit = 'Edit';
 	static $delete = 'Delete';
 	static $deleteWarning = 'Do you really want to delete this post?';
@@ -62,14 +63,14 @@ class L10n {
 	static $back = 'Go back';
 	static $error = 'Error';
 	static $errorLogin = 'The credentials are incorrect.';
-	static $errorEmpty = 'Your post must contain a link and a title.';
+	static $errorEmpty = 'Your post must contain a title and a comment.';
 	static $errorPostExists = 'A post with this ID already exists.';
 	static $errorPostNonexistent = 'The post you wish to edit does not exist.';
 	static $errorNoResults = 'No posts were found.';
 	static $errorHacker = 'Nice try.';
 	static $errorPermissions = 'No write permissions to create the folder ';
 	static $introTitle = 'Welcome to vicco!';
-	static $introComment = 'This is your new linkblog. Log in, have a look around and start posting.';
+	static $introComment = 'This is your new blog. Log in, have a look around and start posting.';
 }
 
 class Sys {
@@ -103,8 +104,8 @@ if(getEntry('installed') === false) {
 		$post = new stdClass();
 		$id = getID('6');
 		$post->date = time();
-		$post->url = 'https://'.$_SERVER['HTTP_HOST'];
 		$post->title = L10n::$introTitle;
+		$post->url = '';
 		$post->comment = L10n::$introComment;
 		setPost($id, $post);
 	}
@@ -302,6 +303,18 @@ textarea {
 	color: var(--meta);
 	margin: 0;
 }
+.box {
+	background-color: var(--box);
+	padding: 2rem 2.5rem;
+}
+@media (min-width: 769px) {
+	.box {
+		border-radius: 0.5rem;
+	}
+}
+.text {
+	font-family: var(--mono);
+}
 .text > *:first-child {
 	margin-block-start: 0;
 }
@@ -313,19 +326,10 @@ textarea {
 	flex-direction: column;
 	row-gap: 1.5rem;
 }
-.box {
-	background-color: var(--box);
-	padding: 2rem 2.5rem;
+.post-header p {
+	margin: 0
 }
-@media (min-width: 769px) {
-	.box {
-		border-radius: 0.5rem;
-	}
-}
-.meta {
-	color: var(--meta);
-}
-hgroup > * {
+:is(hgroup, hgroup > *) {
 	display: inline;
 }
 hgroup p:before {
@@ -335,9 +339,15 @@ hgroup p:after {
 	content: ')';
 }
 .permalink {
-	color: currentColor;
 	text-decoration: none;
-	align-self: start;
+	vertical-align: top;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	border: 1px solid var(--interactive);
+	border-radius: 0.5rem;
 }
 .admin {
 	align-items: start;
@@ -353,17 +363,17 @@ hgroup p:after {
 	.panel {
 		display: grid;
 		grid-template-areas:
-			'link title'
+			'title link'
 			'comment comment'
 			'submit submit';
 		gap: 2rem;
 	}
 }
-.panel-link {
-	grid-area: link;
-}
 .panel-title {
 	grid-area: title;
+}
+.panel-link {
+	grid-area: link;
 }
 .panel-comment {
 	grid-area: comment;
@@ -620,9 +630,7 @@ if(isset($_GET['feed'])) {
 	<title><?= getPost($id, 'title') ?></title>
 	<link rel="alternate" type="text/html" href="<?= getPost($id, 'url') ?>" />
 	<link rel="related" type="text/html" href="<?= $blogUrl.'/?p='.$id ?>" />
-<?php if(getPost($id, 'comment')): ?>
 	<content type="html"><![CDATA[<?= parse(getPost($id, 'comment')) ?>]]></content>
-<?php endif ?>
 	<updated><?= date($dateFormat, $post['value']) ?></updated>
 	<id><?= $blogUrl.'/?p='.$id ?></id>
 </entry>
@@ -729,7 +737,7 @@ if(isset($_POST['login'])) {
 if(isLoggedin()) {
 	// Submit post
 	if(isset($_POST['submit'])) {
-		if(empty($_POST['url']) || empty($_POST['title'])) {
+		if(empty($_POST['title']) || empty($_POST['comment'])) {
 			error(L10n::$errorEmpty);
 		}
 
@@ -747,8 +755,8 @@ if(isLoggedin()) {
 			$post->date = getPost($id, 'date');
 		}
 
-		$post->url = $_POST['url'];
 		$post->title = $_POST['title'];
+		$post->url = $_POST['url'];
 		$post->comment = $_POST['comment'];
 		setPost($id, $post);
 	}
@@ -769,19 +777,19 @@ if(isLoggedin()) {
 		<form class="panel box" action="/" method="post">
 			<input type="hidden" name="id" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
 
-			<div class="panel-link">
-				<label for="url"><?= L10n::$link ?></label>
-				<input type="url" id="url" name="url" placeholder="https://example.com" required value="<?= (isEditing() ? getPost($_GET['edit'], 'url') : '') ?>">
-			</div>
-
 			<div class="panel-title">
 				<label for="title"><?= L10n::$title ?></label>
 				<input type="text" id="title" name="title" required value="<?= (isEditing() ? getPost($_GET['edit'], 'title') : '') ?>">
 			</div>
 
+			<div class="panel-link">
+				<label for="url"><?= L10n::$link ?> <small class="meta">(<?= L10n::$optional ?>)</small></label>
+				<input type="url" id="url" name="url" placeholder="https://example.com" value="<?= (isEditing() ? getPost($_GET['edit'], 'url') : '') ?>">
+			</div>
+
 			<div class="panel-comment">
-				<label for="comment"><?= L10n::$comment ?> <small class="meta">(<?= L10n::$optional ?>)</small></label>
-				<textarea id="comment" name="comment" spellcheck="false" rows="1"><?= (isEditing() ? getPost($_GET['edit'], 'comment') : '') ?></textarea>
+				<label for="comment"><?= L10n::$comment ?></label>
+				<textarea id="comment" name="comment" spellcheck="false" rows="1" required><?= (isEditing() ? getPost($_GET['edit'], 'comment') : '') ?></textarea>
 			</div>
 
 			<button type="submit" id="submit" name="submit"><?= (isEditing() ? L10n::$save : L10n::$publish) ?></button>
@@ -855,36 +863,40 @@ if(!isEditing()) {
 		<?php
 			$id = getPostId($post['key']);
 			$postUrl = 'https://'.$_SERVER['HTTP_HOST'].'/?p='.$id;
+			$url = getPost($id, 'url');
+			$title = getPost($id, 'title');
+			$date = getPost($id, 'date');
+			$comment = getPost($id, 'comment');
 		?>
 		<article class="post box" itemscope itemtype="https://schema.org/BlogPosting" itemid="<?= $postUrl ?>">
-			<header>
-				<hgroup>
-					<h2 itemprop="name"><a href="<?= getPost($id, 'url') ?>" rel="external nofollow" target="_blank" aria-describedby="<?= $id?>-url" itemprop="url"><?= getPost($id, 'title') ?></a></h2>
-					<p class="meta" id="<?= $id?>-url"><?= parse_url(getPost($id, 'url'), PHP_URL_HOST) ?></p>
-				</hgroup>
+			<header class="post-header">
+				<?php if($url): ?>
+					<a href="?p=<?= $id ?>" class="permalink" title="<?= L10n::$permalink ?>" itemprop="url"><span aria-hidden="true">&#8984;</span></a>
+					<hgroup>
+						<h2 itemprop="name"><a href="<?= $url ?>" rel="external nofollow" target="_blank" aria-describedby="<?= $id?>-url" itemprop="url"><?= $title ?></a></h2>
+						<p class="meta" id="<?= $id?>-url"><?= parse_url($url, PHP_URL_HOST) ?></p>
+					</hgroup>
+				<?php else: ?>
+					<h2 itemprop="name"><a href="?p=<?= $id ?>" itemprop="url"><?= $title ?></a></h2>
+				<?php endif ?>
+				<p class="meta">
+					<time datetime="<?= date('Y-m-d H:i:s', $date) ?>" itemprop="datePublished" pubdate><?= date(Config::$dateFormat, $date) ?></time>
+				</p>
 			</header>
-			<?php if(getPost($id, 'comment')): ?>
+			<?php if($comment): ?>
 				<div class="text" itemprop="articleBody">
-					<?= parse(getPost($id, 'comment')) ?>
+					<?= parse($comment) ?>
 				</div>
 			<?php endif ?>
-			<footer class="row meta">
-				<?php $time = "<span aria-hidden=\"true\">&#8984;</span> <time datetime=\"".date('Y-m-d H:i:s', getPost($id, 'date'))."\" itemprop=\"datePublished\" pubdate> ".date(Config::$dateFormat, getPost($id, 'date'))."</time>" ?>
-				<?php if (!isset($_GET['p'])): ?>
-					<a class="permalink" href="?p=<?= $id ?>" itemprop="url">
-						<?= $time ?>
-					</a>
-				<?php else: ?>
-					<span><?= $time ?></span>
-				<?php endif ?>
-				<?php if (isLoggedin()): ?>
+			<?php if (isLoggedin()): ?>
+				<footer>
 					<form class="admin row" action="/" method="post" data-warning="<?= L10n::$deleteWarning ?>">
 						<input type="hidden" name="id" value="<?= $id ?>">
 						<a class="button" href="?edit=<?= $id ?>"><?= L10n::$edit ?></a>
 						<button type="submit" class="delete" name="delete"><?= L10n::$delete ?></button>
 					</form>
-				<?php endif ?>
-			</footer>
+				</footer>
+			<?php endif ?>
 		</article>
 	<?php endforeach;
 }
