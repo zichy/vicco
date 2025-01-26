@@ -44,7 +44,7 @@ EOD;
 
 class L10n {
 	static $search = 'Search';
-	static $link = 'Link';
+	static $link = 'External link';
 	static $title = 'Title';
 	static $comment = 'Comment';
 	static $optional = 'Optional';
