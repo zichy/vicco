@@ -6,14 +6,14 @@
 */
 
 class Acc {
-	static $username = 'admin'; // non-public
+	static $username = 'admin'; // Non-public
 	static $passphrase = 'CHANGEME';
 }
 
 class Config {
 	static $blogName = 'vicco';
-	static $blogDesc = 'Yet another linkblog'; // optional
-	static $logoPath = ''; // optional
+	static $blogDesc = 'Yet another linkblog'; // Optional
+	static $logoPath = ''; // Preferably SVG, optional
 	static $favicon = '🌱'; // Emoji, optional
 	static $language = 'en'; // (ISO 639-1)
 	static $dateFormat = 'd M Y, H:i';
