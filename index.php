@@ -309,12 +309,17 @@ textarea {
 }
 .box {
 	background-color: var(--box);
+	display: grid;
+	gap: 1.5rem;
 	padding: 2rem 2.5rem;
 }
 @media (min-width: 769px) {
 	.box {
 		border-radius: 0.5rem;
 	}
+}
+.post {
+	gap: 1.5rem;
 }
 .text {
 	font-family: var(--mono);
@@ -324,11 +329,6 @@ textarea {
 }
 .text > *:last-child {
 	margin-block-end: 0;
-}
-.post {
-	display: flex;
-	flex-direction: column;
-	row-gap: 1.5rem;
 }
 .post-header p {
 	margin: 0
@@ -353,12 +353,8 @@ hgroup p:after {
 	border: 1px solid var(--interactive);
 	border-radius: 0.5rem;
 }
-@media (max-width: 768px) {
-	.panel {
-		display: flex;
-		flex-direction: column;
-		row-gap: 2rem;
-	}
+.panel {
+	gap: 2rem;
 }
 @media (min-width: 769px) {
 	.panel {
@@ -367,17 +363,16 @@ hgroup p:after {
 			'title link'
 			'comment comment'
 			'submit submit';
-		gap: 2rem;
 	}
-}
-.panel-title {
-	grid-area: title;
-}
-.panel-link {
-	grid-area: link;
-}
-.panel-comment {
-	grid-area: comment;
+	.panel-title {
+		grid-area: title;
+	}
+	.panel-link {
+		grid-area: link;
+	}
+	.panel-comment {
+		grid-area: comment;
+	}
 }
 .footer {
 	display: grid;
