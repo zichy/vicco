@@ -353,9 +353,6 @@ hgroup p:after {
 	border: 1px solid var(--interactive);
 	border-radius: 0.5rem;
 }
-.admin {
-	align-items: start;
-}
 @media (max-width: 768px) {
 	.panel {
 		display: flex;
