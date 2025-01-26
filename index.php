@@ -33,6 +33,15 @@ class Color {
 	static $accent = '#fe9';
 }
 
+class Info {
+	static $title = 'About this blog';
+	static $content = <<< 'EOD'
+Here you can add information about *your blog*, *yourself*, or **legal notes**.
+
+You can even use paragraphs.
+EOD;
+}
+
 class L10n {
 	static $search = 'Search';
 	static $link = 'Link';
@@ -136,6 +145,24 @@ body {
 	padding-inline: 2rem;
 	margin: 4rem auto;
 	overflow-x: hidden;
+}
+body:has(:popover-open) {
+	overflow: hidden;
+}
+[popover] {
+	width: 500px;
+	max-width: 100%;
+	max-height: 100vh;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin: 0;
+	border: 0;
+	border-radius: 1rem;
+}
+[popover]::backdrop {
+	background: rgb(0 0 0 / 75%);
 }
 main {
 	display: grid;
@@ -351,7 +378,6 @@ hgroup p:after {
 	padding-block-start: 2rem;
 }
 .footer .meta {
-	font-size: 0.85em;
 	text-align: center;
 	grid-area: meta;
 	margin-block-end: 0;
@@ -894,7 +920,10 @@ function footer($results = 0) { ?>
 			if (strpos(($loadTime.'0'), '0') != 0) {
 			  $loadTime = number_format($loadTime, 2, '.', ',');
 			} ?>
-			<p class="meta"><?= $loadTime ?> s / <?= intval(memory_get_usage() / 1024) ?> KB
+			<p class="meta"><?= $loadTime ?> s / <?= intval(memory_get_usage() / 1024) ?> KB <br>Powered by <a href="https://github.com/zichy/vicco">vicco</a>
+		<?php elseif(Info::$title && Info::$content): ?>
+			<p class="meta"><button popovertarget="info" popovertargetaction="show"><?= Info::$title ?></button>
+			<div id="info" class="box" popover><div class="text"><?= parse(Info::$content) ?></div></div>	
 		<?php endif ?>
 	</footer>
 
