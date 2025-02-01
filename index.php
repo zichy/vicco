@@ -13,7 +13,6 @@ class Acc {
 class Config {
 	static $blogName = 'vicco';
 	static $blogDesc = 'Yet another linkblog'; // Optional
-	static $logoPath = ''; // Preferably SVG, optional
 	static $favicon = '🌱'; // Emoji, optional
 	static $language = 'en'; // (ISO 639-1)
 	static $dateFormat = 'd M Y, H:i';
@@ -81,6 +80,8 @@ class Sys {
 	static $js = 'script.js';
 }
 
+$blogUrl = 'https://'.$_SERVER['HTTP_HOST'];
+$fullUrl = $blogUrl.$_SERVER['REQUEST_URI'];
 $dbPath = Sys::$folder.Sys::$dbFolder;
 $postsPath = Sys::$folder.Sys::$postsFolder;
 
@@ -557,6 +558,12 @@ function isDetail() {
 	}
 }
 
+function isFeed() {
+	if (isset($_GET['feed'])) {
+		return true;
+	}
+}
+
 function isEditing() {
 	if (isset($_GET['edit'])) {
 		return true;
@@ -592,21 +599,66 @@ function parse($t) {
 	return $t;
 }
 
-// Feed
-if (isset($_GET['feed'])) {
+// Get posts
+if (isFeed()) {
 	$posts = @array_slice(getIndex(), 0, Config::$postsFeed);
-	uasort($posts, function($a, $b) {
-		if ($a['value'] == $b['value']) {
-			return 0;
-		} else {
-			return $b['value'] <=> $a['value'];
+} else {
+	$posts = getIndex();
+}
+
+// Posts search
+if (!empty($_GET['s'])) {
+	$s = explode(' ', $_GET['s']);
+	foreach($posts as $postKey => $postValue) {
+		$url = strtolower(getPost(getPostId($postValue['key']), 'url'));
+		$title = strtolower(getPost(getPostId($postValue['key']), 'title'));
+		$comment = strtolower(parse(getPost(getPostId($postValue['key']), 'comment')));
+		$f = true;
+		for($i = 0; $i < sizeof($s); $i++) {
+			if ((strpos($url, strtolower($s[$i])) === false) && (strpos($title, strtolower($s[$i])) === false) && strpos($comment, strtolower($s[$i])) === false) {
+				$f = false;
+				break;
+			}
 		}
-	});
+		if (!$f) {
+			unset($posts[$postKey]);
+		}
+	}
+}
+$results = sizeof($posts);
+if (($results == 0) && isSearching()) {
+	error(L10n::$errorNoResults);
+}
+
+// Posts sorting
+uasort($posts, function($a, $b) {
+	if ($a['value'] == $b['value']) {
+		return 0;
+	} else {
+		return $b['value'] <=> $a['value'];
+	}
+});
+
+// Get posts
+if (isDetail() && postExists($_GET['p'])) {
+	$posts = array(array('value' => json_decode(getPost($_GET['p']))->date, 'key' => $_GET['p']));
+}
+$posts = @array_slice($posts, $_GET['skip'], Config::$postsPerPage);
+
+// No posts exist
+if (!$posts && !isLoggedin()) {
+	error(L10n::$errorNoResults, false);
+}
+
+// Feed
+if (isFeed()) {
+	if (isSearching()) {
+		returnHome();
+	}
+
 	$dateFormat = 'Y-m-d\TH:i:sP';
 	$lastUpdate = getPostId(reset($posts)['value']);
-	$blogUrl = 'https://'.$_SERVER['HTTP_HOST'];
-	$feedUrl = 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-	header('Content-type: application/atom+xml'); ?>
+	header('Content-type: text/xml'); ?>
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 <title><?= Config::$blogName ?></title>
@@ -614,12 +666,12 @@ if (isset($_GET['feed'])) {
 <subtitle><?= Config::$blogDesc ?></subtitle>
 <?php endif ?>
 <link href="<?= $blogUrl ?>" />
-<link href="<?= $feedUrl ?>" rel="self"/>
+<link href="<?= $fullUrl ?>" rel="self"/>
 <author>
 	<name><?= Config::$blogName ?></name>
 </author>
 <updated><?= date($dateFormat, $lastUpdate) ?></updated>
-<id><?= $feedUrl ?></id>
+<id><?= $fullUrl ?></id>
 <?php foreach($posts as $post): ?>
 <?php $id = getPostId($post['key']); ?>
 <entry>
@@ -637,14 +689,38 @@ if (isset($_GET['feed'])) {
 }
 
 // Header
-?>
-<!DOCTYPE html><html lang="<?= Config::$language ?>"><head>
+function headerTpl() { ?>
+<!DOCTYPE html><html lang="<?= Config::$language ?>"><head prefix="og: https://ogp.me/ns#">
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<?php if (!empty(Config::$blogDesc)): ?>
+	<meta property="og:type" content="<?= isDetail() ? 'article' : 'website' ?>">
+
+	<?php
+		global $posts;
+
+		if (isDetail()) {
+			$id = getPostId($_GET['p']);
+		}
+	?>
+	<meta property="og:title" content="<?= isDetail() ? getPost($id, 'title') : Config::$blogName ?>">
+
+	<?php if (isDetail()): ?>
+		<?php
+			$desc = getPost($id, 'comment');
+			$desc = str_replace(array("\r", "\n"), '', $desc);
+			$desc = substr($desc, 0, 200);
+		?>
+		<meta name="description" content="<?= $desc ?>">
+		<meta property="og:description" content="<?= $desc ?>">
+	<?php elseif (!empty(Config::$blogDesc)): ?>
 		<meta name="description" content="<?= Config::$blogDesc ?>">
+		<meta property="og:description" content="<?= Config::$blogDesc ?>">
 	<?php endif ?>
+
+	<?php global $fullUrl; ?>
+	<meta property="og:url" content="<?= $fullUrl ?>" />
+
 	<?php if (!empty(Config::$fediverseCreator) && isDetail() && postExists($_GET['p'])): ?>
 		<meta name="fediverse:creator" content="<?= Config::$fediverseCreator ?>">
 	<?php endif ?>
@@ -667,12 +743,11 @@ if (isset($_GET['feed'])) {
 
 <header class="header">
 	<div>
-		<?php $title = empty(Config::$logoPath) ? Config::$blogName : '<img src="'.Config::$logoPath.'" alt="'.Config::$blogName.'" itemprop="image">'; ?>
-		<?= empty(Config::$logoPath) ? '<h1 itemprop="name">' : '<h1><meta itemprop="name" content="'.Config::$blogName.'">' ?>
+		<h1 itemprop="name">
 		<?php if (!empty($_GET)): ?>
-			<a href="/"><?= $title ?></a>
+			<a href="/"><?= Config::$blogName ?></a>
 		<?php else: ?>
-			<?= $title ?>
+			<?= Config::$blogName ?>
 		<?php endif ?>
 		</h1>
 	<?php if (!empty(Config::$blogDesc)): ?>
@@ -684,10 +759,13 @@ if (isset($_GET['feed'])) {
 		<input type="search" name="s" aria-label="<?= L10n::$search ?>" placeholder="<?= L10n::$search ?>" required>
 	</form>
 </header><main>
-<?php
+<?php }
+
+headerTpl();
 
 // Error
-function error($text, $backLink = true, $linkUrl = '/') { ?>
+function error($text, $backLink = true, $linkUrl = '/') {
+	headerTpl(); ?>
 	<section class="box">
 		<h2><?= L10n::$error ?></h2>
 		<div class="text">
@@ -698,7 +776,7 @@ function error($text, $backLink = true, $linkUrl = '/') { ?>
 		</div>
 	</section>
 <?php
-	footer();
+	footerTpl();
 	die();
 }
 
@@ -721,7 +799,7 @@ if (isset($_GET['login'])) {
 			</div>
 		</form>
 	<?php
-		footer();
+		footerTpl();
 		die();
 	}
 }
@@ -759,12 +837,14 @@ if (isLoggedin()) {
 		$post->url = $_POST['url'];
 		$post->comment = $_POST['comment'];
 		setPost($id, $post);
+		returnHome();
 	}
 
 	// Delete post
 	if (isset($_POST['delete'])) {
 		deletePost($_POST['id']);
 		setIndex();
+		returnHome();
 	}
 
 	// Invalid post ID
@@ -808,53 +888,6 @@ if (isset($_POST['logout'])) {
 }
 
 // Posts
-$posts = getIndex();
-
-// Search
-if (!empty($_GET['s'])) {
-	$s = explode(' ', $_GET['s']);
-	foreach($posts as $postKey => $postValue) {
-		$url = strtolower(getPost(getPostId($postValue['key']), 'url'));
-		$title = strtolower(getPost(getPostId($postValue['key']), 'title'));
-		$comment = strtolower(parse(getPost(getPostId($postValue['key']), 'comment')));
-		$f = true;
-		for($i = 0; $i < sizeof($s); $i++) {
-			if ((strpos($url, strtolower($s[$i])) === false) && (strpos($title, strtolower($s[$i])) === false) && strpos($comment, strtolower($s[$i])) === false) {
-				$f = false;
-				break;
-			}
-		}
-		if (!$f) {
-			unset($posts[$postKey]);
-		}
-	}
-}
-$results = sizeof($posts);
-if (($results == 0) && isSearching()) {
-	error(L10n::$errorNoResults);
-}
-
-// Sorting
-uasort($posts, function($a, $b) {
-	if ($a['value'] == $b['value']) {
-		return 0;
-	} else {
-		return $b['value'] <=> $a['value'];
-	}
-});
-
-// Get posts
-if (isDetail() && postExists($_GET['p'])) {
-	$posts = array(array('value' => json_decode(getPost($_GET['p']))->date, 'key' => $_GET['p']));
-}
-$posts = @array_slice($posts, $_GET['skip'], Config::$postsPerPage);
-
-// No posts exist
-if (!$posts && !isLoggedin()) {
-	error(L10n::$errorNoResults, false);
-}
-
-// Posts
 if (!isEditing()) {
 	if (isDetail() && empty($_GET['p'])) {
 		error(L10n::$errorNoResults);
@@ -878,7 +911,7 @@ if (!isEditing()) {
 						<h2 itemprop="name"><a href="<?= $url ?>" rel="external nofollow" target="_blank" aria-describedby="<?= $id?>-url" itemprop="url"><?= $title ?></a></h2>
 						<p class="meta" id="<?= $id?>-url"><?= parse_url($url, PHP_URL_HOST) ?></p>
 					</hgroup>
-				<?php elseif(!isDetail()): ?>
+				<?php elseif (!isDetail()): ?>
 					<h2 itemprop="name"><a href="?p=<?= $id ?>" itemprop="url"><?= $title ?></a></h2>
 				<?php else: ?>
 					<h2 itemprop="name"><?= $title ?></h2>
@@ -906,9 +939,9 @@ if (!isEditing()) {
 }
 
 // Footer
-footer($results);
+footerTpl($results);
 
-function footer($results = 0) { ?>
+function footerTpl($results = 0) { ?>
 	</main><footer class="footer">
 		<?php if (!isDetail() && !isEditing() && $results >= Config::$postsPerPage): ?>
 			<nav class="row">
