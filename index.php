@@ -50,6 +50,7 @@ class L10n {
 	static $publish = 'Publish';
 	static $save = 'Save';
 	static $logout = 'Logout';
+	static $close = 'Close';
 	static $permalink = 'Permalink';
 	static $edit = 'Edit';
 	static $delete = 'Delete';
@@ -165,10 +166,13 @@ body:has(:popover-open) {
 	border-radius: 1rem;
 }
 [popover]:popover-open {
-	display: block !important;
+	display: grid !important;
 }
 [popover]::backdrop {
 	background: rgb(0 0 0 / 75%);
+}
+[popover] button {
+	margin-inline-start: auto;
 }
 main {
 	display: grid;
@@ -973,7 +977,7 @@ function footerTpl($results = 0) { ?>
 			<p class="meta"><a href="https://github.com/zichy/vicco">vicco</a> / <?= $loadTime ?> s / <?= intval(memory_get_usage() / 1024) ?> KB
 		<?php elseif (Info::$title && Info::$content): ?>
 			<p class="meta"><button popovertarget="info" popovertargetaction="show"><?= Info::$title ?></button>
-			<div id="info" class="box" popover><div class="text"><?= parse(Info::$content) ?></div></div>	
+			<div id="info" class="box" popover><button popovertarget="info" popovertargetaction="hide"><?= L10n::$close ?></button><div class="text"><h2><?= Info::$title ?></h2><?= parse(Info::$content) ?></div></div>	
 		<?php endif ?>
 	</footer>
 
