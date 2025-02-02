@@ -786,6 +786,7 @@ if (isset($_GET['login'])) {
 		returnHome();
 	} else { ?>
 		<form class="box form" action="/" method="post">
+			<h2><?= L10n::$login ?></h2>
 			<div>
 				<label for="username"><?= L10n::$username ?></label>
 				<input type="text" id="username" name="username" autocomplete="username" required>
