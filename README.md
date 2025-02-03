@@ -6,10 +6,10 @@ vicco is brutalist blog software contained in a single PHP file.
 
 * Responsive layout
 * Web interface to publish, edit, and delete posts
-* Can be used as linklog
+* Linkblog functionality
 * Text formatting
 * Atom feed
-* No ActivityPub support
+* Open Graph & Microdata
 
 ## Target audiences
 
@@ -27,8 +27,6 @@ vicco is brutalist blog software contained in a single PHP file.
 2. Upload it to your server and make the directory writable.
 3. Open the site in your browser.
 4. It should work.
-
-You can use your credentials at `/?login`.
 
 ## Text formatting
 
