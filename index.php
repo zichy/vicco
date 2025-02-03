@@ -322,6 +322,7 @@ textarea {
 }
 .text {
 	font-family: var(--mono);
+	text-wrap: balance;
 }
 .text > *:first-child {
 	margin-block-start: 0;
