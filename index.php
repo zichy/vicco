@@ -977,7 +977,13 @@ function footerTpl($results = 0) { ?>
 			<p class="meta"><a href="https://github.com/zichy/vicco">vicco</a> / <?= $loadTime ?> s / <?= intval(memory_get_usage() / 1024) ?> KB
 		<?php elseif (Info::$title && Info::$content): ?>
 			<p class="meta"><button popovertarget="info" popovertargetaction="show"><?= Info::$title ?></button>
-			<div id="info" class="box" popover><button popovertarget="info" popovertargetaction="hide"><?= L10n::$close ?></button><div class="text"><h2><?= Info::$title ?></h2><?= parse(Info::$content) ?></div></div>	
+			<div id="info" class="box" popover>
+				<button popovertarget="info" popovertargetaction="hide"><?= L10n::$close ?></button>
+				<div class="text">
+					<h2><?= Info::$title ?></h2>
+					<?= parse(Info::$content) ?>
+				</div>
+			</div>
 		<?php endif ?>
 	</footer>
 
