@@ -594,8 +594,8 @@ function parse($t) {
 	$t = preg_replace('/\~(.*?)\~/', '<del>\1</del>', $t);
 	$t = preg_replace('/\:\"(.*?)\"\:/', '<q>\1</q>', $t);
 	$t = preg_replace('/\@(.*?)\@/', '<code>\1</code>', $t);
-	$t = preg_replace('/\[([^\[]+)\]\(([^\)]+)\)/', '<a href=\'\2\' rel=\'external nofollow\' target=\'_blank\'>\1</a>', $t);
-	$t = preg_replace('/\[(.*?)\]/', '<a href=\'\1\' rel=\'external nofollow\' target=\'_blank\'>\1</a>', $t);
+	$t = preg_replace('/\[([^\[]+)\]\(([^\)]+)\)/', '<a href=\'\2\' rel=\'external\' target=\'_blank\'>\1</a>', $t);
+	$t = preg_replace('/\[(.*?)\]/', '<a href=\'\1\' rel=\'external\' target=\'_blank\'>\1</a>', $t);
 	$t = '<p>'.$t.'</p>';
 	$t = str_replace("\r\n\r\n", "</p><p>", $t);
 	$t = str_replace("\n\n", "</p><p>", $t);
@@ -699,6 +699,7 @@ function headerTpl() { ?>
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="referrer" content="no-referrer">
 	<meta property="og:type" content="<?= isDetail() ? 'article' : 'website' ?>">
 
 	<?php
@@ -913,7 +914,7 @@ if (!isEditing()) {
 						<a href="?p=<?= $id ?>" class="permalink" title="<?= L10n::$permalink ?>" itemprop="url"><span aria-hidden="true">&#8984;</span></a>
 					<?php endif ?>
 					<hgroup>
-						<h2 itemprop="name"><a href="<?= $url ?>" rel="external nofollow" target="_blank" aria-describedby="<?= $id?>-url" itemprop="url"><?= $title ?></a></h2>
+						<h2 itemprop="name"><a href="<?= $url ?>" rel="external" target="_blank" aria-describedby="<?= $id?>-url" itemprop="url"><?= $title ?></a></h2>
 						<p class="meta" id="<?= $id?>-url"><?= parse_url($url, PHP_URL_HOST) ?></p>
 					</hgroup>
 				<?php elseif (!isDetail()): ?>
