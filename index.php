@@ -713,9 +713,9 @@ function headerTpl() { ?>
 
 	<?php if (isDetail()): ?>
 		<?php
-			$desc = getPost($id, 'comment');
-			$desc = str_replace(array("\r", "\n"), '', $desc);
-			$desc = substr($desc, 0, 200);
+			$comment = getPost($id, 'comment');
+			$comment = str_replace(array("\r", "\n"), '', $comment);
+			$desc = strlen($comment) > 200 ? substr($comment, 0, 200)."…" : $comment;
 		?>
 		<meta name="description" content="<?= $desc ?>">
 		<meta property="og:description" content="<?= $desc ?>">
