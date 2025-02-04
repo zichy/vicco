@@ -50,7 +50,6 @@ class L10n {
 	static $publish = 'Publish';
 	static $save = 'Save';
 	static $logout = 'Logout';
-	static $close = 'Close';
 	static $permalink = 'Permalink';
 	static $edit = 'Edit';
 	static $delete = 'Delete';
@@ -170,9 +169,6 @@ body:has(:popover-open) {
 }
 [popover]::backdrop {
 	background: rgb(0 0 0 / 75%);
-}
-[popover] button {
-	margin-inline-start: auto;
 }
 main {
 	display: grid;
@@ -979,7 +975,6 @@ function footerTpl($results = 0) { ?>
 		<?php elseif (Info::$title && Info::$content): ?>
 			<p class="meta"><button popovertarget="info" popovertargetaction="show"><?= Info::$title ?></button>
 			<div id="info" class="box" popover>
-				<button popovertarget="info" popovertargetaction="hide"><?= L10n::$close ?></button>
 				<div class="text">
 					<h2><?= Info::$title ?></h2>
 					<?= parse(Info::$content) ?>
