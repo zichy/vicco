@@ -725,7 +725,7 @@ function headerTpl() { ?>
 	<?php endif ?>
 
 	<?php global $fullUrl; ?>
-	<meta property="og:url" content="<?= $fullUrl ?>" />
+	<meta property="og:url" content="<?= $fullUrl ?>">
 
 	<?php if (!empty(Config::$fediverseCreator) && isDetail() && postExists($_GET['p'])): ?>
 		<meta name="fediverse:creator" content="<?= Config::$fediverseCreator ?>">
