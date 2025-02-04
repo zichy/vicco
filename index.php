@@ -155,7 +155,7 @@ body:has(:popover-open) {
 	display: none !important;
 	width: 500px;
 	max-width: 100%;
-	max-height: 100vh;
+	max-height: 90vh;
 	position: fixed;
 	top: 50%;
 	left: 50%;
