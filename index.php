@@ -190,7 +190,7 @@ a:is(:hover, :focus-visible) {
 	color: var(--interactive);
 	font-size: 1.25em;
 	line-height: 1.2;
-	margin: 0;
+	margin-block: 0;
 }
 h1 {
 	line-height: 1;
@@ -211,9 +211,6 @@ label {
 }
 code {
 	background-color: var(--background);
-}
-form {
-	margin: 0;
 }
 .form {
 	display: flex;
@@ -298,9 +295,8 @@ textarea {
 		align-items: flex-end;
 	}
 }
-.header p {
-	color: var(--meta);
-	margin: 0;
+.header .meta {
+	margin-block: 0;
 }
 .box {
 	background-color: var(--box);
@@ -327,30 +323,30 @@ textarea {
 	margin-block-end: 0;
 }
 .post-header p {
-	margin: 0
+	display: inline-flex;
+	column-gap: 0.5rem;
+	margin-block: 0;
 }
-:is(hgroup, hgroup > *) {
+hgroup > * {
 	display: inline;
-}
-hgroup p:before {
-	content: '(';
-}
-hgroup p:after {
-	content: ')';
 }
 .permalink {
 	text-decoration: none;
-	vertical-align: top;
-	display: inline-flex;
+}
+.post-footer {
+	display: grid;
 	align-items: center;
-	justify-content: center;
-	width: 2rem;
-	height: 2rem;
-	border: 1px solid var(--interactive);
-	border-radius: 0.5rem;
+	grid-template-columns: 1fr auto;
+	column-gap: 1.5rem;
+}
+.post-footer p {
+	margin-block: 0;
 }
 .panel {
 	gap: 2rem;
+}
+.panel .row {
+	justify-content: space-between;
 }
 @media (min-width: 769px) {
 	.panel {
@@ -358,7 +354,7 @@ hgroup p:after {
 		grid-template-areas:
 			'title link'
 			'comment comment'
-			'submit submit';
+			'buttons buttons';
 	}
 	.panel-title {
 		grid-area: title;
@@ -368,6 +364,9 @@ hgroup p:after {
 	}
 	.panel-comment {
 		grid-area: comment;
+	}
+	.panel .row {
+		grid-area: buttons;
 	}
 }
 .footer {
@@ -411,17 +410,18 @@ if ($textarea) {
 	});
 }
 
-const $adminForms = document.querySelectorAll('.admin');
-if ($adminForms) {
-	$adminForms.forEach(($form) => {
-		const warning = $form.dataset.warning;
-		$form.addEventListener('submit', (e) => {
+const $panel = document.querySelector('.panel');
+const $deleteButton = $panel.querySelector('.delete');
+if ($panel && $deleteButton) {
+	const warning = $panel.dataset.warning;
+	$panel.addEventListener('submit', (e) => {
+		if (e.submitter == $deleteButton) {
 			if (confirm(warning)) {
-				$form.submit();
+				$panel.submit();
 			} else {
 				e.preventDefault();
 			}
-		});
+		}
 	});
 }
 EOD
@@ -753,7 +753,7 @@ function headerTpl() { ?>
 		<?php endif ?>
 		</h1>
 	<?php if (!empty(Config::$blogDesc)): ?>
-		<p itemprop="description"><?= Config::$blogDesc ?></p>
+		<p class="meta" itemprop="description"><?= Config::$blogDesc ?></p>
 	<?php endif ?>
 	</div>
 
@@ -856,7 +856,7 @@ if (isLoggedin()) {
 
 	// Post form
 	if ((!(isDetail()) && !isSearching())): ?>
-		<form class="panel box" action="/" method="post">
+		<form class="panel box" action="/" method="post" <?= isEditing() ? 'data-warning="'.L10n::$deleteWarning.'"' : '' ?>>
 			<input type="hidden" name="id" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
 
 			<div class="panel-title">
@@ -874,7 +874,13 @@ if (isLoggedin()) {
 				<textarea id="comment" name="comment" spellcheck="false" rows="1" required><?= (isEditing() ? getPost($_GET['edit'], 'comment') : '') ?></textarea>
 			</div>
 
-			<button type="submit" id="submit" name="submit"><?= (isEditing() ? L10n::$save : L10n::$publish) ?></button>
+			<div class="row">
+				<button type="submit" id="submit" name="submit"><?= (isEditing() ? L10n::$save : L10n::$publish) ?></button>
+				<?php if (isEditing()): ?>
+					<button type="submit" class="delete" name="delete"><?= L10n::$delete ?></button>
+				<?php endif ?>
+			</div>
+			
 		</form>
 	<?php endif;
 
@@ -906,36 +912,32 @@ if (!isEditing()) {
 		<article class="post box" itemscope itemtype="https://schema.org/BlogPosting" itemid="<?= $postUrl ?>">
 			<header class="post-header">
 				<?php if ($url): ?>
-					<?php if (!isDetail()): ?>
-						<a href="?p=<?= $id ?>" class="permalink" title="<?= L10n::$permalink ?>" itemprop="url"><span aria-hidden="true">&#8984;</span></a>
-					<?php endif ?>
 					<hgroup>
 						<h2 itemprop="name"><a href="<?= $url ?>" rel="external" target="_blank" aria-describedby="<?= $id?>-url" itemprop="url"><?= $title ?></a></h2>
-						<p class="meta" id="<?= $id?>-url"><?= parse_url($url, PHP_URL_HOST) ?></p>
+						<p class="meta" id="<?= $id?>-url">(<?= parse_url($url, PHP_URL_HOST) ?>)</p>
 					</hgroup>
 				<?php elseif (!isDetail()): ?>
 					<h2 itemprop="name"><a href="?p=<?= $id ?>" itemprop="url"><?= $title ?></a></h2>
 				<?php else: ?>
 					<h2 itemprop="name"><?= $title ?></h2>
 				<?php endif ?>
-				<p class="meta">
-					<time datetime="<?= date('Y-m-d H:i:s', $date) ?>" itemprop="datePublished" pubdate><?= date(Config::$dateFormat, $date) ?></time>
-				</p>
 			</header>
 			<?php if ($comment): ?>
 				<div class="text" itemprop="articleBody">
 					<?= parse($comment) ?>
 				</div>
 			<?php endif ?>
-			<?php if (isLoggedin()): ?>
-				<footer>
-					<form class="admin row" action="/" method="post" data-warning="<?= L10n::$deleteWarning ?>">
-						<input type="hidden" name="id" value="<?= $id ?>">
-						<a class="button" href="?edit=<?= $id ?>"><?= L10n::$edit ?></a>
-						<button type="submit" class="delete" name="delete"><?= L10n::$delete ?></button>
-					</form>
-				</footer>
-			<?php endif ?>
+			<footer class="post-footer">
+				<p class="meta">
+					<?php if ($url && !isDetail()): ?>
+						<a href="?p=<?= $id ?>" class="permalink" title="<?= L10n::$permalink ?>" itemprop="url"><span aria-hidden="true">&#8984;</span></a>
+					<?php endif ?>
+					<time datetime="<?= date('Y-m-d H:i:s', $date) ?>" itemprop="datePublished" pubdate><?= date(Config::$dateFormat, $date) ?></time>
+				</p>
+				<?php if (isLoggedin()): ?>
+					<a class="button" href="?edit=<?= $id ?>"><?= L10n::$edit ?></a>
+				<?php endif ?>
+			</footer>
 		</article>
 	<?php endforeach;
 }
