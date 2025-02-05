@@ -412,11 +412,11 @@ if ($textarea) {
 }
 
 const $panel = document.querySelector('.panel');
-const $deleteButton = $panel.querySelector('.delete');
-if ($panel && $deleteButton) {
-	const warning = $panel.dataset.warning;
+const $button = $panel.querySelector('.delete');
+if ($panel && $button) {
+	const warning = $button.dataset.warning;
 	$panel.addEventListener('submit', (e) => {
-		if (e.submitter == $deleteButton) {
+		if (e.submitter == $button) {
 			if (confirm(warning)) {
 				$panel.submit();
 			} else {
@@ -857,7 +857,7 @@ if (isLoggedin()) {
 
 	// Post form
 	if ((!(isDetail()) && !isSearching())): ?>
-		<form class="panel box" action="/" method="post" <?= isEditing() ? 'data-warning="'.L10n::$deleteWarning.'"' : '' ?>>
+		<form class="panel box" action="/" method="post">
 			<input type="hidden" name="id" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
 
 			<div class="panel-title">
@@ -878,7 +878,7 @@ if (isLoggedin()) {
 			<div class="row">
 				<button type="submit" id="submit" name="submit"><?= (isEditing() ? L10n::$save : L10n::$publish) ?></button>
 				<?php if (isEditing()): ?>
-					<button type="submit" class="delete" name="delete"><?= L10n::$delete ?></button>
+					<button type="submit" class="delete" name="delete" data-warning="<?= L10n::$deleteWarning ?>"><?= L10n::$delete ?></button>
 				<?php endif ?>
 			</div>
 			
