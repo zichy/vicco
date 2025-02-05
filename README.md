@@ -30,17 +30,18 @@ vicco is brutalist blog software contained in a single PHP file.
 
 ## Text formatting
 
-There is some [Markdown](https://daringfireball.net/projects/markdown/)-inspired formatting. No block elements, though.
+There is some [Markdown](https://daringfireball.net/projects/markdown/)-inspired formatting.
 
-| Input                          | Output                       |
-| ---                            | ---                          |
-| `**strong**` / `__strong__`    | __strong__                   |
-| `*italic*` / `_italic_`        | _italic_                     |
-| `~strikethrough~`              | ~~strikethrough~~            |
-| `:"quote":`                    | <q>quote</q>                 |
-| `@code@`                       | `code`                       |
-| `[https://example.org]`        | https://example.org          |
-| `[title](https://example.org)` | [title](https://example.org) |
+| Input                          | Output                                          |
+| ---                            | ---                                             |
+| `**strong**` / `__strong__`    | __strong__                                      |
+| `*italic*` / `_italic_`        | _italic_                                        |
+| `~strikethrough~`              | ~~strikethrough~~                               |
+| `>quotation block`             | <blockquote><p>quotation block</p></blockquote> |
+| `:"inline quote":`             | <q>inline quote</q>                             |
+| `@code@`                       | `code`                                          |
+| `[https://example.org]`        | https://example.org                             |
+| `[title](https://example.org)` | [title](https://example.org)                    |
 
 ## FAQ
 

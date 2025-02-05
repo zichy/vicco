@@ -212,6 +212,14 @@ label {
 code {
 	background-color: var(--background);
 }
+blockquote {
+	padding-inline-start: 2rem;
+	margin-inline: 0;
+	border-left: 2px solid var(--meta);
+}
+blockquote p {
+	margin-block: 0;
+}
 .form {
 	display: flex;
 	flex-direction: column;
@@ -598,6 +606,8 @@ function parse($t) {
 	$t = str_replace("\n\n", "</p><p>", $t);
 	$t = str_replace("\r\n", "<br>", $t);
 	$t = str_replace("\n", "<br>", $t);
+	$t = preg_replace('/<p>>(.*?)<\/p>/', '<blockquote><p>\1</p></blockquote>', $t);
+
 	return $t;
 }
 
