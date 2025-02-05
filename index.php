@@ -728,6 +728,7 @@ function headerTpl() { ?>
 		<?php
 			$comment = getPost($id, 'comment');
 			$comment = str_replace(array("\r", "\n"), '', $comment);
+			$comment = str_replace(array(">"), ' ', $comment);
 			$desc = strlen($comment) > 200 ? substr($comment, 0, 200)."…" : $comment;
 		?>
 		<meta name="description" content="<?= $desc ?>">
