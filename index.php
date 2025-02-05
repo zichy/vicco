@@ -302,10 +302,11 @@ textarea {
 	background-color: var(--box);
 	display: grid;
 	gap: 1.5rem;
-	padding: 2rem 2.5rem;
+	padding: 2rem;
 }
 @media (min-width: 769px) {
 	.box {
+		padding: 2rem 2.5rem;
 		border-radius: 0.5rem;
 	}
 }
