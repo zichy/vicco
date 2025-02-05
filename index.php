@@ -592,6 +592,12 @@ function isSearching() {
 	}
 }
 
+function isLogin() {
+	if(isset($_GET['login'])) {
+		return true;
+	}
+}
+
 // Go to index
 function returnHome() {
 	header('Location: /');
@@ -664,7 +670,7 @@ if (isDetail() && postExists($_GET['p'])) {
 $posts = @array_slice($posts, $_GET['skip'], Config::$postsPerPage);
 
 // No posts exist
-if (!$posts && !isLoggedin()) {
+if (!$posts && !isLogin() && !isLoggedin()) {
 	error(L10n::$errorNoResults, false);
 }
 
@@ -801,7 +807,7 @@ function error($text, $backLink = true, $linkUrl = '/') {
 }
 
 // Login
-if (isset($_GET['login'])) {
+if (isLogin()) {
 	if (isLoggedin()) {
 		returnHome();
 	} else { ?>
@@ -987,7 +993,7 @@ function footerTpl($results = 0) { ?>
 				</div>
 			<?php endif ?>
 			<a class="button" href="/?feed">Feed</a>
-			<?php if (Config::$showLogin && !isset($_GET['login']) && !isLoggedin()): ?>
+			<?php if (Config::$showLogin && !isLogin() && !isLoggedin()): ?>
 				<a class="button" href="?login">Login</a>
 			<?php elseif (isLoggedin()): ?>
 				<form action="/" method="post">
