@@ -9,7 +9,7 @@ vicco is brutalist blog software contained in a single PHP file.
 * Linkblog functionality
 * Text formatting
 * Atom feed
-* Open Graph & Microdata
+* Open Graph & Microdata support
 
 ## Target audiences
 
