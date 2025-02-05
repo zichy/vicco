@@ -651,7 +651,7 @@ if (!empty($_GET['s'])) {
 }
 $results = sizeof($posts);
 if (($results == 0) && isSearching()) {
-	error(L10n::$errorNoResults);
+	error(L10n::$errorNoResults, true, '/', true);
 }
 
 // Posts sorting
@@ -790,8 +790,8 @@ function headerTpl() { ?>
 headerTpl();
 
 // Error
-function error($text, $backLink = true, $linkUrl = '/') {
-	headerTpl(); ?>
+function error($text, $backLink = true, $linkUrl = '/', $header = false) {
+	if ($header) { headerTpl(); } ?>
 	<section class="box">
 		<h2><?= L10n::$error ?></h2>
 		<div class="text">
