@@ -33,7 +33,7 @@ class Color {
 }
 
 class Info {
-	static $title = 'About this blog';
+	static $title = 'About';
 	static $content = <<< 'EOD'
 Here you can add information about *your blog*, *yourself*, or **legal notes**.
 
@@ -380,23 +380,29 @@ hgroup > * {
 }
 .footer {
 	display: grid;
-	grid-template-columns: 1fr auto;
-	grid-template-areas:
-		'nav acc'
-		'meta meta';
-	grid-column-gap: 4rem;
+	gap: 2rem 4rem;
 	padding-block-start: 2rem;
 }
 .footer .meta {
 	text-align: center;
-	grid-area: meta;
 	margin-block-end: 0;
 }
-nav {
-	grid-area: nav;
-}
-.acc {
-	grid-area: acc;
+@media (min-width: 769px) {
+	.footer {
+		grid-template-columns: 1fr auto;
+		grid-template-areas:
+			'nav menu'
+			'meta meta';
+	}
+	.footer .meta {
+		grid-area: meta;
+	}
+	nav {
+		grid-area: nav;
+	}
+	.menu {
+		grid-area: menu;
+	}
 }
 EOD
 	);
@@ -969,7 +975,17 @@ function footerTpl($results = 0) { ?>
 			</nav>
 		<?php endif ?>
 
-		<div class="acc">
+		<div class="menu row">
+			<?php if (Info::$title && Info::$content): ?>
+				<button popovertarget="info" popovertargetaction="show"><?= Info::$title ?></button>
+				<div id="info" class="box" popover>
+					<div class="text">
+						<h2><?= Info::$title ?></h2>
+						<?= parse(Info::$content) ?>
+					</div>
+				</div>
+			<?php endif ?>
+			<a class="button" href="/?feed">Feed</a>
 			<?php if (Config::$showLogin && !isset($_GET['login']) && !isLoggedin()): ?>
 				<a class="button" href="?login">Login</a>
 			<?php elseif (isLoggedin()): ?>
@@ -985,14 +1001,6 @@ function footerTpl($results = 0) { ?>
 			  $loadTime = number_format($loadTime, 2, '.', ',');
 			} ?>
 			<p class="meta"><a href="https://github.com/zichy/vicco">vicco</a> / <?= $loadTime ?> s / <?= intval(memory_get_usage() / 1024) ?> KB
-		<?php elseif (Info::$title && Info::$content): ?>
-			<p class="meta"><button popovertarget="info" popovertargetaction="show"><?= Info::$title ?></button>
-			<div id="info" class="box" popover>
-				<div class="text">
-					<h2><?= Info::$title ?></h2>
-					<?= parse(Info::$content) ?>
-				</div>
-			</div>
 		<?php endif ?>
 	</footer>
 
