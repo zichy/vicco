@@ -736,8 +736,8 @@ function headerTpl() { ?>
 		<?php
 			$comment = getPost($id, 'comment');
 			if ($comment) {
-				$comment = str_replace(array("\r", "\n"), '', $comment);
-				$comment = str_replace(array(">"), ' ', $comment);
+				$comment = strip_tags(parse($comment));
+				$comment = str_replace(array(":"), ': ', $comment);
 				$desc = strlen($comment) > 200 ? substr($comment, 0, 200)."…" : $comment;
 			}
 		?>
