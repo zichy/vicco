@@ -133,6 +133,7 @@ html {
 }
 ::selection {
 	background-color: var(--accent);
+	color: var(--text);
 }
 *:focus-visible {
 	outline: 2px solid var(--interactive);
