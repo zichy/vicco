@@ -340,6 +340,13 @@ hgroup > * {
 }
 .permalink {
 	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1lh;
+	height: 1lh;
+	border: 1px solid var(--interactive);
+	border-radius: 0.5rem;
 }
 .post-footer {
 	display: grid;
