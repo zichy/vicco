@@ -198,9 +198,6 @@ h1 {
 	line-height: 1;
 	margin-block: 0;
 }
-h1 img {
-	display: block;
-}
 :is(h1, h2) a {
 	text-decoration: none;
 }
