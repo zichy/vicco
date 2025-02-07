@@ -58,6 +58,7 @@ class L10n {
 	static $newer = 'Newer';
 	static $username = 'Username';
 	static $passphrase = 'Passphrase';
+	static $feed = 'Feed';
 	static $login = 'Login';
 	static $back = 'Go back';
 	static $error = 'Error';
@@ -994,7 +995,7 @@ function footerTpl($results = 0) { ?>
 					</div>
 				</div>
 			<?php endif ?>
-			<a class="button" href="/?feed">Feed</a>
+			<a class="button" href="/?feed"><?= L10n::$feed ?></a>
 			<?php if (Config::$showLogin && !isLogin() && !isLoggedin()): ?>
 				<a class="button" href="?login">Login</a>
 			<?php elseif (isLoggedin()): ?>
