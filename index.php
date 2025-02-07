@@ -59,6 +59,7 @@ class L10n {
 	static $username = 'Username';
 	static $passphrase = 'Passphrase';
 	static $feed = 'Feed';
+	static $close = 'Close';
 	static $login = 'Login';
 	static $back = 'Go back';
 	static $error = 'Error';
@@ -992,6 +993,7 @@ function footerTpl($results = 0) { ?>
 					<div class="text">
 						<h2><?= Info::$title ?></h2>
 						<?= parse(Info::$content) ?>
+						<p><button popovertarget="info" popovertargetaction="hide"><?= L10n::$close ?></button>
 					</div>
 				</div>
 			<?php endif ?>
