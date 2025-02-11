@@ -37,7 +37,7 @@ class Info {
 	static $content = <<< 'EOD'
 Here you can add information about *your blog*, *yourself*, or **legal notes**.
 
-You can even use paragraphs.
+Leave the title or content blank to hide this element on your blog.
 EOD;
 }
 
