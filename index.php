@@ -575,32 +575,8 @@ function isLoggedin() {
 	}
 }
 
-function isDetail() {
-	if (isset($_GET['p'])) {
-		return true;
-	}
-}
-
-function isFeed() {
-	if (isset($_GET['feed'])) {
-		return true;
-	}
-}
-
-function isEditing() {
-	if (isset($_GET['edit'])) {
-		return true;
-	}
-}
-
-function isSearching() {
-	if (isset($_GET['s'])) {
-		return true;
-	}
-}
-
-function isLogin() {
-	if(isset($_GET['login'])) {
+function isGet($request) {
+	if(isset($_GET[$request])) {
 		return true;
 	}
 }
@@ -631,7 +607,7 @@ function parse($t) {
 }
 
 // Get posts
-if (isFeed()) {
+if (isGet('feed')) {
 	$posts = @array_slice(getIndex(), 0, Config::$postsFeed);
 } else {
 	$posts = getIndex();
@@ -657,7 +633,7 @@ if (!empty($_GET['s'])) {
 	}
 }
 $results = sizeof($posts);
-if (($results == 0) && isSearching()) {
+if (($results == 0) && isGet('s')) {
 	error(L10n::$errorNoResults, true, '/', true);
 }
 
@@ -671,19 +647,19 @@ uasort($posts, function($a, $b) {
 });
 
 // Get posts
-if (isDetail() && postExists($_GET['p'])) {
+if (isGet('p') && postExists($_GET['p'])) {
 	$posts = array(array('value' => json_decode(getPost($_GET['p']))->date, 'key' => $_GET['p']));
 }
 $posts = @array_slice($posts, $_GET['skip'], Config::$postsPerPage);
 
 // No posts exist
-if (!$posts && !isLogin() && !isLoggedin()) {
+if (!$posts && !isGet('login') && !isLoggedin()) {
 	error(L10n::$errorNoResults, false);
 }
 
 // Feed
-if (isFeed()) {
-	if (isSearching()) {
+if (isGet('feed')) {
+	if (isGet('s')) {
 		returnHome();
 	}
 
@@ -726,18 +702,18 @@ function headerTpl() { ?>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="referrer" content="no-referrer">
-	<meta property="og:type" content="<?= isDetail() ? 'article' : 'website' ?>">
+	<meta property="og:type" content="<?= isGet('p') ? 'article' : 'website' ?>">
 
 	<?php
 		global $posts;
 
-		if (isDetail()) {
+		if (isGet('p')) {
 			$id = getPostId($_GET['p']);
 		}
 	?>
-	<meta property="og:title" content="<?= isDetail() ? getPost($id, 'title') : Config::$blogName ?>">
+	<meta property="og:title" content="<?= isGet('p') ? getPost($id, 'title') : Config::$blogName ?>">
 
-	<?php if (isDetail()): ?>
+	<?php if (isGet('p')): ?>
 		<?php
 			$comment = getPost($id, 'comment');
 			if ($comment) {
@@ -756,7 +732,7 @@ function headerTpl() { ?>
 	<?php global $fullUrl; ?>
 	<meta property="og:url" content="<?= $fullUrl ?>">
 
-	<?php if (!empty(Config::$fediverseCreator) && isDetail() && postExists($_GET['p'])): ?>
+	<?php if (!empty(Config::$fediverseCreator) && isGet('p') && postExists($_GET['p'])): ?>
 		<meta name="fediverse:creator" content="<?= Config::$fediverseCreator ?>">
 	<?php endif ?>
 
@@ -816,7 +792,7 @@ function error($text, $backLink = true, $linkUrl = '/', $header = false) {
 }
 
 // Login
-if (isLogin()) {
+if (isGet('login')) {
 	if (isLoggedin()) {
 		returnHome();
 	} else { ?>
@@ -883,33 +859,33 @@ if (isLoggedin()) {
 	}
 
 	// Invalid post ID
-	if (isEditing() && !postExists($_GET['edit'])) {
+	if (isGet('edit') && !postExists($_GET['edit'])) {
 		error(L10n::$errorPostNonexistent);
 	}
 
 	// Post form
-	if ((!(isDetail()) && !isSearching())): ?>
+	if ((!(isGet('p')) && !isGet('s'))): ?>
 		<form class="panel box" action="/" method="post">
-			<input type="hidden" name="id" value="<?= (isEditing() ? $_GET['edit'] : '') ?>">
+			<input type="hidden" name="id" value="<?= (isGet('edit') ? $_GET['edit'] : '') ?>">
 
 			<div class="panel-title">
 				<label for="title"><?= L10n::$title ?></label>
-				<input type="text" id="title" name="title" required value="<?= (isEditing() ? getPost($_GET['edit'], 'title') : '') ?>">
+				<input type="text" id="title" name="title" required value="<?= (isGet('edit') ? getPost($_GET['edit'], 'title') : '') ?>">
 			</div>
 
 			<div class="panel-link">
 				<label for="url"><?= L10n::$link ?> <small class="meta">(<?= L10n::$optional ?>)</small></label>
-				<input type="url" id="url" name="url" placeholder="https://example.com" value="<?= (isEditing() ? getPost($_GET['edit'], 'url') : '') ?>">
+				<input type="url" id="url" name="url" placeholder="https://example.com" value="<?= (isGet('edit') ? getPost($_GET['edit'], 'url') : '') ?>">
 			</div>
 
 			<div class="panel-comment">
 				<label for="comment"><?= L10n::$comment ?></label>
-				<textarea id="comment" name="comment" spellcheck="false" rows="1" required><?= (isEditing() ? getPost($_GET['edit'], 'comment') : '') ?></textarea>
+				<textarea id="comment" name="comment" spellcheck="false" rows="1" required><?= (isGet('edit') ? getPost($_GET['edit'], 'comment') : '') ?></textarea>
 			</div>
 
 			<div class="row">
-				<button type="submit" id="submit" name="submit"><?= (isEditing() ? L10n::$save : L10n::$publish) ?></button>
-				<?php if (isEditing()): ?>
+				<button type="submit" id="submit" name="submit"><?= (isGet('edit') ? L10n::$save : L10n::$publish) ?></button>
+				<?php if (isGet('edit')): ?>
 					<button type="submit" class="delete" name="delete" data-warning="<?= L10n::$deleteWarning ?>"><?= L10n::$delete ?></button>
 				<?php endif ?>
 			</div>
@@ -917,7 +893,7 @@ if (isLoggedin()) {
 		</form>
 	<?php endif;
 
-} elseif (isset($_POST['submit']) || isset($_POST['delete']) || isEditing()) {
+} elseif (isset($_POST['submit']) || isset($_POST['delete']) || isGet('edit')) {
 	error(L10n::$errorHacker);
 }
 
@@ -929,8 +905,8 @@ if (isset($_POST['logout'])) {
 }
 
 // Posts
-if (!isEditing()) {
-	if (isDetail() && empty($_GET['p'])) {
+if (!isGet('edit')) {
+	if (isGet('p') && empty($_GET['p'])) {
 		error(L10n::$errorNoResults);
 	}
 	foreach($posts as $post): ?>
@@ -949,7 +925,7 @@ if (!isEditing()) {
 						<h2 itemprop="name"><a href="<?= $url ?>" rel="external" target="_blank" aria-describedby="<?= $id?>-url" itemprop="url"><?= $title ?></a></h2>
 						<p class="meta" id="<?= $id?>-url">(<?= parse_url($url, PHP_URL_HOST) ?>)</p>
 					</hgroup>
-				<?php elseif (!isDetail()): ?>
+				<?php elseif (!isGet('p')): ?>
 					<h2 itemprop="name"><a href="?p=<?= $id ?>" itemprop="url"><?= $title ?></a></h2>
 				<?php else: ?>
 					<h2 itemprop="name"><?= $title ?></h2>
@@ -962,7 +938,7 @@ if (!isEditing()) {
 			<?php endif ?>
 			<footer class="post-footer">
 				<p class="meta">
-					<?php if ($url && !isDetail()): ?>
+					<?php if ($url && !isGet('p')): ?>
 						<a href="?p=<?= $id ?>" class="permalink" title="<?= L10n::$permalink ?>" itemprop="url"><span aria-hidden="true">&#8984;</span></a>
 					<?php endif ?>
 					<time datetime="<?= date('Y-m-d H:i:s', $date) ?>" itemprop="datePublished" pubdate><?= date(Config::$dateFormat, $date) ?></time>
@@ -980,7 +956,7 @@ footerTpl($results);
 
 function footerTpl($results = 0) { ?>
 	</main><footer class="footer">
-		<?php if (!isDetail() && !isEditing() && $results >= Config::$postsPerPage): ?>
+		<?php if (!isGet('p') && !isGet('edit') && $results >= Config::$postsPerPage): ?>
 			<nav class="row">
 				<?php if (@$_GET['skip'] > 0): ?>
 					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><span aria-hidden="true">&larr;</span> <?= L10n::$newer ?></a>
@@ -1003,7 +979,7 @@ function footerTpl($results = 0) { ?>
 				</div>
 			<?php endif ?>
 			<a class="button" href="/?feed"><?= L10n::$feed ?></a>
-			<?php if (Config::$showLogin && !isLogin() && !isLoggedin()): ?>
+			<?php if (Config::$showLogin && !isGet('login') && !isLoggedin()): ?>
 				<a class="button" href="?login">Login</a>
 			<?php elseif (isLoggedin()): ?>
 				<form action="/" method="post">
