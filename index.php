@@ -767,7 +767,7 @@ function headerTpl() { ?>
 	</div>
 
 	<form class="search" action="/" method="get" role="search">
-		<input type="search" name="s" aria-label="<?= L10n::$search ?>" placeholder="<?= L10n::$search ?>" required>
+		<input type="search" name="s" aria-label="<?= L10n::$search ?>" placeholder="<?= L10n::$search ?>" value="<?= isGet('s') ? $_GET['s'] : '' ?>" required>
 	</form>
 </header><main>
 <?php }
