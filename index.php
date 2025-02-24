@@ -411,9 +411,7 @@ hgroup > * {
 		grid-area: menu;
 	}
 }
-EOD
-	);
-	setFile(Sys::$js, <<< 'EOD'
+EOD); setFile(Sys::$js, <<< 'EOD'
 if (window.history.replaceState) {
 	window.history.replaceState(null, null, window.location.href);
 }
@@ -446,8 +444,7 @@ if ($panel && $button) {
 		}
 	});
 }
-EOD
-	); setEntry('installed', true);
+EOD);
 }
 
 // Database
@@ -552,7 +549,7 @@ function getIndex() {
 	return unserialize(getEntry('index'));
 }
 
-function getID($length) {
+function getID(int $length) {
 	return bin2hex(random_bytes($length));
 }
 
@@ -576,7 +573,7 @@ function isLoggedin() {
 }
 
 function isGet($request) {
-	if(isset($_GET[$request])) {
+	if (isset($_GET[$request])) {
 		return true;
 	}
 }
@@ -616,7 +613,7 @@ if (isGet('feed')) {
 // Posts search
 if (!empty($_GET['s'])) {
 	$s = explode(' ', $_GET['s']);
-	foreach($posts as $postKey => $postValue) {
+	foreach ($posts as $postKey => $postValue) {
 		$url = strtolower(getPost(getPostId($postValue['key']), 'url'));
 		$title = strtolower(getPost(getPostId($postValue['key']), 'title'));
 		$comment = strtolower(parse(getPost(getPostId($postValue['key']), 'comment')));
@@ -679,7 +676,7 @@ if (isGet('feed')) {
 </author>
 <updated><?= date($dateFormat, $lastUpdate) ?></updated>
 <id><?= $fullUrl ?></id>
-<?php foreach($posts as $post): ?>
+<?php foreach ($posts as $post): ?>
 <?php $id = getPostId($post['key']); ?>
 <entry>
 	<title><?= getPost($id, 'title') ?></title>
@@ -909,7 +906,7 @@ if (!isGet('edit')) {
 	if (isGet('p') && empty($_GET['p'])) {
 		error(L10n::$errorNoResults);
 	}
-	foreach($posts as $post): ?>
+	foreach ($posts as $post): ?>
 		<?php
 			$id = getPostId($post['key']);
 			$postUrl = 'https://'.$_SERVER['HTTP_HOST'].'/?p='.$id;
