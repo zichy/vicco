@@ -962,7 +962,7 @@ if (isLoggedin()) {
 		</form>
 	<?php endif;
 
-} elseif (isset($_POST['submit']) || isset($_POST['delete']) || isGet('edit')) {
+} elseif (isset($_POST['submit']) || isset($_POST['delete-post']) || isGet('edit') || isGet('config')) {
 	error(L10n::$errorHacker);
 }
 
