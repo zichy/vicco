@@ -5,42 +5,11 @@
 	SPDX-FileCopyrightText: Copyright (c) 2015–2025 lawl(†), zichy
 */
 
-class Acc {
-	static $username = 'admin'; // Non-public
-	static $passphrase = 'CHANGEME';
-}
+// Login credentials
+define('username', 'admin');
+define('passphrase', 'CHANGEME');
 
-class Config {
-	static $blogName = 'vicco';
-	static $blogDesc = 'Yet another linkblog'; // Optional
-	static $favicon = '🌱'; // Emoji, optional
-	static $language = 'en'; // (ISO 639-1)
-	static $dateFormat = 'd M Y, H:i';
-	static $postsPerPage = 10;
-	static $postsFeed = 20;
-	static $mastodonVerification = ''; // https://mastodon.example/@account
-	static $fediverseCreator = ''; // @account@mastodon.example
-	static $showLogin = true;
-}
-
-class Color {
-	static $background = '#eee';
-	static $box = '#fff';
-	static $text = '#000';
-	static $meta = '#666';
-	static $interactive = '#00f';
-	static $accent = '#fe9';
-}
-
-class Info {
-	static $title = 'About';
-	static $content = <<< 'EOD'
-Here you can add information about *your blog*, *yourself*, or **legal notes**.
-
-Leave the title or content blank to hide this element on your blog.
-EOD;
-}
-
+// Localisation strings
 class L10n {
 	static $search = 'Search';
 	static $link = 'External link';
@@ -48,6 +17,7 @@ class L10n {
 	static $comment = 'Comment';
 	static $optional = 'Optional';
 	static $publish = 'Publish';
+	static $config = 'Config';
 	static $save = 'Save';
 	static $logout = 'Logout';
 	static $permalink = 'Permalink';
@@ -59,6 +29,7 @@ class L10n {
 	static $username = 'Username';
 	static $passphrase = 'Passphrase';
 	static $feed = 'Feed';
+	static $about = 'About';
 	static $close = 'Close';
 	static $login = 'Login';
 	static $back = 'Go back';
@@ -72,20 +43,44 @@ class L10n {
 	static $errorPermissions = 'No write permissions to create the folder ';
 	static $introTitle = 'Welcome to vicco!';
 	static $introComment = 'This is your new blog. Log in, have a look around and start posting.';
+	static $setup = '**Welcome to vicco!** Please submit this form to setup your new blog.';
 }
 
+// System variables – do not change
 class Sys {
 	static $folder = 'vicco/';
-	static $dbFolder = 'db/';
+	static $dbFolder = 'sys/';
 	static $postsFolder = 'posts/';
+	static $config = 'config.json';
 	static $css = 'style.css';
 	static $js = 'script.js';
+	static $settings = [
+		'name' => 'vicco',
+		'desc' => 'Yet another blog',
+		'favicon' => '🌱',
+		'language' => 'en',
+		'dateFormat' => 'd M Y, H:i',
+		'aboutText' => 'Add information about your blog, yourself, or legal notes. Or just leave it blank.',
+		'mastodonVerification' => 'https://mastodon.example/@account',
+		'fediverseCreator' => '@account@mastodon.example',
+		'postsPerPage' => '10',
+		'postsFeed' => '20',
+		'showLogin' => 'true',
+		'colorBackground' => '#eee',
+		'colorBox' => '#fff',
+		'colorText' => '#000',
+		'colorMeta' => '#666',
+		'colorInteractive' => '#00f',
+		'colorAccent' => '#fe9'
+	];
 }
 
 $blogUrl = 'https://'.$_SERVER['HTTP_HOST'];
 $fullUrl = $blogUrl.$_SERVER['REQUEST_URI'];
 $dbPath = Sys::$folder.Sys::$dbFolder;
 $postsPath = Sys::$folder.Sys::$postsFolder;
+$configPath = Sys::$folder.Sys::$config;
+setConfigConstants();
 
 session_start();
 
@@ -445,6 +440,13 @@ if ($panel && $button) {
 	});
 }
 EOD);
+
+	// Config setup
+	$config = new stdClass();
+	setConfig(Sys::$settings);
+	if (!isGet('config')) {
+		header('Location: /?config');
+	}
 }
 
 // Database
@@ -459,6 +461,38 @@ function setFile($name, $content) {
 	file_put_contents(Sys::$folder.$name, $content);
 }
 
+function setConfig($content) {
+	global $configPath;
+	file_put_contents($configPath, json_encode($content));
+	chmod($configPath, 0600);
+}
+
+function getConfig($query = false, $count = false) {
+	global $configPath;
+
+	if (file_exists($configPath)) {
+		$config = json_decode((file_get_contents($configPath)));
+		$configVars = get_object_vars($config);
+
+		if (!$query) {
+			return $config;
+		} elseif ($query == 'key') {
+			return array_keys($configVars)[$count - 1];
+		} elseif ($query == 'value') {
+			return array_values($configVars)[$count - 1];
+		}
+	}
+}
+
+function setConfigConstants() {
+	$config = getConfig();
+	$i = 0;
+	foreach ($config as $key => $value) {
+		$i++;
+		define(getConfig('key', $i), getConfig('value', $i));
+	}
+}
+
 function setPost($id, $content) {
 	global $postsPath;
 	$file = $postsPath.$id.'.json';
@@ -469,16 +503,19 @@ function setPost($id, $content) {
 
 function getPost($id, $value = false) {
 	global $postsPath;
-	if (!str_ends_with($id, '.json')) {
-		$id = $id.'.json';
-	}
-	$file = $postsPath.$id;
 
-	if (file_exists($file)) {
-		if (!$value) {
-			return file_get_contents($file);
-		} else {
-			return json_decode((file_get_contents($file)))->$value;
+	if (isset($id)) {
+		if (!str_ends_with($id, '.json')) {
+			$id = $id.'.json';
+		}
+		$file = $postsPath.$id;
+
+		if (file_exists($file)) {
+			if (!$value) {
+				return file_get_contents($file);
+			} else {
+				return json_decode((file_get_contents($file)))->$value;
+			}
 		}
 	}
 }
@@ -605,7 +642,7 @@ function parse($t) {
 
 // Get posts
 if (isGet('feed')) {
-	$posts = @array_slice(getIndex(), 0, Config::$postsFeed);
+	$posts = @array_slice(getIndex(), 0, constant('postsFeed'));
 } else {
 	$posts = getIndex();
 }
@@ -647,7 +684,7 @@ uasort($posts, function($a, $b) {
 if (isGet('p') && postExists($_GET['p'])) {
 	$posts = array(array('value' => json_decode(getPost($_GET['p']))->date, 'key' => $_GET['p']));
 }
-$posts = @array_slice($posts, $_GET['skip'], Config::$postsPerPage);
+$posts = @array_slice($posts, $_GET['skip'], constant('postsPerPage'));
 
 // No posts exist
 if (!$posts && !isGet('login') && !isLoggedin()) {
@@ -665,14 +702,14 @@ if (isGet('feed')) {
 	header('Content-type: text/xml'); ?>
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-<title><?= Config::$blogName ?></title>
-<?php if (!empty(Config::$blogDesc)): ?>
-<subtitle><?= Config::$blogDesc ?></subtitle>
+<title><?= constant('name') ?></title>
+<?php if (!empty(constant('desc'))): ?>
+<subtitle><?= constant('desc') ?></subtitle>
 <?php endif ?>
 <link href="<?= $blogUrl ?>" />
 <link href="<?= $fullUrl ?>" rel="self"/>
 <author>
-	<name><?= Config::$blogName ?></name>
+	<name><?= constant('name') ?></name>
 </author>
 <updated><?= date($dateFormat, $lastUpdate) ?></updated>
 <id><?= $fullUrl ?></id>
@@ -694,7 +731,7 @@ if (isGet('feed')) {
 
 // Header
 function headerTpl() { ?>
-<!DOCTYPE html><html lang="<?= Config::$language ?>"><head prefix="og: https://ogp.me/ns#">
+<!DOCTYPE html><html lang="<?= constant('language') ?>"><head prefix="og: https://ogp.me/ns#">
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -708,7 +745,7 @@ function headerTpl() { ?>
 			$id = getPostId($_GET['p']);
 		}
 	?>
-	<meta property="og:title" content="<?= isGet('p') ? getPost($id, 'title') : Config::$blogName ?>">
+	<meta property="og:title" content="<?= isGet('p') ? getPost($id, 'title') : constant('name') ?>">
 
 	<?php if (isGet('p')): ?>
 		<?php
@@ -721,31 +758,31 @@ function headerTpl() { ?>
 		?>
 		<meta name="description" content="<?= $desc ?>">
 		<meta property="og:description" content="<?= $desc ?>">
-	<?php elseif (!empty(Config::$blogDesc)): ?>
-		<meta name="description" content="<?= Config::$blogDesc ?>">
-		<meta property="og:description" content="<?= Config::$blogDesc ?>">
+	<?php elseif (!empty(constant('desc'))): ?>
+		<meta name="description" content="<?= constant('desc') ?>">
+		<meta property="og:description" content="<?= constant('desc') ?>">
 	<?php endif ?>
 
 	<?php global $fullUrl; ?>
 	<meta property="og:url" content="<?= $fullUrl ?>">
 
-	<?php if (!empty(Config::$fediverseCreator) && isGet('p') && postExists($_GET['p'])): ?>
-		<meta name="fediverse:creator" content="<?= Config::$fediverseCreator ?>">
+	<?php if (!empty(constant('fediverseCreator')) && isGet('p') && postExists($_GET['p'])): ?>
+		<meta name="fediverse:creator" content="<?= constant('fediverseCreator') ?>">
 	<?php endif ?>
 
-	<title><?= Config::$blogName ?></title>
+	<title><?= constant('name') ?></title>
 
-	<link href="/?feed" type="application/atom+xml" title="<?= Config::$blogName ?> feed" rel="alternate">
+	<link href="/?feed" type="application/atom+xml" title="<?= constant('name') ?> feed" rel="alternate">
 	<link rel="stylesheet" type="text/css" href="<?= Sys::$folder.Sys::$css ?>" media="screen">
 
-	<?php if (!empty(Config::$favicon)): ?>
-		<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Ctext%20y=%221em%22%20font-size=%2285%22%3E<?= Config::$favicon ?>%3C/text%3E%3C/svg%3E">
+	<?php if (!empty(constant('favicon'))): ?>
+		<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Ctext%20y=%221em%22%20font-size=%2285%22%3E<?= constant('favicon') ?>%3C/text%3E%3C/svg%3E">
 	<?php endif ?>
-	<?php if (!empty(Config::$mastodonVerification)): ?>
-		<link rel="me" href="<?= Config::$mastodonVerification ?>">
+	<?php if (!empty(constant('mastodonVerification'))): ?>
+		<link rel="me" href="<?= constant('mastodonVerification') ?>">
 	<?php endif ?>
 
-	<style>:root { --background: <?= Color::$background ?>; --box: <?= Color::$box ?>; --text: <?= Color::$text ?>; --meta: <?= Color::$meta ?>; --interactive: <?= Color::$interactive ?>; --accent: <?= Color::$accent ?>; }</style>
+	<style>:root { --background: <?= constant('colorBackground') ?>; --box: <?= constant('colorBox') ?>; --text: <?= constant('colorText') ?>; --meta: <?= constant('colorMeta') ?>; --interactive: <?= constant('colorInteractive') ?>; --accent: <?= constant('colorAccent') ?>; }</style>
 
 </head><body itemscope itemtype="https://schema.org/Blog">
 
@@ -753,13 +790,13 @@ function headerTpl() { ?>
 	<div>
 		<h1 itemprop="name">
 		<?php if (!empty($_GET)): ?>
-			<a href="/"><?= Config::$blogName ?></a>
+			<a href="/"><?= constant('name') ?></a>
 		<?php else: ?>
-			<?= Config::$blogName ?>
+			<?= constant('name') ?>
 		<?php endif ?>
 		</h1>
-	<?php if (!empty(Config::$blogDesc)): ?>
-		<p class="meta" itemprop="description"><?= Config::$blogDesc ?></p>
+	<?php if (!empty(constant('desc'))): ?>
+		<p class="meta" itemprop="description"><?= constant('desc') ?></p>
 	<?php endif ?>
 	</div>
 
@@ -812,7 +849,7 @@ if (isGet('login')) {
 	}
 }
 if (isset($_POST['login'])) {
-	if (hash_equals(Acc::$username, $_POST['username']) && hash_equals(Acc::$passphrase, $_POST['passphrase'])) {
+	if (hash_equals(constant('username'), $_POST['username']) && hash_equals(constant('passphrase'), $_POST['passphrase'])) {
 		$_SESSION['loggedin'] = true;
 		createCookie();
 		returnHome();
@@ -822,7 +859,7 @@ if (isset($_POST['login'])) {
 }
 if (isLoggedin()) {
 	// Submit post
-	if (isset($_POST['submit'])) {
+	if (isset($_POST['submit-post'])) {
 		if (empty($_POST['title']) || empty($_POST['comment'])) {
 			error(L10n::$errorEmpty);
 		}
@@ -849,7 +886,7 @@ if (isLoggedin()) {
 	}
 
 	// Delete post
-	if (isset($_POST['delete'])) {
+	if (isset($_POST['delete-post'])) {
 		deletePost($_POST['id']);
 		setIndex();
 		returnHome();
@@ -861,7 +898,7 @@ if (isLoggedin()) {
 	}
 
 	// Post form
-	if ((!(isGet('p')) && !isGet('s'))): ?>
+	if ((!(isGet('p')) && !isGet('s') && !isGet('config'))): ?>
 		<form class="panel box" action="/" method="post">
 			<input type="hidden" name="id" value="<?= (isGet('edit') ? $_GET['edit'] : '') ?>">
 
@@ -881,12 +918,47 @@ if (isLoggedin()) {
 			</div>
 
 			<div class="row">
-				<button type="submit" id="submit" name="submit"><?= (isGet('edit') ? L10n::$save : L10n::$publish) ?></button>
+				<button type="submit" name="submit-post"><?= (isGet('edit') ? L10n::$save : L10n::$publish) ?></button>
 				<?php if (isGet('edit')): ?>
-					<button type="submit" class="delete" name="delete" data-warning="<?= L10n::$deleteWarning ?>"><?= L10n::$delete ?></button>
+					<button type="submit" class="delete" name="delete-post" data-warning="<?= L10n::$deleteWarning ?>"><?= L10n::$delete ?></button>
 				<?php endif ?>
 			</div>
-			
+		</form>
+	<?php endif;
+
+	// Save config
+	if (isset($_POST['config'])) {
+		$config = new stdClass();
+		$i = 0;
+		foreach ($_POST as $configKey => $configValue) {
+			$i++;
+			if ($_POST['config-'.$i]) {
+				$key = getConfig('key', $i);
+				$config->$key = $configValue;
+			}
+		}
+		setConfig($config);
+		if (getEntry('installed') === false) {
+			setEntry('installed', true);
+		}
+		header('Location: /?config');
+	}
+
+	// Config form
+	if (isGet('config')): ?>
+		<form class="box" action="/" method="post">
+			<h2><?= L10n::$config ?></h2>
+			<?= (getEntry('installed') === false) ? parse(L10n::$setup) : '' ?>
+			<?php
+				$config = getConfig();
+				$i = 0;
+				foreach ($config as $key => $value): $i++; ?>
+					<div>
+						<label for="config-<?= $i ?>"><?= getConfig('key', $i) ?></label>
+						<input type="text" id="config-<?= $i ?>" name="config-<?= $i ?>" value="<?= $value ?>">
+					</div>
+			<?php endforeach ?>
+			<button type="submit" name="config"><?= L10n::$save ?></button>
 		</form>
 	<?php endif;
 
@@ -902,7 +974,7 @@ if (isset($_POST['logout'])) {
 }
 
 // Posts
-if (!isGet('edit')) {
+if (!isGet('edit') && !isGet('config')) {
 	if (isGet('p') && empty($_GET['p'])) {
 		error(L10n::$errorNoResults);
 	}
@@ -938,7 +1010,7 @@ if (!isGet('edit')) {
 					<?php if ($url && !isGet('p')): ?>
 						<a href="?p=<?= $id ?>" class="permalink" title="<?= L10n::$permalink ?>" itemprop="url"><span aria-hidden="true">&#8984;</span></a>
 					<?php endif ?>
-					<time datetime="<?= date('Y-m-d H:i:s', $date) ?>" itemprop="datePublished" pubdate><?= date(Config::$dateFormat, $date) ?></time>
+					<time datetime="<?= date('Y-m-d H:i:s', $date) ?>" itemprop="datePublished" pubdate><?= date(constant('dateFormat'), $date) ?></time>
 				</p>
 				<?php if (isLoggedin()): ?>
 					<a class="button" href="?edit=<?= $id ?>"><?= L10n::$edit ?></a>
@@ -953,32 +1025,33 @@ footerTpl($results);
 
 function footerTpl($results = 0) { ?>
 	</main><footer class="footer">
-		<?php if (!isGet('p') && !isGet('edit') && $results >= Config::$postsPerPage): ?>
+		<?php if (!isGet('p') && !isGet('edit') && $results >= constant('postsPerPage')): ?>
 			<nav class="row">
 				<?php if (@$_GET['skip'] > 0): ?>
-					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - Config::$postsPerPage : 0).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><span aria-hidden="true">&larr;</span> <?= L10n::$newer ?></a>
+					<a href="?skip=<?= (@$_GET['skip'] > 0 ? @$_GET['skip'] - constant('postsPerPage') : 0).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><span aria-hidden="true">&larr;</span> <?= L10n::$newer ?></a>
 				<?php endif ?>
-				<?php if (@$_GET['skip'] + Config::$postsPerPage < $results): ?>
-					<a href="?skip=<?= (@$_GET['skip'] + Config::$postsPerPage < $results ? @$_GET['skip'] + Config::$postsPerPage : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><?= L10n::$older ?> <span aria-hidden="true">&rarr;</span></a>
+				<?php if (@$_GET['skip'] + constant('postsPerPage') < $results): ?>
+					<a href="?skip=<?= (@$_GET['skip'] + constant('postsPerPage') < $results ? @$_GET['skip'] + constant('postsPerPage') : @(int)$_GET['skip']).'&amp;s='.@urlencode($_GET['s']) ?>" class="button"><?= L10n::$older ?> <span aria-hidden="true">&rarr;</span></a>
 				<?php endif ?>
 			</nav>
 		<?php endif ?>
 
 		<div class="menu row">
-			<?php if (Info::$title && Info::$content): ?>
-				<button popovertarget="info" popovertargetaction="show"><?= Info::$title ?></button>
+			<?php if (constant('aboutText')): ?>
+				<button popovertarget="info" popovertargetaction="show"><?= L10n::$about ?></button>
 				<div id="info" class="box" popover>
 					<div class="text">
-						<h2><?= Info::$title ?></h2>
-						<?= parse(Info::$content) ?>
+						<h2><?= L10n::$about ?></h2>
+						<?= parse(constant('aboutText')) ?>
 						<p><button popovertarget="info" popovertargetaction="hide"><?= L10n::$close ?></button>
 					</div>
 				</div>
 			<?php endif ?>
 			<a class="button" href="/?feed"><?= L10n::$feed ?></a>
-			<?php if (Config::$showLogin && !isGet('login') && !isLoggedin()): ?>
-				<a class="button" href="?login">Login</a>
+			<?php if (constant('showLogin') && !isGet('login') && !isLoggedin()): ?>
+				<a class="button" href="?login"><?= L10n::$login ?></a>
 			<?php elseif (isLoggedin()): ?>
+				<a class="button" href="?config"><?= L10n::$config ?></a>
 				<form action="/" method="post">
 					<button type="submit" name="logout"><?= L10n::$logout ?></button>
 				</form>
