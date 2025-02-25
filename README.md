@@ -1,6 +1,6 @@
 # vicco
 
-vicco is brutalist blog software contained in a single PHP file.
+vicco is brutalist blog software contained in a single PHP file. It’s named after [Vicco von Bülow](https://en.wikipedia.org/wiki/Loriot).
 
 ## Features
 
@@ -12,7 +12,7 @@ vicco is brutalist blog software contained in a single PHP file.
 
 ## Target audiences
 
-* Hackers — It’s easy to customize.
+* Hackers — It’s easy to customise.
 * Hipsters — It’s crappy, you could use it as a joke.
 
 ## Requirements
