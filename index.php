@@ -1048,7 +1048,7 @@ function footerTpl($results = 0) { ?>
 				</div>
 			<?php endif ?>
 			<a class="button" href="/?feed"><?= L10n::$feed ?></a>
-			<?php if (constant('showLogin') && !isGet('login') && !isLoggedin()): ?>
+			<?php if (constant('showLogin') === 'true' && !isGet('login') && !isLoggedin()): ?>
 				<a class="button" href="?login"><?= L10n::$login ?></a>
 			<?php elseif (isLoggedin()): ?>
 				<a class="button" href="?config"><?= L10n::$config ?></a>
