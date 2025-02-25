@@ -444,7 +444,7 @@ EOD);
 	// Config setup
 	$config = new stdClass();
 	setConfig(Sys::$settings);
-	if (!isGet('config')) {
+	if (!isGet('config') && isLoggedin()) {
 		header('Location: /?config');
 	}
 }
