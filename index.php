@@ -12,11 +12,9 @@ define('passphrase', 'CHANGEME');
 // Localisation strings
 class L10n {
 	static $search = 'Search';
-	static $link = 'External link';
 	static $title = 'Title';
 	static $comment = 'Comment';
 	static $placeholder = 'Start writing…';
-	static $optional = 'Optional';
 	static $publish = 'Publish';
 	static $draft = 'Draft';
 	static $config = 'Config';
