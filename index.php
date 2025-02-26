@@ -15,12 +15,14 @@ class L10n {
 	static $link = 'External link';
 	static $title = 'Title';
 	static $comment = 'Comment';
+	static $placeholder = 'Start writing…';
 	static $optional = 'Optional';
 	static $publish = 'Publish';
+	static $draft = 'Draft';
 	static $config = 'Config';
 	static $save = 'Save';
+	static $saveDraft = 'Save as Draft';
 	static $logout = 'Logout';
-	static $permalink = 'Permalink';
 	static $edit = 'Edit';
 	static $delete = 'Delete';
 	static $deleteWarning = 'Do you really want to delete this post?';
@@ -32,7 +34,7 @@ class L10n {
 	static $about = 'About';
 	static $close = 'Close';
 	static $login = 'Login';
-	static $back = 'Go back';
+	static $back = 'Go Back';
 	static $error = 'Error';
 	static $errorLogin = 'The credentials are incorrect.';
 	static $errorEmpty = 'Your post must contain a title and a comment.';
@@ -65,13 +67,8 @@ class Sys {
 		'fediverseCreator' => '@account@mastodon.example',
 		'postsPerPage' => '10',
 		'postsFeed' => '20',
-		'showLogin' => 'true',
-		'colorBackground' => '#eee',
-		'colorBox' => '#fff',
-		'colorText' => '#000',
-		'colorMeta' => '#666',
-		'colorInteractive' => '#00f',
-		'colorAccent' => '#fe9'
+		'showLogin' => '1',
+		'customCSS' => '',
 	];
 }
 
@@ -103,14 +100,20 @@ if (getEntry('installed') === false) {
 		$id = getID('6');
 		$post->date = time();
 		$post->title = L10n::$introTitle;
-		$post->url = '';
 		$post->comment = L10n::$introComment;
+		$post->draft = false;
 		setPost($id, $post);
 	}
 
 	// Create assets
 	setFile(Sys::$css, <<< 'EOD'
 :root {
+	--bg: Canvas;
+	--meta-bg: #eee;
+	--text: CanvasText;
+	--meta: #666;
+	--interactive: LinkText;
+	--accent: #fe9;
 	--sans: ui-sans-serif, sans-serif;
 	--mono: ui-monospace, monospace;
 	--size: 1.6rem;
@@ -135,7 +138,7 @@ html {
 	outline-offset: 2px;
 }
 body {
-	background-color: var(--background);
+	background-color: var(--bg);
 	color: var(--text);
 	font-size: var(--size);
 	font-family: var(--sans);
@@ -160,7 +163,7 @@ body:has(:popover-open) {
 	transform: translate(-50%, -50%);
 	margin: 0;
 	border: 0;
-	border-radius: 1rem;
+	border-radius: 0.5rem;
 }
 [popover]:popover-open {
 	display: grid !important;
@@ -175,6 +178,7 @@ main {
 @media (max-width: 768px) {
 	main {
 		margin-inline: -2rem;
+		border-top: 2px solid var(--meta);
 	}
 }
 a {
@@ -197,6 +201,9 @@ h1 {
 :is(h1, h2) a {
 	text-decoration: none;
 }
+:is(h1, h2) a:hover {
+	text-decoration: underline;
+}
 label {
 	display: block;
 	padding-block-end: 0.5rem;
@@ -205,9 +212,10 @@ label {
 	font-size: var(--size);
 }
 code {
-	background-color: var(--background);
+	background-color: var(--meta-bg);
 }
 blockquote {
+	font-style: italic;
 	padding-inline-start: 2rem;
 	margin-inline: 0;
 	border-left: 2px solid var(--meta);
@@ -224,7 +232,7 @@ blockquote p {
 	color: var(--meta);
 }
 :is(input, textarea) {
-	background-color: var(--box);
+	background-color: var(--bg);
 	color: var(--text);
 	font-family: var(--mono);
 	font-size: var(--size);
@@ -244,13 +252,11 @@ input {
 }
 textarea {
 	line-height: var(--line);
-	min-height: 3.5rem;
 	padding: 0.45rem 1rem;
-	resize: none;
 }
 :is(button, .button) {
 	background-color: var(--interactive);
-	color: var(--box);
+	color: var(--bg);
 	font-size: 0.85em;
 	font-family: var(--sans);
 	font-weight: bold;
@@ -276,6 +282,7 @@ textarea {
 }
 .meta {
 	color: var(--meta);
+	margin-block: 0;
 }
 .row {
 	display: flex;
@@ -295,26 +302,8 @@ textarea {
 @media (min-width: 769px) {
 	.header {
 		justify-content: space-between;
-		align-items: flex-end;
+		align-items: end;
 	}
-}
-.header .meta {
-	margin-block: 0;
-}
-.box {
-	background-color: var(--box);
-	display: grid;
-	gap: 1.5rem;
-	padding: 2rem;
-}
-@media (min-width: 769px) {
-	.box {
-		padding: 2rem 2.5rem;
-		border-radius: 0.5rem;
-	}
-}
-.post {
-	gap: 1.5rem;
 }
 .text {
 	font-family: var(--mono);
@@ -326,58 +315,91 @@ textarea {
 .text > *:last-child {
 	margin-block-end: 0;
 }
-.post-header p {
-	display: inline-flex;
-	column-gap: 0.5rem;
-	margin-block: 0;
+.box {
+	background-color: var(--bg);
+	display: grid;
+	gap: 2rem;
+	padding: 2rem 2rem 0;
+	overflow: hidden;
 }
-hgroup > * {
-	display: inline;
+.box:not([popover]) {
+	border-bottom: 2px solid var(--meta);
 }
-.permalink {
-	text-decoration: none;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 1lh;
-	height: 1lh;
-	border: 1px solid var(--interactive);
-	border-radius: 0.5rem;
+@media (min-width: 769px) {
+	.box {
+		padding: 2.5rem 2.5rem 0;
+		border-radius: 0.5rem;
+	}
+	.box:not([popover]) {
+		border: 2px solid var(--meta);
+	}
 }
-.post-footer {
+.box-footer {
+	background-color: var(--meta-bg);
+	padding: 1rem 2rem;
+	margin-inline: -2rem;
+}
+@media (min-width: 769px) {
+	.box-footer {
+		padding-inline: 2.5rem;
+		margin-inline: -2.5rem;
+	}
+}
+.post .box-footer {
 	display: grid;
 	align-items: center;
 	grid-template-columns: 1fr auto;
 	column-gap: 1.5rem;
 }
-.post-footer p {
+.post .box-footer p {
 	margin-block: 0;
 }
 .panel {
 	gap: 2rem;
 }
+.panel-input {
+	all: unset;
+	display: block;
+	width: 100%;
+}
+.panel-input:is(:hover, :focus-visible){
+	background-color: var(--meta-bg);
+	padding-inline: 0.25em;
+	margin-inline: -0.25em;
+	border-radius: 0.5rem;
+	outline: 0.25em solid var(--meta-bg);
+}
+#title {
+	color: var(--interactive);
+	font-size: 1.25em;
+	font-weight: bold;
+	line-height: 1.2;
+}
+#comment {
+	font-family: var(--mono);
+	resize: none;
+}
+.label {
+	background-color: Canvas;
+	display: inline-flex;
+	padding-inline: 0.5rem;
+	border: var(--border);
+	border-radius: 0.5rem;
+}
+.panel .box-footer {
+	display: grid;
+	gap: 1.5rem
+}
 .panel .row {
-	justify-content: space-between;
+	justify-content: end;
 }
 @media (min-width: 769px) {
-	.panel {
-		display: grid;
-		grid-template-areas:
-			'title link'
-			'comment comment'
-			'buttons buttons';
-	}
-	.panel-title {
-		grid-area: title;
-	}
-	.panel-link {
-		grid-area: link;
-	}
-	.panel-comment {
-		grid-area: comment;
+	.panel .box-footer {
+		grid-template-columns: 1fr auto;
+		grid-template-areas: 'meta actions';
 	}
 	.panel .row {
-		grid-area: buttons;
+		grid-area: actions;
 	}
 }
 .footer {
@@ -387,7 +409,9 @@ hgroup > * {
 }
 .footer .meta {
 	text-align: center;
-	margin-block-end: 0;
+}
+.menu {
+	justify-content: end;
 }
 @media (min-width: 769px) {
 	.footer {
@@ -651,12 +675,11 @@ if (isGet('feed')) {
 if (!empty($_GET['s'])) {
 	$s = explode(' ', $_GET['s']);
 	foreach ($posts as $postKey => $postValue) {
-		$url = strtolower(getPost(getPostId($postValue['key']), 'url'));
 		$title = strtolower(getPost(getPostId($postValue['key']), 'title'));
 		$comment = strtolower(parse(getPost(getPostId($postValue['key']), 'comment')));
 		$f = true;
 		for($i = 0; $i < sizeof($s); $i++) {
-			if ((strpos($url, strtolower($s[$i])) === false) && (strpos($title, strtolower($s[$i])) === false) && strpos($comment, strtolower($s[$i])) === false) {
+			if ((strpos($title, strtolower($s[$i])) === false) && strpos($comment, strtolower($s[$i])) === false) {
 				$f = false;
 				break;
 			}
@@ -717,10 +740,7 @@ if (isGet('feed')) {
 <?php $id = getPostId($post['key']); ?>
 <entry>
 	<title><?= getPost($id, 'title') ?></title>
-<?php if (getPost($id, 'url')): ?>
-	<link rel="alternate" type="text/html" href="<?= getPost($id, 'url') ?>" />
-<?php endif ?>
-	<link rel="related" type="text/html" href="<?= $blogUrl.'/?p='.$id ?>" />
+	<link href="<?= $blogUrl.'/?p='.$id ?>" />
 	<content type="html"><![CDATA[<?= parse(getPost($id, 'comment')) ?>]]></content>
 	<updated><?= date($dateFormat, $post['value']) ?></updated>
 	<id><?= $blogUrl.'/?p='.$id ?></id>
@@ -782,7 +802,9 @@ function headerTpl() { ?>
 		<link rel="me" href="<?= constant('mastodonVerification') ?>">
 	<?php endif ?>
 
-	<style>:root { --background: <?= constant('colorBackground') ?>; --box: <?= constant('colorBox') ?>; --text: <?= constant('colorText') ?>; --meta: <?= constant('colorMeta') ?>; --interactive: <?= constant('colorInteractive') ?>; --accent: <?= constant('colorAccent') ?>; }</style>
+	<?php if (!empty(constant('customCSS'))): ?>
+		<style><?= constant('customCSS') ?></style>
+	<?php endif ?>
 
 </head><body itemscope itemtype="https://schema.org/Blog">
 
@@ -815,8 +837,10 @@ function error($text, $backLink = true, $linkUrl = '/', $header = false) {
 		<h2><?= L10n::$error ?></h2>
 		<div class="text">
 			<p><?= $text ?>
+		</div>
+		<div class="box-footer">
 			<?php if ($backLink): ?>
-				<p><a class="button" href="<?= $linkUrl ?>"><?= L10n::$back ?></a>
+				<a class="button" href="<?= $linkUrl ?>"><?= L10n::$back ?></a>
 			<?php endif ?>
 		</div>
 	</section>
@@ -831,6 +855,7 @@ if (isGet('login')) {
 		returnHome();
 	} else { ?>
 		<form class="box form" action="/" method="post">
+			<h2><?= L10n::$login ?></h2>
 			<div>
 				<label for="username"><?= L10n::$username ?></label>
 				<input type="text" id="username" name="username" autocomplete="username" required>
@@ -839,7 +864,7 @@ if (isGet('login')) {
 				<label for="passphrase"><?= L10n::$passphrase ?></label>
 				<input type="password" id="passphrase" name="passphrase" autocomplete="current-password" required>
 			</div>
-			<div>
+			<div class="box-footer">
 				<button type="submit" name="login"><?= L10n::$login ?></button>
 			</div>
 		</form>
@@ -859,7 +884,7 @@ if (isset($_POST['login'])) {
 }
 if (isLoggedin()) {
 	// Submit post
-	if (isset($_POST['submit-post'])) {
+	if (isset($_POST['submit-post']) || isset($_POST['submit-draft'])) {
 		if (empty($_POST['title']) || empty($_POST['comment'])) {
 			error(L10n::$errorEmpty);
 		}
@@ -875,11 +900,16 @@ if (isLoggedin()) {
 				error(L10n::$errorPostExists);
 			}
 			$id = $_POST['id'];
-			$post->date = getPost($id, 'date');
+			$post->date = isset($_POST['submit-draft']) ? time() : getPost($id, 'date');
+		}
+
+		if (isset($_POST['submit-draft'])) {
+			$post->draft = true;
+		} else {
+			$post->draft = false;
 		}
 
 		$post->title = $_POST['title'];
-		$post->url = $_POST['url'];
 		$post->comment = $_POST['comment'];
 		setPost($id, $post);
 		returnHome();
@@ -902,39 +932,47 @@ if (isLoggedin()) {
 		<form class="panel box" action="/" method="post">
 			<input type="hidden" name="id" value="<?= (isGet('edit') ? $_GET['edit'] : '') ?>">
 
-			<div class="panel-title">
-				<label for="title"><?= L10n::$title ?></label>
-				<input type="text" id="title" name="title" required value="<?= (isGet('edit') ? getPost($_GET['edit'], 'title') : '') ?>">
+			<div>
+				<input type="text" name="title" id="title" class="panel-input" required aria-label="<?= L10n::$title ?>" placeholder="<?= L10n::$title ?>" value="<?= (isGet('edit') ? getPost($_GET['edit'], 'title') : '') ?>">
 			</div>
 
-			<div class="panel-link">
-				<label for="url"><?= L10n::$link ?> <small class="meta">(<?= L10n::$optional ?>)</small></label>
-				<input type="url" id="url" name="url" placeholder="https://example.com" value="<?= (isGet('edit') ? getPost($_GET['edit'], 'url') : '') ?>">
+			<div>
+				<textarea name="comment" id="comment" class="panel-input" spellcheck="false" rows="1" required aria-label="<?= L10n::$comment ?>" placeholder="<?= L10n::$placeholder ?>"><?= isGet('edit') ? getPost($_GET['edit'], 'comment') : '' ?></textarea>
 			</div>
 
-			<div class="panel-comment">
-				<label for="comment"><?= L10n::$comment ?></label>
-				<textarea id="comment" name="comment" spellcheck="false" rows="1" required><?= (isGet('edit') ? getPost($_GET['edit'], 'comment') : '') ?></textarea>
-			</div>
-
-			<div class="row">
-				<button type="submit" name="submit-post"><?= (isGet('edit') ? L10n::$save : L10n::$publish) ?></button>
+			<div class="box-footer">
 				<?php if (isGet('edit')): ?>
-					<button type="submit" class="delete" name="delete-post" data-warning="<?= L10n::$deleteWarning ?>"><?= L10n::$delete ?></button>
+					<p class="meta">
+						<?php if (getPost($_GET['edit'], 'draft')): ?>
+							<strong class="label"><?= L10n::$draft ?></strong>
+						<?php endif ?>
+						<?php $date = getPost($_GET['edit'], 'date'); ?>
+						<time datetime="<?= date('Y-m-d H:i:s', $date) ?>" pubdate><?= date(constant('dateFormat'), $date) ?></time>
+					</p>
 				<?php endif ?>
+				<div class="row">
+					<button type="submit" name="submit-post"><?= L10n::$publish ?></button>
+					<button type="submit" name="submit-draft"><?= L10n::$saveDraft ?></button>
+					<?php if (isGet('edit')): ?>
+						<button type="submit" class="delete" name="delete-post" data-warning="<?= L10n::$deleteWarning ?>"><?= L10n::$delete ?></button>
+					<?php endif ?>
+				</div>
 			</div>
 		</form>
 	<?php endif;
 
 	// Save config
-	if (isset($_POST['config'])) {
+	if (isset($_POST['submit-config'])) {
 		$config = new stdClass();
 		$i = 0;
 		foreach ($_POST as $configKey => $configValue) {
 			$i++;
-			if ($_POST['config-'.$i]) {
-				$key = getConfig('key', $i);
-				$config->$key = $configValue;
+			$key = getConfig('key', $i);
+			$postName = explode('-', $configKey);
+			if ($postName[0] == 'config') {
+				if (!empty($_POST)) {
+					$config->$key = $configValue;
+				}
 			}
 		}
 		setConfig($config);
@@ -948,7 +986,7 @@ if (isLoggedin()) {
 	if (isGet('config')): ?>
 		<form class="box" action="/" method="post">
 			<h2><?= L10n::$config ?></h2>
-			<?= (getEntry('installed') === false) ? parse(L10n::$setup) : '' ?>
+			<?= (getEntry('installed') === false) ? '<div class="text">'.parse(L10n::$setup).'</div>' : '' ?>
 			<?php
 				$config = getConfig();
 				$i = 0;
@@ -958,11 +996,13 @@ if (isLoggedin()) {
 						<input type="text" id="config-<?= $i ?>" name="config-<?= $i ?>" value="<?= $value ?>">
 					</div>
 			<?php endforeach ?>
-			<button type="submit" name="config"><?= L10n::$save ?></button>
+			<div class="box-footer">
+				<button type="submit" name="submit-config"><?= L10n::$save ?></button>
+			</div>
 		</form>
 	<?php endif;
 
-} elseif (isset($_POST['submit']) || isset($_POST['delete-post']) || isGet('edit') || isGet('config')) {
+} elseif (isset($_POST['submit-post']) || isset($_POST['submit-draft']) || isset($_POST['submit-config']) || isset($_POST['delete-post']) || isGet('edit') || isGet('config')) {
 	error(L10n::$errorHacker);
 }
 
@@ -982,42 +1022,57 @@ if (!isGet('edit') && !isGet('config')) {
 		<?php
 			$id = getPostId($post['key']);
 			$postUrl = 'https://'.$_SERVER['HTTP_HOST'].'/?p='.$id;
-			$url = getPost($id, 'url');
 			$title = getPost($id, 'title');
 			$date = getPost($id, 'date');
 			$comment = getPost($id, 'comment');
-		?>
-		<article class="post box" itemscope itemtype="https://schema.org/BlogPosting" itemid="<?= $postUrl ?>">
-			<header class="post-header">
-				<?php if ($url): ?>
-					<hgroup>
-						<h2 itemprop="name"><a href="<?= $url ?>" rel="external" target="_blank" aria-describedby="<?= $id?>-url" itemprop="url"><?= $title ?></a></h2>
-						<p class="meta" id="<?= $id?>-url">(<?= parse_url($url, PHP_URL_HOST) ?>)</p>
-					</hgroup>
-				<?php elseif (!isGet('p')): ?>
-					<h2 itemprop="name"><a href="?p=<?= $id ?>" itemprop="url"><?= $title ?></a></h2>
-				<?php else: ?>
-					<h2 itemprop="name"><?= $title ?></h2>
-				<?php endif ?>
-			</header>
-			<?php if ($comment): ?>
-				<div class="text" itemprop="articleBody">
-					<?= parse($comment) ?>
-				</div>
-			<?php endif ?>
-			<footer class="post-footer">
-				<p class="meta">
-					<?php if ($url && !isGet('p')): ?>
-						<a href="?p=<?= $id ?>" class="permalink" title="<?= L10n::$permalink ?>" itemprop="url"><span aria-hidden="true">&#8984;</span></a>
+			$draft = getPost($id, 'draft');
+		
+			if ($draft && isLoggedIn()): ?>
+				<article class="post box">
+					<header class="post-header">
+						<?php if (!isGet('p')): ?>
+							<h2><a href="?p=<?= $id ?>"><?= $title ?></a></h2>
+						<?php else: ?>
+							<h2><?= $title ?></h2>
+						<?php endif ?>
+					</header>
+					<?php if ($comment): ?>
+						<div class="text">
+							<?= parse($comment) ?>
+						</div>
 					<?php endif ?>
-					<time datetime="<?= date('Y-m-d H:i:s', $date) ?>" itemprop="datePublished" pubdate><?= date(constant('dateFormat'), $date) ?></time>
-				</p>
-				<?php if (isLoggedin()): ?>
-					<a class="button" href="?edit=<?= $id ?>"><?= L10n::$edit ?></a>
-				<?php endif ?>
-			</footer>
-		</article>
-	<?php endforeach;
+					<footer class="box-footer">
+						<p class="meta">
+							<strong class="label"><?= L10n::$draft ?></strong> <time datetime="<?= date('Y-m-d H:i:s', $date) ?>"><?= date(constant('dateFormat'), $date) ?></time>
+						</p>
+						<a class="button" href="?edit=<?= $id ?>"><?= L10n::$edit ?></a>
+					</footer>
+				</article>
+			<?php elseif (!$draft): ?>
+				<article class="post box" itemscope itemtype="https://schema.org/BlogPosting" itemid="<?= $postUrl ?>">
+					<header class="post-header">
+						<?php if (!isGet('p')): ?>
+							<h2 itemprop="name"><a href="?p=<?= $id ?>" itemprop="url"><?= $title ?></a></h2>
+						<?php else: ?>
+							<h2 itemprop="name"><?= $title ?></h2>
+						<?php endif ?>
+					</header>
+					<?php if ($comment): ?>
+						<div class="text" itemprop="articleBody">
+							<?= parse($comment) ?>
+						</div>
+					<?php endif ?>
+					<footer class="box-footer">
+						<p class="meta">
+							<time datetime="<?= date('Y-m-d H:i:s', $date) ?>" itemprop="datePublished" pubdate><?= date(constant('dateFormat'), $date) ?></time>
+						</p>
+						<?php if (isLoggedin()): ?>
+							<a class="button" href="?edit=<?= $id ?>"><?= L10n::$edit ?></a>
+						<?php endif ?>
+					</footer>
+				</article>
+			<?php endif;
+	endforeach;
 }
 
 // Footer
@@ -1040,15 +1095,17 @@ function footerTpl($results = 0) { ?>
 			<?php if (constant('aboutText')): ?>
 				<button popovertarget="info" popovertargetaction="show"><?= L10n::$about ?></button>
 				<div id="info" class="box" popover>
+					<h2><?= L10n::$about ?></h2>
 					<div class="text">
-						<h2><?= L10n::$about ?></h2>
 						<?= parse(constant('aboutText')) ?>
-						<p><button popovertarget="info" popovertargetaction="hide"><?= L10n::$close ?></button>
+					</div>
+					<div class="box-footer">
+						<button popovertarget="info" popovertargetaction="hide"><?= L10n::$close ?></button>
 					</div>
 				</div>
 			<?php endif ?>
 			<a class="button" href="/?feed"><?= L10n::$feed ?></a>
-			<?php if (constant('showLogin') === 'true' && !isGet('login') && !isLoggedin()): ?>
+			<?php if (constant('showLogin') == true && !isGet('login') && !isLoggedin()): ?>
 				<a class="button" href="?login"><?= L10n::$login ?></a>
 			<?php elseif (isLoggedin()): ?>
 				<a class="button" href="?config"><?= L10n::$config ?></a>
@@ -1061,7 +1118,7 @@ function footerTpl($results = 0) { ?>
 		<?php if (isLoggedin()):
 			$loadTime = number_format(rtrim(sprintf('%.20f', (microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'])), '0'), 6, '.', ',');
 			if (strpos(($loadTime.'0'), '0') != 0) {
-			  $loadTime = number_format($loadTime, 2, '.', ',');
+				$loadTime = number_format($loadTime, 2, '.', ',');
 			} ?>
 			<p class="meta"><a href="https://github.com/zichy/vicco">vicco</a> / <?= $loadTime ?> s / <?= intval(memory_get_usage() / 1024) ?> KB
 		<?php endif ?>
