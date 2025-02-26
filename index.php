@@ -549,6 +549,13 @@ function getPostId($id) {
 	return $id;
 }
 
+function getPostsCount() {
+	global $postsPath;
+	$posts = array_slice(scandir($postsPath), 2);;
+	$count = count($posts);
+	return $count;
+}
+
 function deletePost($id) {
 	global $postsPath;
 	$file = $postsPath.$id.'.json';
@@ -1117,8 +1124,8 @@ function footerTpl($results = 0) { ?>
 			$loadTime = number_format(rtrim(sprintf('%.20f', (microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'])), '0'), 6, '.', ',');
 			if (strpos(($loadTime.'0'), '0') != 0) {
 				$loadTime = number_format($loadTime, 2, '.', ',');
-			} ?>
-			<p class="meta"><a href="https://github.com/zichy/vicco">vicco</a> / <?= $loadTime ?> s / <?= intval(memory_get_usage() / 1024) ?> KB
+			}?>
+			<p class="meta"><?= getPostsCount() ?> / <?= $loadTime ?> s / <?= intval(memory_get_usage() / 1024) ?> KB
 		<?php endif ?>
 	</footer>
 
