@@ -1042,14 +1042,10 @@ if (!isGet('edit') && !isGet('config')) {
 						<?php endif ?>
 					</header>
 					<?php if ($comment): ?>
-						<div class="text">
-							<?= parse($comment) ?>
-						</div>
+						<div class="text"><?= parse($comment) ?></div>
 					<?php endif ?>
 					<footer class="box-footer">
-						<p class="meta">
-							<strong class="label"><?= L10n::$draft ?></strong> <time datetime="<?= date('Y-m-d H:i:s', $date) ?>"><?= date(constant('dateFormat'), $date) ?></time>
-						</p>
+						<p class="meta"><strong class="label"><?= L10n::$draft ?></strong> <time datetime="<?= date('Y-m-d H:i:s', $date) ?>"><?= date(constant('dateFormat'), $date) ?></time></p>
 						<a class="button" href="?edit=<?= $id ?>"><?= L10n::$edit ?></a>
 					</footer>
 				</article>
@@ -1063,14 +1059,10 @@ if (!isGet('edit') && !isGet('config')) {
 						<?php endif ?>
 					</header>
 					<?php if ($comment): ?>
-						<div class="text" itemprop="articleBody">
-							<?= parse($comment) ?>
-						</div>
+						<div class="text" itemprop="articleBody"><?= parse($comment) ?></div>
 					<?php endif ?>
 					<footer class="box-footer">
-						<p class="meta">
-							<time datetime="<?= date('Y-m-d H:i:s', $date) ?>" itemprop="datePublished" pubdate><?= date(constant('dateFormat'), $date) ?></time>
-						</p>
+						<p class="meta"><time datetime="<?= date('Y-m-d H:i:s', $date) ?>" itemprop="datePublished" pubdate><?= date(constant('dateFormat'), $date) ?></time></p>
 						<?php if (isLoggedin()): ?>
 							<a class="button" href="?edit=<?= $id ?>"><?= L10n::$edit ?></a>
 						<?php endif ?>
@@ -1101,9 +1093,7 @@ function footerTpl($results = 0) { ?>
 				<button popovertarget="info" popovertargetaction="show"><?= L10n::$about ?></button>
 				<div id="info" class="box" popover>
 					<h2><?= L10n::$about ?></h2>
-					<div class="text">
-						<?= parse(constant('aboutText')) ?>
-					</div>
+					<div class="text"><?= parse(constant('aboutText')) ?></div>
 					<div class="box-footer">
 						<button popovertarget="info" popovertargetaction="hide"><?= L10n::$close ?></button>
 					</div>
