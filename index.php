@@ -175,7 +175,7 @@ main {
 @media (max-width: 768px) {
 	main {
 		margin-inline: -2rem;
-		border-top: 2px solid var(--meta);
+		border-top: var(--border);
 	}
 }
 a {
@@ -320,7 +320,7 @@ textarea {
 	overflow: hidden;
 }
 .box:not([popover]) {
-	border-bottom: 2px solid var(--meta);
+	border-bottom: var(--border);
 }
 @media (min-width: 769px) {
 	.box {
@@ -328,7 +328,7 @@ textarea {
 		border-radius: 0.5rem;
 	}
 	.box:not([popover]) {
-		border: 2px solid var(--meta);
+		border: var(--border);
 	}
 }
 .box-footer {
