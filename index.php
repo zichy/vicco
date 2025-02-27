@@ -96,8 +96,8 @@ if (getEntry('installed') === false) {
 		$post = new stdClass();
 		$id = getID('6');
 		$post->date = time();
-		$post->title = L10n::$introTitle;
-		$post->comment = L10n::$introComment;
+		$post->title = htmlspecialchars(L10n::$introTitle);
+		$post->comment = htmlspecialchars(L10n::$introComment);
 		$post->draft = false;
 		setPost($id, $post);
 	}
@@ -912,8 +912,8 @@ if (isLoggedin()) {
 			$post->draft = false;
 		}
 
-		$post->title = $_POST['title'];
-		$post->comment = $_POST['comment'];
+		$post->title = htmlspecialchars($_POST['title']);
+		$post->comment = htmlspecialchars($_POST['comment']);
 		setPost($id, $post);
 		returnHome();
 	}
