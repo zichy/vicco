@@ -375,6 +375,7 @@ textarea {
 }
 #comment {
 	font-family: var(--mono);
+	white-space-collapse: preserve;
 	resize: none;
 }
 .label {
