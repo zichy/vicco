@@ -135,7 +135,7 @@ html {
 	outline-offset: 2px;
 }
 body {
-	background-color: var(--bg);
+	background-color: var(--meta-bg);
 	color: var(--text);
 	font-size: var(--size);
 	font-family: var(--sans);
@@ -170,12 +170,11 @@ body:has(:popover-open) {
 }
 main {
 	display: grid;
-	gap: 2rem;
+	gap: 3rem;
 }
 @media (max-width: 768px) {
 	main {
 		margin-inline: -2rem;
-		border-top: var(--border);
 	}
 }
 a {
@@ -209,7 +208,7 @@ label {
 	font-size: var(--size);
 }
 code {
-	background-color: var(--meta-bg);
+	background-color: var(--accent);
 }
 blockquote {
 	font-style: italic;
@@ -317,24 +316,18 @@ textarea {
 	display: grid;
 	gap: 2rem;
 	padding: 2rem 2rem 0;
-	overflow: hidden;
-}
-.box:not([popover]) {
-	border-bottom: var(--border);
+	box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.15);
 }
 @media (min-width: 769px) {
 	.box {
 		padding: 2.5rem 2.5rem 0;
 		border-radius: 0.5rem;
 	}
-	.box:not([popover]) {
-		border: var(--border);
-	}
 }
 .box-footer {
-	background-color: var(--meta-bg);
 	padding: 1rem 2rem;
 	margin-inline: -2rem;
+	border-top: 2px solid var(--meta-bg);
 }
 @media (min-width: 769px) {
 	.box-footer {
