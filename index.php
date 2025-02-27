@@ -75,7 +75,6 @@ $fullUrl = $blogUrl.$_SERVER['REQUEST_URI'];
 $dbPath = Sys::$folder.Sys::$dbFolder;
 $postsPath = Sys::$folder.Sys::$postsFolder;
 $configPath = Sys::$folder.Sys::$config;
-setConfigConstants();
 
 session_start();
 
@@ -465,11 +464,16 @@ if ($panel && $button) {
 EOD);
 
 	// Config setup
-	$config = new stdClass();
-	setConfig(Sys::$settings);
+	if (!file_exists($configPath)) {
+		setConfig(Sys::$settings);
+	}
 	if (!isGet('config') && isLoggedin()) {
 		header('Location: /?config');
 	}
+}
+
+if (file_exists($configPath)) {
+	setConfigConstants();
 }
 
 // Database
