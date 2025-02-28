@@ -96,9 +96,9 @@ if (getEntry('installed') === false) {
 		$post = new stdClass();
 		$id = getID('6');
 		$post->date = time();
+		$post->draft = false;
 		$post->title = htmlspecialchars(L10n::$introTitle);
 		$post->comment = htmlspecialchars(L10n::$introComment);
-		$post->draft = false;
 		setPost($id, $post);
 	}
 
