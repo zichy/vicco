@@ -739,8 +739,10 @@ if (isGet('feed')) {
 </author>
 <updated><?= date($dateFormat, $lastUpdate) ?></updated>
 <id><?= $fullUrl ?></id>
-<?php foreach ($posts as $post): ?>
-<?php $id = getPostId($post['key']); ?>
+<?php foreach ($posts as $post) {
+	$id = getPostId($post['key']);
+	$draft = getPost($id, 'draft');
+	if (!$draft): ?>
 <entry>
 	<title><?= getPost($id, 'title') ?></title>
 	<link href="<?= $blogUrl.'/?p='.$id ?>" />
@@ -748,7 +750,7 @@ if (isGet('feed')) {
 	<updated><?= date($dateFormat, $post['value']) ?></updated>
 	<id><?= $blogUrl.'/?p='.$id ?></id>
 </entry>
-<?php endforeach ?>
+<?php endif; } ?>
 </feed><?php die();
 }
 
