@@ -1050,7 +1050,7 @@ if (!isGet('edit') && !isGet('config')) {
 					</footer>
 				</article>
 			<?php elseif (!$draft): ?>
-				<article class="post box" itemscope itemtype="https://schema.org/BlogPosting" itemid="<?= $postUrl ?>">
+				<article class="post box" itemprop="blogPosts" itemscope itemtype="https://schema.org/BlogPosting" itemid="<?= $postUrl ?>">
 					<header class="post-header">
 						<?php if (!isGet('p')): ?>
 							<h2 itemprop="name"><a href="?p=<?= $id ?>" itemprop="url"><?= $title ?></a></h2>
