@@ -151,16 +151,17 @@ body:has(:popover-open) {
 }
 [popover] {
 	display: none !important;
+	grid-template-rows: min-content min-content;
 	width: 500px;
 	max-width: 100%;
 	max-height: 90vh;
+	padding: 2.5rem !important;
 	position: fixed;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	margin: 0;
 	border: 0;
-	border-radius: 0.5rem;
 }
 [popover]:popover-open {
 	display: grid !important;
@@ -1093,9 +1094,9 @@ function footerTpl($results = 0) { ?>
 				<button popovertarget="info" popovertargetaction="show"><?= L10n::$about ?></button>
 				<div id="info" class="box" popover>
 					<h2><?= L10n::$about ?></h2>
-					<div class="text"><?= parse(constant('aboutText')) ?></div>
-					<div class="box-footer">
-						<button popovertarget="info" popovertargetaction="hide"><?= L10n::$close ?></button>
+					<div class="text">
+						<?= parse(constant('aboutText')) ?>
+						<p><button popovertarget="info" popovertargetaction="hide"><?= L10n::$close ?></button>
 					</div>
 				</div>
 			<?php endif ?>
