@@ -1095,7 +1095,7 @@ function footerTpl($results = 0) { ?>
 				<div id="info" class="box" popover>
 					<h2><?= L10n::$about ?></h2>
 					<div class="text">
-						<?= parse(constant('aboutText')) ?>
+						<?= parse(htmlspecialchars(constant('aboutText'))) ?>
 						<p><button popovertarget="info" popovertargetaction="hide"><?= L10n::$close ?></button>
 					</div>
 				</div>
