@@ -389,6 +389,7 @@ textarea {
 	.panel .box-footer {
 		grid-template-columns: 1fr auto;
 		grid-template-areas: 'meta actions';
+		align-items: center;
 	}
 	.panel .row {
 		grid-area: actions;
