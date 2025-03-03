@@ -373,6 +373,7 @@ textarea {
 }
 .label {
 	background-color: Canvas;
+	font-size: 0.85em;
 	display: inline-flex;
 	padding-inline: 0.5rem;
 	border: var(--border);
