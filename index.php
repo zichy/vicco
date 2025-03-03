@@ -665,7 +665,7 @@ function parse($t) {
 	$t = str_replace("\n\n", "</p><p>", $t);
 	$t = str_replace("\r\n", "<br>", $t);
 	$t = str_replace("\n", "<br>", $t);
-	$t = preg_replace('/<p>>(.*?)<\/p>/', '<blockquote><p>\1</p></blockquote>', $t);
+	$t = preg_replace('/<p>&gt;(.*?)<\/p>/', '<blockquote><p>\1</p></blockquote>', $t);
 
 	return $t;
 }
