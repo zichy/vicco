@@ -14,7 +14,7 @@ class L10n {
 	static $search = 'Search';
 	static $title = 'Title';
 	static $comment = 'Comment';
-	static $placeholder = 'Start writing…';
+	static $placeholder = 'Start writing …';
 	static $publish = 'Publish';
 	static $draft = 'Draft';
 	static $config = 'Config';
