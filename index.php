@@ -352,6 +352,8 @@ textarea {
 	all: unset;
 	display: block;
 	width: 100%;
+	max-height: 480px;
+	field-sizing: content;
 }
 .panel-input:is(:hover, :focus-visible){
 	background-color: var(--meta-bg);
@@ -427,20 +429,6 @@ textarea {
 EOD); setFile(Sys::$js, <<< 'EOD'
 if (window.history.replaceState) {
 	window.history.replaceState(null, null, window.location.href);
-}
-
-const $textarea = document.getElementById('comment');
-if ($textarea) {
-	function resizeArea($el) {
-		let heightLimit = 400;
-		$el.style.height = '';
-		$el.style.height = Math.min($el.scrollHeight, heightLimit) +2 + 'px';
-	}
-	resizeArea($textarea);
-	$textarea.addEventListener('input', function(e){
-		const $target = e.target || e.srcElement;
-		resizeArea($target);
-	});
 }
 
 const $panel = document.querySelector('.panel');
