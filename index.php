@@ -965,10 +965,8 @@ if (isLoggedin()) {
 			$i++;
 			$key = getConfig('key', $i);
 			$postName = explode('-', $configKey);
-			if ($postName[0] == 'config') {
-				if (!empty($_POST)) {
-					$config->$key = $configValue;
-				}
+			if (!empty($_POST) && ($postName[0] == 'config')) {
+				$config->$key = $configValue;
 			}
 		}
 		setConfig($config);
