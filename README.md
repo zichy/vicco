@@ -23,8 +23,8 @@ vicco is brutalist blog software contained in a single PHP file. It’s named af
 
 1. Set your credentials in `index.php`.
 2. Upload it to your server and make the directory writable.
-3. Open the site in your browser.
-4. Customise the configuration and submit the form.
+3. Open `?login` in your browser.
+4. Adjust the settings.
 5. Start blogging.
 
 ## Text formatting
