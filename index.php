@@ -540,7 +540,7 @@ function getPostId($id) {
 
 function getPostsCount() {
 	global $postsPath;
-	$posts = array_slice(scandir($postsPath), 2);;
+	$posts = array_slice(scandir($postsPath), 2);
 	$count = count($posts);
 	return $count;
 }
