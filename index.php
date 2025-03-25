@@ -525,7 +525,7 @@ function getPost($id, $value = false) {
 			if (!$value) {
 				return file_get_contents($file);
 			} else {
-				return json_decode((file_get_contents($file)))->$value;
+				return json_decode(file_get_contents($file))->$value;
 			}
 		}
 	}
