@@ -355,7 +355,7 @@ textarea {
 	max-height: 480px;
 	field-sizing: content;
 }
-.panel-input:is(:hover, :focus-visible){
+.panel-input:is(:hover, :focus-visible) {
 	background-color: var(--meta-bg);
 	padding-inline: 0.25em;
 	margin-inline: -0.25em;
