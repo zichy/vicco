@@ -1,3 +1,9 @@
+---
+
+⚠️ **vicco is no longer maintained. You may want to check out [urmel](https://github.com/zichy/urmel).**
+
+---
+
 # vicco
 
 vicco is brutalist blog software contained in a single PHP file. It’s named after [Vicco von Bülow](https://en.wikipedia.org/wiki/Loriot).
